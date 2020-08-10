@@ -3,6 +3,9 @@
 <html>
 <head>
 	<title>Home</title>
+	<script type="text/javascript">
+		var a = 10;
+	</script>
 </head>
 <body>
 <h1>
