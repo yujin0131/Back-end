@@ -3,12 +3,16 @@
 <html>
 <head>
 	<title>Home</title>
+	
+	<script type="text/javascript">
+		var a = "yujin";
+	</script>
 </head>
 <body>
 <h1>
 	Git test !!!
 </h1>
- akdsfl
+ 
 <P>  The time on the server is ${serverTime}. </P>
 </body>
 </html>
