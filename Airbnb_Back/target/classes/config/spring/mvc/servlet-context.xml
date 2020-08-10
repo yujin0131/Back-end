@@ -23,6 +23,6 @@
    
    <!-- HomeController 수동생성 -->  
    <beans:bean class="com.airbnb.back.HomeController">
-        <!--  <beans:property name="dememDAO" ref="demem_daoBean"/>  -->
+        <!-- <beans:property name="airbnbDAO" ref="airbnb_daoBean"/> -->
    </beans:bean> 
 </beans:beans>
