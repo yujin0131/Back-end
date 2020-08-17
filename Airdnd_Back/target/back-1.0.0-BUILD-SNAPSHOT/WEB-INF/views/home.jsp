@@ -2,7 +2,7 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<title>yujintest</title>
+	<title>Airdnd</title>
 </head>
 <body>
 <h1>

@@ -5,9 +5,9 @@
 	
 
 	
-<!-- 	<bean id="airdnd_daoBean" class="dao.AirdndDAO">
+	<bean id="airdnd_daoBean" class="dao.AirdndRoomDAO">
 		<property name="sqlSession" ref="sqlSessionBean"/> 
-	</bean> -->
+	</bean>
 	
 
 </beans>
