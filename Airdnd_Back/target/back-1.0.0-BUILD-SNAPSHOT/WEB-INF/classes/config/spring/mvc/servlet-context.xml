@@ -31,10 +31,8 @@
 
 	<!-- <context:component-scan base-package="com.korea.db" /> -->
 
-	<!-- 컨트롤러 수동 생성시 autowired사용 가능하게 하는 속성 -->
+	<!-- 컨트롤러 수동 생성 시 autowired 사용 가능하게 하는 속성 -->
 	<context:annotation-config />
-
-	
 	
 	<!-- HomeController 수동생성 -->
 	<beans:bean class="com.airdnd.back.HomeController">
@@ -45,9 +43,8 @@
 		<beans:property name="airdnd_room_dao" ref="airdnd_daoBean"/>
 	</beans:bean>
 
-
-	
-
- 
+	<beans:bean class="com.airdnd.back.ChatController">
+		<beans:property name="airdnd_chat_dao" ref="airdnd_daoChatBean"/>
+	</beans:bean>
 
 </beans:beans>
