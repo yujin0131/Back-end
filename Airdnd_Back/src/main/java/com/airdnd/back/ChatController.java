@@ -18,7 +18,6 @@ public class ChatController {
 
 	@RequestMapping("/chat")
 	public String chat_list(Model model) {
-		System.out.println("chat : 내가 보이나요?");
 		List<AirdndChatVO> list = airdndChatService.daoserviceconnect();
 		model.addAttribute("list", list);
 		

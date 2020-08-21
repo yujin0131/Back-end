@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import dao.AirdndChatDAO;
 import vo.AirdndChatVO;
 
-@Service("airdndroomService")
+@Service("airdndChatService")
 public class AirdndChatService implements AirdndChatServiceI {
 	@Autowired
 	AirdndChatDAO airdnd_chat_dao;

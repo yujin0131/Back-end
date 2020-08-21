@@ -33,18 +33,15 @@
 		<beans:property name="username" value="mysqluser"/>
 		<beans:property name="password" value="1111"/>
 	</beans:bean>
-	
-
 
  	<beans:bean class="com.airdnd.back.HomeController"></beans:bean> 
-	
  	<beans:bean class="com.airdnd.back.TestController"></beans:bean>
+ 	<beans:bean class="com.airdnd.back.ChatController"></beans:bean>
  	
  	<beans:bean id="airdndroomService" class="service.AirdndRoomService"></beans:bean>
- 	
+	<beans:bean id="airdndChatService" class="service.AirdndChatService"></beans:bean>
+	
  	<beans:bean id="airdndDAO" class="dao.AirdndRoomDAO"></beans:bean>
- 	
- 
-
+ 	<beans:bean id="airdndChatDAO" class="dao.AirdndChatDAO"></beans:bean>
 
 </beans:beans>

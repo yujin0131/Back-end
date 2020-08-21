@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import vo.AirdndChatVO;
 
-@Repository("airdndDAO")
+@Repository("airdndChatDAO")
 public class AirdndChatDAO implements AirdndChatDAOI {
 	@Autowired
 	DataSource dataSource;
