@@ -13,7 +13,6 @@
 yujintest
 
 <table border="1">
-	<c:forEach var="vo" items="${vo}">
 		<tr>
 			<td>방이름</td>
 			<td>가격</td>
@@ -22,16 +21,18 @@ yujintest
 			<td>방유형</td>
 			<td>옵션</td>
 		</tr>
+	<c:forEach var="list" items="${list}">
 		<tr>
-			<td>${vo.room_name}</td>
-			<td>${vo.room_price}</td>
-			<td>${vo.room_score}</td>
-			<td>${vo.room_review_num}</td>
-			<td>${vo.room_type}</td>
-			<td>${vo.room_option}</td>
+			
+			<td>${list.room_name}</td>
+			<td>${list.room_price}</td>
+			<td>${list.room_score}</td>
+			<td>${list.room_review_num}</td>
+			<td>${list.room_type}</td>
+			<td>${list.room_option}</td>
 		</tr>
+	</c:forEach>
 	</table>
 	
-	</c:forEach>
 </body>
 </html>

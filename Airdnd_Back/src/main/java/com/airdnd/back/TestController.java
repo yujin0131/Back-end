@@ -1,30 +1,40 @@
 package com.airdnd.back;
 
-import java.io.Console;
+
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import common.Common;
 import dao.AirdndRoomDAO;
+import service.AirdndRoomService;
 import vo.AirdndRoomVO;
+
 
 @Controller
 public class TestController {
 	
-	AirdndRoomDAO airdnd_room_dao;
+	/*
+	 * @Autowired AirdndRoomService airdndroomService;
+	 */
 	
-	public void setAirdnd_room_dao(AirdndRoomDAO airdnd_room_dao) {
-		this.airdnd_room_dao = airdnd_room_dao;
-	}
-	
+	@Autowired
+	AirdndRoomService airdndroomService;
+
 	@RequestMapping("/test")
 	public String test(Model model) {
+
+		List<AirdndRoomVO> list = airdndroomService.daoserviceconnect();
+		model.addAttribute("list", list);
+
 		
-		AirdndRoomVO vo = airdnd_room_dao.select();
-		model.addAttribute("vo", vo);
 		return Common.VIEW_PATH + "test.jsp";
 	}
 

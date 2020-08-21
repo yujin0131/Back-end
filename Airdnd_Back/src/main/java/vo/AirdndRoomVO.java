@@ -4,6 +4,20 @@ public class AirdndRoomVO {
 	private int room_idx;
 	private String room_name, room_price, room_score, room_review_num, room_type, room_option;
 	
+	public AirdndRoomVO() {
+		
+	}
+	
+	public AirdndRoomVO(int room_idx, String room_name, String room_price, String room_score, String room_review_num, String room_type, String room_option) {
+		this.room_idx = room_idx;
+		this.room_name = room_name;
+		this.room_price = room_price;
+		this.room_score = room_score;
+		this.room_review_num = room_review_num;
+		this.room_type = room_type;
+		this.room_option = room_option;
+	}
+	
 	public int getRoom_idx() {
 		return room_idx;
 	}

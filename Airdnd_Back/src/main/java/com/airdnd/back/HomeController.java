@@ -1,5 +1,6 @@
 package com.airdnd.back;
 
+import java.io.Console;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,7 +35,7 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
-		
+		System.out.println("워크맨");
 		return Common.VIEW_PATH + "home.jsp";
 	}
 	
