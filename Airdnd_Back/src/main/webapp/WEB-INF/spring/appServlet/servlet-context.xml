@@ -29,22 +29,20 @@
 	
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<beans:property name="url" value="jdbc:mysql://52.79.141.237:3306/AirdndDB"/>
+		<!-- <beans:property name="url" value="jdbc:mysql://52.79.141.237:3306/AirdndDB?serverTimezone=Asia/Seoul&amp;useSSL=false"/> -->
+		<beans:property name="url" value="jdbc:mysql://52.79.141.237:3306/AirdndDB?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Seoul&amp;useSSL=false"/>
 		<beans:property name="username" value="mysqluser"/>
 		<beans:property name="password" value="1111"/>
 	</beans:bean>
-	
-
 
  	<beans:bean class="com.airdnd.back.HomeController"></beans:bean> 
-	
  	<beans:bean class="com.airdnd.back.TestController"></beans:bean>
+ 	<beans:bean class="com.airdnd.back.ChatController"></beans:bean>
  	
  	<beans:bean id="airdndroomService" class="service.AirdndRoomService"></beans:bean>
- 	
+	<beans:bean id="airdndChatService" class="service.AirdndChatService"></beans:bean>
+	
  	<beans:bean id="airdndDAO" class="dao.AirdndRoomDAO"></beans:bean>
- 	
- 
-
+ 	<beans:bean id="airdndChatDAO" class="dao.AirdndChatDAO"></beans:bean>
 
 </beans:beans>
