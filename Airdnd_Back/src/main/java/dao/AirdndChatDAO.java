@@ -20,13 +20,11 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 
 	@Override
 	public List<AirdndChatVO> select(){
-
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
 		List<AirdndChatVO> list = jdbcTemplate.query("select * from airdnd_chatting", new RowMapper<AirdndChatVO>() {
 			@Override
 			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				// TODO Auto-generated method stub
 				AirdndChatVO list = new AirdndChatVO(
 					rs.getInt("idx"),
 					rs.getInt("host_idx"),
@@ -41,5 +39,14 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 		});
 		
 		return list;
+	}
+
+	@Override
+	public AirdndChatVO insert_chat(AirdndChatVO vo) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		jdbcTemplate.update("insert into AirdndDB.airdnd_chatting(host_idx, user_idx, content, image_url) values(1, 2, ?, ?)", vo.getContent(), vo.getImage_url());
+		
+		return vo;
 	}
 }

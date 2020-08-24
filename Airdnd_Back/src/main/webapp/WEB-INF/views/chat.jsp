@@ -6,6 +6,20 @@
 <head>
 	<meta charset="UTF-8">
 	<title>KIN chatting KIN</title>
+	
+	<script>
+		function send(f) {
+			var content = f.content.value.trim();
+			
+			if(content == "") {
+				alert("뭐라도 쓰렴");
+				return;
+			}
+			
+			f.action = "insert_chat";
+			f.submit();
+		}
+	</script>
 </head>
 <body>
 	Her_k test ㅋㅋㅋvV<br>
@@ -14,6 +28,10 @@
 		<!-- if you pressed the send button or pushed the enter key -->
 		<input type="text" size="100" name="content" onkeypress="if(event.keyCode==13) {send(this.form);}">
 		<input type="button" value="SEND" onclick="send(this.form);">
+		
+		<p width="800" height="500">
+			
+		</p>
 		
 		<table border="1">
 			<tr>
@@ -44,18 +62,20 @@
 			</tr>
 			</c:forEach>
 			
+			<c:forEach var="vo" items="${vo}">
 			<tr>
+				<td>${vo.idx}</td>
+				<td>${vo.host_idx}(추후 수정)</td>
 				<td></td>
+				<td>${vo.user_idx}(추후 수정)</td>
 				<td></td>
+				<td>${vo.content}</td>
+				<td>${vo.image_url}</td>
+				<td>${vo.send_date_time}(추후 수정)</td>
 				<td></td>
-				<td></td>
-				<td></td>
-				<td>하</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td>${vo.msg_hidden_or_not}</td>
 			</tr>
+			</c:forEach>
 		</table>
 	</form>
 </body>
