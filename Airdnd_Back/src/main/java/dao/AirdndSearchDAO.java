@@ -16,42 +16,36 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import vo.AirdndHomeVO;
+import vo.AirdndSearchVO;
 
 
 @Repository("airdndDAO")
-public class AirdndHomeDAO implements AirdndHomeDAOI{
+public class AirdndSearchDAO implements AirdndSearchDAOI{
 
 	@Autowired
 	DataSource dataSource;
 
 	@Override	
-	public List<AirdndHomeVO> select(){
+	public List<AirdndSearchVO> select(){
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		List<AirdndHomeVO> list = jdbcTemplate.query("select * from airdnd_home", new RowMapper<AirdndHomeVO>() {
+		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view", new RowMapper<AirdndSearchVO>() {
 
 			@Override
-			public AirdndHomeVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				// TODO Auto-generated method stub
 	
-				AirdndHomeVO list = new AirdndHomeVO(
-						rs.getInt("home_idx"),
-						rs.getString("place"),
-						rs.getString("title"),
-						rs.getBoolean("isSuperHost"),
-						rs.getString("addr"),
-						rs.getString("lat"),
-						rs.getString("lng"),
+				AirdndSearchVO list = new AirdndSearchVO(
 						rs.getString("sub_title"),
+						rs.getString("title"),
 						rs.getInt("filter_max_person"),
 						rs.getInt("filter_bedroom"),
 						rs.getInt("filter_bed"),
 						rs.getInt("filter_bathroom"),
 						rs.getInt("price"),
-						rs.getString("host_notice"),
-						rs.getString("loc_info"));
+						rs.getFloat("score"),
+						rs.getInt("review_num"));
 
 
 				return list;

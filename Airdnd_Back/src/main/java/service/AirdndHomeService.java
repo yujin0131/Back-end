@@ -8,26 +8,21 @@ import org.springframework.stereotype.Service;
 import dao.AirdndHomeDAO;
 import vo.AirdndHomeVO;
 
-@Service("airdndroomService")
+
+@Service("airdndhomeService")
 public class AirdndHomeService implements AirdndHomeServiceI{
 	
 	@Autowired
-	AirdndHomeDAO airdnd_room_dao;
+	AirdndHomeDAO airdnd_home_dao;
 	
 	@Override
-	public List<AirdndHomeVO> daoserviceconnect(){
+	public List<AirdndHomeVO> homeselect(){
 
-		List<AirdndHomeVO> list = airdnd_room_dao.select();
+		List<AirdndHomeVO> list = airdnd_home_dao.select();
 
 		return list;
 	}
 	
-	@Override
-	public int daoserviceinsert(AirdndHomeVO vo) {
-		
-		int res = airdnd_room_dao.insert(vo);
-		return res;
-		
-	}
+
 
 }
