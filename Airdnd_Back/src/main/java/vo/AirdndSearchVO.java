@@ -2,16 +2,16 @@ package vo;
 
 public class AirdndSearchVO {
 	private String sub_title, title;
-	private int filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num;
-	private float score;
+	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price;
 
 	public AirdndSearchVO() {
 
 	}
 
-	public AirdndSearchVO(String sub_title, String title, int filter_max_person,
-			int filter_bedroom, int filter_bed, int filter_bathroom, int price, float score, int review_num) {
-
+	public AirdndSearchVO(int home_idx, String sub_title, String title, int filter_max_person,
+			int filter_bedroom, int filter_bed, int filter_bathroom, int price) {
+		
+		this.home_idx = home_idx;
 		this.sub_title = sub_title;
 		this.title = title;
 		this.filter_max_person = filter_max_person;
@@ -19,10 +19,16 @@ public class AirdndSearchVO {
 		this.filter_bed = filter_bed;
 		this.filter_bathroom = filter_bathroom;
 		this.price = price;
-		this.score = score;
-		this.review_num = review_num;
 	}
 
+
+	public int getHome_idx() {
+		return home_idx;
+	}
+
+	public void setHome_idx(int home_idx) {
+		this.home_idx = home_idx;
+	}
 
 	public String getSub_title() {
 		return sub_title;
@@ -78,22 +84,6 @@ public class AirdndSearchVO {
 
 	public void setPrice(int price) {
 		this.price = price;
-	}
-
-	public int getReview_num() {
-		return review_num;
-	}
-
-	public void setReview_num(int review_num) {
-		this.review_num = review_num;
-	}
-
-	public float getScore() {
-		return score;
-	}
-
-	public void setScore(float score) {
-		this.score = score;
 	}
 
 
