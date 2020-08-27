@@ -35,14 +35,19 @@
 		<beans:property name="password" value="1111"/>
 	</beans:bean>
 
- 	<beans:bean class="com.airdnd.back.HomeController"></beans:bean> 
- 	<beans:bean class="com.airdnd.back.TestController"></beans:bean>
  	<beans:bean class="com.airdnd.back.ChatController"></beans:bean>
- 	
- 	<beans:bean id="airdndroomService" class="service.AirdndRoomService"></beans:bean>
 	<beans:bean id="airdndChatService" class="service.AirdndChatService"></beans:bean>
-	
- 	<beans:bean id="airdndDAO" class="dao.AirdndRoomDAO"></beans:bean>
  	<beans:bean id="airdndChatDAO" class="dao.AirdndChatDAO"></beans:bean>
+
+ 	<beans:bean class="com.airdnd.back.HomeController"></beans:bean> 
+ 	<beans:bean id="airdndroomService" class="service.AirdndHomeService"></beans:bean>
+ 	<beans:bean id="airdndDAO" class="dao.AirdndHomeDAO"></beans:bean>
+ 	
+ 	<beans:bean class="com.airdnd.back.UserController"></beans:bean>
+ 	<beans:bean id="airdnduserService" class="service.AirdndUserService"></beans:bean>
+ 	<beans:bean id="userDAO" class="dao.AirdndUserDAO"></beans:bean>
+ 	
+ 	
+ 	
 
 </beans:beans>
