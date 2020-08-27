@@ -10,5 +10,5 @@ public interface AirdndUserDAOI {
 
 	int select(String email_check);
 	
-	
+	int insert(AirdndUserVO vo);
 }

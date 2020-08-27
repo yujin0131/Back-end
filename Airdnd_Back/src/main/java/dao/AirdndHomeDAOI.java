@@ -8,6 +8,5 @@ public interface AirdndHomeDAOI {
 	
 	List<AirdndHomeVO> select();
 
-	int insert(AirdndHomeVO vo);
 
 }

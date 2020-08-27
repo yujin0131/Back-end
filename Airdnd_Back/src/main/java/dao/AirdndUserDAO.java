@@ -63,5 +63,21 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 		
 	}
 	
+	@Override	
+	public int insert(AirdndUserVO vo){
+
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		String email = vo.getEmail();
+		String pwd = vo.getPwd();
+		String last_name = vo.getLast_name();
+		String first_name = vo.getFirst_name();
+		String birthday = vo.getBirthday();
+
+		int res = jdbcTemplate.update("insert into airdnd_user (user_idx, email, pwd, last_name, first_name, birthday, signupDate) "
+				+ "VALUES (0, ?, ?, ?, ?, ?, now())", email, pwd, last_name, first_name, birthday);
+		
+		return res;
+	}
+	
 
 }

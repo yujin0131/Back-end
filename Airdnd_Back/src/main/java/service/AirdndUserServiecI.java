@@ -5,8 +5,10 @@ import vo.AirdndUserVO;
 
 public interface AirdndUserServiecI {
 	
-	List<AirdndUserVO> daoserviceconnect();
+	List<AirdndUserVO> userselect();
 
-	int daoservicesearch(String email_check);
+	int emailcheck(String email_check);
+	
+	int signup(AirdndUserVO vo);
 
 }
