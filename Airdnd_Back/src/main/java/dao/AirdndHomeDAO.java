@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import vo.AirdndHomeVO;
 
 
-@Repository("airdndDAO")
+@Repository("homeDAO")
 public class AirdndHomeDAO implements AirdndHomeDAOI{
 
 	@Autowired
@@ -52,7 +52,6 @@ public class AirdndHomeDAO implements AirdndHomeDAOI{
 						rs.getInt("price"),
 						rs.getString("host_notice"),
 						rs.getString("loc_info"));
-
 
 				return list;
 			}

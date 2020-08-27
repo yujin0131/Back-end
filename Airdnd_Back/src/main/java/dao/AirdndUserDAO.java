@@ -45,6 +45,8 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 				return list;
 			}
 		});
+		
+		System.out.println("DAO : " + list.get(0).getUser_idx());
 		return list;
 	}
 
