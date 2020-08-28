@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+	
+	<!-- mybatis SqlSessionFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:config/mybatis/mybatis-config.xml"/>
+    </bean> 
+	
+	<!-- ?useSSL=false&amp;serverTimezone=UTC 이거 추가로 넣음 나중에 아니면 지워라 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="ocom.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://52.79.141.237:3306/AirdndDB?useSSL=false&amp;serverTimezone=UTC"/>
+		<property name="username" value="mysqluser"/>
+		<property name="password" value="1111"/>
+	</bean>
+    
+    	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="airdnd_daoBean" class="dao.AirdndRoomDAO">
+		<property name="sqlSession" ref="sqlSessionBean"/> 
+	</bean>
+	
+</beans>

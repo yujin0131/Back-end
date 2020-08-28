@@ -14,9 +14,6 @@ import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
 
-/**
- * Handles requests for the application home page.
- */
 @Controller
 public class SearchController {
 
@@ -27,10 +24,13 @@ public class SearchController {
 	public String check(Model model) {
 		List<AirdndSearchVO> list = airdndsearchService.searchselect();
 		int size = list.size();
+
 		List<String> home_idx_picture = new ArrayList<String>();
 		
 		for(int i = 0; i < size; i++) {
 			int home_idx = list.get(i).getHome_idx();
+			
+			//home_idx에 해당하는 사진들 검색후 list에 담기
 			List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
 			
 			List<String> picture_arr = new ArrayList<String>();
@@ -39,7 +39,7 @@ public class SearchController {
 				
 				picture_arr.add(picture.get(j).getUrl());
 			}
-
+			//이게 jsp model로 보내려해서 tostring해서 문자열로 보내는데 프론트엔드로 보낼땐 그냥 보내도 될듯,,,배열로 바로
 			home_idx_picture.add(i, picture_arr.toString());
 			
 		}
