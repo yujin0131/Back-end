@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import dao.AirdndUserDAO;
 import vo.AirdndUserVO;
 
-
 @Service("airdnduserService")
 public class AirdndUserService implements AirdndUserServiecI{
 
@@ -16,7 +15,7 @@ public class AirdndUserService implements AirdndUserServiecI{
 	AirdndUserDAO airdnd_user_dao;
 	
 	@Override
-	public List<AirdndUserVO> daoserviceconnect(){
+	public List<AirdndUserVO> userselect(){
 
 		List<AirdndUserVO> list = airdnd_user_dao.select();
 
@@ -24,11 +23,21 @@ public class AirdndUserService implements AirdndUserServiecI{
 	}
 	
 	@Override
-	public int daoserviceinsert(AirdndUserVO vo){
+	public int emailcheck(String email_check) {
+		
+		int res = airdnd_user_dao.select(email_check);
+		
+		return res;
+		
+	}
+	
+	@Override
+	public int signup(AirdndUserVO vo){
 
 		int res = airdnd_user_dao.insert(vo);
 
 		return res;
 	}
 	
+
 }

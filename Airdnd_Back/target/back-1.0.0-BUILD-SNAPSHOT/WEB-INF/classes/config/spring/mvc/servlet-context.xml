@@ -13,8 +13,7 @@
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
-	<!-- DispatcherServlet Context: defines this servlet's request-processing 
-		infrastructure -->
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
@@ -23,18 +22,16 @@
 		up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 
-	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
-		in the /WEB-INF/views directory -->
-	<!-- <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
-		<beans:property name="prefix" value="/WEB-INF/views/" /> <beans:property 
-		name="suffix" value=".jsp" /> </beans:bean> -->
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean> -->
 
 	<!-- <context:component-scan base-package="com.korea.db" /> -->
 
-	<!-- 컨트롤러 수동 생성시 autowired사용 가능하게 하는 속성 -->
+	<!-- 컨트롤러 수동 생성 시 autowired 사용 가능하게 하는 속성 -->
 	<context:annotation-config />
-
-	
 	
 	<!-- HomeController 수동생성 -->
 	<beans:bean class="com.airdnd.back.HomeController">
@@ -45,9 +42,8 @@
 		<beans:property name="airdnd_room_dao" ref="airdnd_daoBean"/>
 	</beans:bean>
 
-
-	
-
- 
+	<beans:bean class="com.airdnd.back.ChatController">
+		<beans:property name="airdnd_chat_dao" ref="airdnd_daoChatBean"/>
+	</beans:bean>
 
 </beans:beans>
