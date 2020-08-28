@@ -7,5 +7,7 @@ import vo.AirdndRoomVO;
 public interface AirdndRoomServiceI {
 	
 	List<AirdndRoomVO> daoserviceconnect();
+	
+	int daoserviceinsert(AirdndRoomVO vo);
 
 }

@@ -8,4 +8,6 @@ public interface AirdndRoomDAOI {
 	
 	List<AirdndRoomVO> select();
 
+	int insert(AirdndRoomVO vo);
+
 }

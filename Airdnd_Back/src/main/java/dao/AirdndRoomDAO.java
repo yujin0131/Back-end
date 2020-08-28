@@ -54,21 +54,19 @@ public class AirdndRoomDAO implements AirdndRoomDAOI{
 		return list;
 		
 
-		/*
-		 * SqlSession sqlSession;
-		 * 
-		 * public void setSqlSession(SqlSession sqlSession) { this.sqlSession =
-		 * sqlSession; }
-		 */
-
-		/*
-		 * @Autowired
-		 * 
-		 * @Qualifier("sqlSessionFactory") SqlSessionFactoryBean
-		 * m_sqlSessionFactoryBean;
-		 */
+	}
+	
+	@Override
+	public int insert(AirdndRoomVO vo){
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		String sql = "insert into airdnd_room_test values(0, ?, ?, ?, ?, ?, ?)";
+		int res = jdbcTemplate.update(sql, vo.getRoom_name(), vo.getRoom_price(), vo.getRoom_score(), vo.getRoom_review_num(), vo.getRoom_type(), vo.getRoom_option());
+		System.out.println("행 삽입 성공");
 
 
-
+		
+		return res;
 	}
 }

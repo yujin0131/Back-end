@@ -21,5 +21,13 @@ public class AirdndRoomService implements AirdndRoomServiceI{
 
 		return list;
 	}
+	
+	@Override
+	public int daoserviceinsert(AirdndRoomVO vo) {
+		
+		int res = airdnd_room_dao.insert(vo);
+		return res;
+		
+	}
 
 }
