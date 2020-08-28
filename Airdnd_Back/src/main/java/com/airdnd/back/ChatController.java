@@ -31,14 +31,16 @@ public class ChatController {
 	
 	@RequestMapping("/insert_chat")
 	public String insert_chat(Model model, AirdndChatVO vo) {
-		//temp
+		//Temp
 		vo.setHost_idx(1);
 		vo.setUser_idx(2);
-		vo.setImage_url(null);
-		//real
+		
+		//Real
 		vo.setContent(request.getParameter("content"));
-		//add later
-		//vo.setImage_url(request.getParameter("image_url"));
+		vo.setImage_url(request.getParameter("image_url"));
+		
+		//Image
+		
 		
 		airdndChatService.daoserviceinsert(vo);
 		model.addAttribute("vo", vo);

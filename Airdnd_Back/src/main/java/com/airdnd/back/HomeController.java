@@ -1,42 +1,30 @@
 package com.airdnd.back;
 
-import java.io.Console;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import common.Common;
+import service.AirdndHomeService;
+import vo.AirdndHomeVO;
 
-/**
- * Handles requests for the application home page.
- */
+//재은언니,,,여기는 다시 하셔야 해용 일단 틀만 해뒀습니당..조금만 바꾸면 되긴 하는데 vo랑 dao가 많이 바뀌어요!! 
+//지금은 그냥 airdnd_home 테이블 했었는데 테이블 여러개로 나눈것들 합쳐서 하는 view하나 생성해서 그걸로 다시 vo,dao생성해서 바꾸면 됩니당!!
 @Controller
 public class HomeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	@Autowired
+	AirdndHomeService airdndhomeService;
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
+	@RequestMapping("/home")
+	public String check(Model model) {
 		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		System.out.println("워크맨");
+		List<AirdndHomeVO> list = airdndhomeService.homeselect();
+		model.addAttribute("list", list);
+
 		return Common.VIEW_PATH + "home.jsp";
 	}
-	
 }

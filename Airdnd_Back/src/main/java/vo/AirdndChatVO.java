@@ -10,6 +10,7 @@ public class AirdndChatVO {
 	//not DB column
 	private String host_name, user_name;
 	private MultipartFile host_profile, user_profile, image;
+	private byte[] image_url_temp;
 	
 	public AirdndChatVO() {
 	}
@@ -102,5 +103,11 @@ public class AirdndChatVO {
 	}
 	public void setImage(MultipartFile image) {
 		this.image = image;
+	}
+	public byte[] getImage_url_temp() {
+		return image_url_temp;
+	}
+	public void setImage_url_temp(byte[] image_url_temp) {
+		this.image_url_temp = image_url_temp;
 	}
 }
