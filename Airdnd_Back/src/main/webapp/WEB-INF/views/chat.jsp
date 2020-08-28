@@ -27,10 +27,13 @@
 	<form>
 		<!-- if you pressed the send button or pushed the enter key -->
 		<input type="text" size="100" name="content" onkeypress="if(event.keyCode==13) {send(this.form);}">
-		<input type="button" value="SEND" onclick="send(this.form);">
+		<input type="button" value="SEND" onclick="send(this.form);"><br>
+		<input type="file" name="image_url">
 		
 		<p width="800" height="500">
-			
+			<c:forEach var="list" items="${list}">
+				${list.image_url}
+			</c:forEach>
 		</p>
 		
 		<table border="1">
