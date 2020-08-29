@@ -7,7 +7,7 @@ import vo.AirdndSearchVO;
 
 public interface AirdndSearchServiceI {
 	
-	List<AirdndSearchVO> searchselect();
+	List<AirdndSearchVO> searchselect(String place);
 	
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 	

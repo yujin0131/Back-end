@@ -28,11 +28,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 	DataSource dataSource;
 
 	@Override   
-	public List<AirdndSearchVO> select(){
+	public List<AirdndSearchVO> select(String place){
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view", new RowMapper<AirdndSearchVO>() {
+		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "'", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -46,7 +46,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 						rs.getInt("filter_bedroom"),
 						rs.getInt("filter_bed"),
 						rs.getInt("filter_bathroom"),
-						rs.getInt("price"));
+						rs.getInt("price"),
+						rs.getDouble("rating"),
+						rs.getInt("review_num"),
+						rs.getString("lat"),
+						rs.getString("lng"));
 
 
 				return list;
