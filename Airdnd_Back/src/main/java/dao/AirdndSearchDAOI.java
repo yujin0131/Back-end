@@ -11,5 +11,4 @@ public interface AirdndSearchDAOI {
 
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 
-	List<AirdndSearchVO> unitpriceselect(String place);
 }

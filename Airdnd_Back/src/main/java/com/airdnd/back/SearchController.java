@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
-import vo.AirdndSearchTotalVO;
 import vo.AirdndSearchVO;
 
 @Controller
@@ -28,7 +27,7 @@ public class SearchController {
 	
 	@RequestMapping("/search" )
 	public String check() {
-		String place = "서울";
+		String place = "괌";
 		String user_idx = "1";
 		int page = 0;
 		
@@ -75,17 +74,26 @@ public class SearchController {
 
 		res.put("homes", homes);
 		
-		int unit_price = 0;
-		List<AirdndSearchVO> unit = airdndsearchService.unitpriceselect(place);
-		for(int i = 0; i < unit.size(); i++) {
+		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(place);
+		List<Integer> price_array = new ArrayList();
+		int start = 0;
+	    int end = 2;
+	    int save_num = 0;
+	    for(int i = 0; i < 50; i++) {
+	       for(AirdndSearchVO price : pricelist) {
+	          if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
+	             save_num++;
+	          }
+	       }
+	       price_array.add(save_num);
+	       start += 2;
+	       end += 2;
+	       save_num = 0;
+	    }
 
-			unit_price += unit.get(i).getPrice();
-		}
-		
-		unit_price = unit_price / unit.size() ;
-		System.out.println("unit_price : " + unit_price);
-		
-		List<AirdndSearchTotalVO> total = airdndsearchService.searchtotalselect(place);
+	    res.put("priceArray", price_array);
+
+		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(place);
 		res.put("dataTotal", total.get(0).getData_total());
 		res.put("averagePrice", total.get(0).getAverage_price());
 		System.out.println("최종결과 : " + res.toString());
@@ -117,8 +125,11 @@ public class SearchController {
 		int page = 0;
 		
 		JSONObject res = new JSONObject();
+		
+		//search_list : 페이지별 숙소 리스트
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page);
 		int size = search_list.size();
+		
 		JSONObject homes = new JSONObject();
 		
 		for(int i = 0; i < size; i++) {
@@ -126,6 +137,7 @@ public class SearchController {
 			
 			List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
 			List<String> picture_arr = new ArrayList<String>();
+			
 			Map<Object, Object> homes_info = new HashMap<Object, Object>();
 			Map<String, Object> latlng = new HashMap<String, Object>();
 			
@@ -157,7 +169,28 @@ public class SearchController {
 		}
 		res.put("homes", homes);
 		
-		List<AirdndSearchTotalVO> total = airdndsearchService.searchtotalselect(location);
+		//가격 분포도
+		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
+		List<Integer> price_array = new ArrayList();
+		int start = 0;
+	    int end = 2;
+	    int save_num = 0;
+	    for(int i = 0; i < 50; i++) {
+	       for(AirdndSearchVO price : pricelist) {
+	          if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
+	             save_num++;
+	          }
+	       }
+	       price_array.add(save_num);
+	       start += 2;
+	       end += 2;
+	       save_num = 0;
+	    }
+
+	    res.put("priceArray", price_array);
+		
+	    //전체 숙소 데이터 개수, 1박 평균 가격
+		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(location);
 		res.put("dataTotal", total.get(0).getData_total());
 		res.put("averagePrice", total.get(0).getAverage_price());
 

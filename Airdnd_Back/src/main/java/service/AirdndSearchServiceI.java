@@ -3,7 +3,6 @@ package service;
 import java.util.List;
 
 import vo.AirdndHomePictureVO;
-import vo.AirdndSearchTotalVO;
 import vo.AirdndSearchVO;
 
 public interface AirdndSearchServiceI {
@@ -12,8 +11,6 @@ public interface AirdndSearchServiceI {
 	
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 	
-	List<AirdndSearchTotalVO> searchtotalselect(String place);
-	
-	List<AirdndSearchVO> unitpriceselect(String place);
+	List<AirdndSearchVO> searchtotalselect(String place);
 	
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AirdndSearchVO {
 	private String sub_title, title, lat, lng, place;
-	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num;
+	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num, average_price, data_total;
 	private double rating;
 	private boolean isSuperHost;
 	private List<String> url;
@@ -35,6 +35,28 @@ public class AirdndSearchVO {
 	public AirdndSearchVO(int price) {
 		this.price = price;
 	}
+	
+	public AirdndSearchVO(int average_price, int data_total) {
+		this.average_price = average_price;
+		this.data_total = data_total;
+	}
+	
+	public int getAverage_price() {
+		return average_price;
+	}
+
+	public void setAverage_price(int average_price) {
+		this.average_price = average_price;
+	}
+
+	public int getData_total() {
+		return data_total;
+	}
+
+	public void setData_total(int data_total) {
+		this.data_total = data_total;
+	}
+
 	public boolean getIsSuperHost() {
 		return isSuperHost;
 	}
