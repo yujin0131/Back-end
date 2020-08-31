@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import dao.AirdndSearchDAO;
 import vo.AirdndHomePictureVO;
-import vo.AirdndHomeVO;
 import vo.AirdndSearchVO;
 
 @Service("airdndsearchService")
@@ -17,9 +16,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	AirdndSearchDAO airdnd_search_dao;
 
 	@Override
-	public List<AirdndSearchVO> searchselect(String place){
+	public List<AirdndSearchVO> searchselect(String place, int page){
 
-		List<AirdndSearchVO> list = airdnd_search_dao.select(place);
+		List<AirdndSearchVO> list = airdnd_search_dao.select(place, page);
 
 		return list;
 	}
@@ -29,6 +28,20 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 
 		List<AirdndHomePictureVO> list = airdnd_search_dao.pictureselect(home_idx);
 
+		return list;
+	}
+
+	@Override
+	public List<AirdndSearchVO> searchtotalselect(String place){
+
+		List<AirdndSearchVO> list = airdnd_search_dao.totalselect(place);
+
+		return list;
+	}
+
+	public List<AirdndSearchVO> unitpriceselect(String place) {
+		
+		List<AirdndSearchVO> list = airdnd_search_dao.unitpriceselect(place);
 		return list;
 	}
 

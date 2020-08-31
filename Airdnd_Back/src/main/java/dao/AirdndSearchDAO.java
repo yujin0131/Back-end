@@ -6,20 +6,13 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import vo.AirdndHomePictureVO;
-import vo.AirdndHomeVO;
 import vo.AirdndSearchVO;
-import vo.AirdndUserVO;
 
 @Repository("searchDAO")
 public class AirdndSearchDAO implements AirdndSearchDAOI{
@@ -28,11 +21,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 	DataSource dataSource;
 
 	@Override   
-	public List<AirdndSearchVO> select(String place){
-
+	public List<AirdndSearchVO> select(String place, int page){
+		page = page * 20;
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "'", new RowMapper<AirdndSearchVO>() {
+		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -40,6 +33,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 
 				AirdndSearchVO list = new AirdndSearchVO(
 						rs.getInt("home_idx"),
+						rs.getBoolean("isSuperHost"),
 						rs.getString("sub_title"),
 						rs.getString("title"),
 						rs.getInt("filter_max_person"),
@@ -86,4 +80,43 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		return list;
 	}
 
+	public List<AirdndSearchVO> totalselect(String place) {
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+		List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + place + "' Group by '" + place + "'", new RowMapper<AirdndSearchVO>() {
+
+			@Override
+			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				// TODO Auto-generated method stub
+
+				AirdndSearchVO list = new AirdndSearchVO(
+						rs.getInt("average_price"),
+						rs.getInt("data_total"));
+
+				return list;
+			}
+
+		});
+		return list;
+	}
+
+	public List<AirdndSearchVO> unitpriceselect(String place) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+		List<AirdndSearchVO> list = jdbcTemplate.query("select price from airdnd_search_view where place = '" + place + "'", new RowMapper<AirdndSearchVO>() {
+
+			@Override
+			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				// TODO Auto-generated method stub
+
+				AirdndSearchVO list = new AirdndSearchVO(
+						rs.getInt("price"));
+
+				return list;
+			}
+
+		});
+		return list;
+	}
 }

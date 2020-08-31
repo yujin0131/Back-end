@@ -4,19 +4,21 @@ import java.util.List;
 
 public class AirdndSearchVO {
 	private String sub_title, title, lat, lng, place;
-	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num;
+	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num, average_price, data_total;
 	private double rating;
+	private boolean isSuperHost;
 	private List<String> url;
 	
 	public AirdndSearchVO() {
 
 	}
 
-	public AirdndSearchVO(int home_idx, String sub_title, String title, int filter_max_person,
+	public AirdndSearchVO(int home_idx, boolean isSuperHost, String sub_title, String title, int filter_max_person,
 			int filter_bedroom, int filter_bed, int filter_bathroom, int price, double rating, int review_num,
 			String lat, String lng) {
 
 		this.home_idx = home_idx;
+		this.isSuperHost = isSuperHost;
 		this.sub_title = sub_title;
 		this.title = title;
 		this.filter_max_person = filter_max_person;
@@ -28,6 +30,39 @@ public class AirdndSearchVO {
 		this.review_num = review_num;
 		this.lat = lat;
 		this.lng = lng;
+	}
+
+	public AirdndSearchVO(int price) {
+		this.price = price;
+	}
+	
+	public AirdndSearchVO(int average_price, int data_total) {
+		this.average_price = average_price;
+		this.data_total = data_total;
+	}
+	
+	public int getAverage_price() {
+		return average_price;
+	}
+
+	public void setAverage_price(int average_price) {
+		this.average_price = average_price;
+	}
+
+	public int getData_total() {
+		return data_total;
+	}
+
+	public void setData_total(int data_total) {
+		this.data_total = data_total;
+	}
+
+	public boolean getIsSuperHost() {
+		return isSuperHost;
+	}
+
+	public void setSuperHost(boolean isSuperHost) {
+		this.isSuperHost = isSuperHost;
 	}
 
 	public List<String> getUrl() {

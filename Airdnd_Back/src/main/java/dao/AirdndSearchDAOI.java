@@ -7,7 +7,7 @@ import vo.AirdndSearchVO;
 
 public interface AirdndSearchDAOI {
 
-	List<AirdndSearchVO> select(String place);
+	List<AirdndSearchVO> select(String place, int page);
 
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 
