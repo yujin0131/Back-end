@@ -1,23 +1,20 @@
 package com.airdnd.back;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
-import org.springframework.http.MediaType;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.Common;
 import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
@@ -31,7 +28,10 @@ public class SearchController {
 	@RequestMapping("/search" )
 	public String check() {
 		String place = "서울";
+		String user_idx = "1";
+		String page = "1";
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(place);
+		//List<AirdndBookmarkVO> user_bookmark = (user_idx);
 		int size = search_list.size();
 		System.out.println("size : " + size);
 		JSONObject jsonObject = new JSONObject();
@@ -43,6 +43,7 @@ public class SearchController {
 			
 			List<String> picture_arr = new ArrayList<String>();
 			Map<Object, Object> javaObject = new HashMap<Object, Object>();
+			Map<String, Object> latlng = new HashMap<String, Object>();
 
 			for(int j = 0; j < picture.size(); j++) {
 				
@@ -50,37 +51,61 @@ public class SearchController {
 			}
 		
 			search_list.get(i).setUrl(picture_arr);
+			latlng.put("lat", search_list.get(i).getLat());
+			latlng.put("lng", search_list.get(i).getLng());
 			
-			javaObject.put("place", search_list.get(i).getPlace());
-			javaObject.put("home_idx", search_list.get(i).getHome_idx());
-			javaObject.put("sub_title", search_list.get(i).getSub_title());
+			System.out.println("picture size : " + search_list.get(i).getUrl().size());
+			
+			javaObject.put("homeId", search_list.get(i).getHome_idx());
+			javaObject.put("isSuperhost", search_list.get(i).getIsSuperHost());
+			javaObject.put("isBookmarked", "아직안받아옴");
+			javaObject.put("imageArray", search_list.get(i).getUrl());
+			javaObject.put("imageCount", search_list.get(i).getUrl().size());
+			javaObject.put("subTitle", search_list.get(i).getSub_title());
 			javaObject.put("title", search_list.get(i).getTitle());
-			javaObject.put("f_per", search_list.get(i).getFilter_max_person());
-			javaObject.put("f_broom", search_list.get(i).getFilter_bedroom());
-			javaObject.put("f_bed", search_list.get(i).getFilter_bed());
-			javaObject.put("f_bath", search_list.get(i).getFilter_bathroom());
-			javaObject.put("price", search_list.get(i).getPrice());
+			javaObject.put("feature", "최대 인원 " + search_list.get(i).getFilter_max_person() + "명 . 침실 " + search_list.get(i).getFilter_bedroom() + 
+					"개 . 침대 " + search_list.get(i).getFilter_bed() + "개 . 욕실 " + search_list.get(i).getFilter_bathroom() + "개");
 			javaObject.put("rating", search_list.get(i).getRating());
-			javaObject.put("review_num", search_list.get(i).getReview_num());
-			javaObject.put("lat", search_list.get(i).getLat());
-			javaObject.put("lng", search_list.get(i).getLng());
-			javaObject.put("picture", search_list.get(i).getUrl());
-			System.out.println("json_idx : " + javaObject.get("home_idx").toString());
-			System.out.println(" ");
-			System.out.println("inner : " + javaObject.toString());
+			javaObject.put("reviewCount", search_list.get(i).getReview_num());
+			javaObject.put("price", search_list.get(i).getPrice());
+			javaObject.put("location", latlng.toString());
+
 			jsonObject.put(i, javaObject);
 			System.out.println("json : " + jsonObject.toString());
 		}
 		System.out.println("outer : " + jsonObject.toString());
-		return jsonObject.toString();
+		String result = "jsonObject.toString()";
+		try {
+			result = URLEncoder.encode(result, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
-	@RequestMapping(value="/initialState", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,
-			consumes = MediaType.APPLICATION_JSON_VALUE )
+	@RequestMapping(value="/initialState/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/adults/{adults}", method=RequestMethod.GET )
 	@ResponseBody			// 어디검색, 몇박며칠, 인원수...
-	public String check(@PathVariable String place, @PathVariable String checkIn, @PathVariable String checkOut, @PathVariable int adults) {
+	public String check(@PathVariable String location, @PathVariable String checkIn, @PathVariable String checkOut, @PathVariable int adult) {
+
+		try {
+			location = URLEncoder.encode(location, "utf-8");
+			checkIn = URLEncoder.encode(checkIn, "utf-8");
+			checkOut = URLEncoder.encode(checkOut, "utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
-		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(place);
+		if(location.equals("guam")) {
+			location = "괌";
+		}else if(location.equals("jeju")) {
+			location = "제주도";
+		}else {
+			location = "서울";
+		}
+		
+		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location);
 		int size = search_list.size();
 		JSONObject jsonObject = new JSONObject();
 		
@@ -90,6 +115,7 @@ public class SearchController {
 			List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
 			List<String> picture_arr = new ArrayList<String>();
 			Map<Object, Object> javaObject = new HashMap<Object, Object>();
+			Map<String, Object> latlng = new HashMap<String, Object>();
 			
 			for(int j = 0; j < picture.size(); j++) {
 				picture_arr.add(picture.get(j).getUrl());
@@ -97,24 +123,34 @@ public class SearchController {
 		
 			search_list.get(i).setUrl(picture_arr);
 			
-			javaObject.put("place", search_list.get(i).getPlace());
-			javaObject.put("home_idx", search_list.get(i).getHome_idx());
-			javaObject.put("sub_title", search_list.get(i).getSub_title());
+			latlng.put("lat", search_list.get(i).getLat());
+			latlng.put("lng", search_list.get(i).getLng());
+			
+			javaObject.put("homeId", search_list.get(i).getHome_idx());
+			javaObject.put("isSuperhost", search_list.get(i).getIsSuperHost());
+			javaObject.put("isBookmarked", "아직안받아옴");
+			javaObject.put("imageArray", search_list.get(i).getUrl());
+			javaObject.put("imageCount", search_list.get(i).getUrl().size());
+			javaObject.put("subTitle", search_list.get(i).getSub_title());
 			javaObject.put("title", search_list.get(i).getTitle());
-			javaObject.put("f_per", search_list.get(i).getFilter_max_person());
-			javaObject.put("f_broom", search_list.get(i).getFilter_bedroom());
-			javaObject.put("f_bed", search_list.get(i).getFilter_bed());
-			javaObject.put("f_bath", search_list.get(i).getFilter_bathroom());
-			javaObject.put("price", search_list.get(i).getPrice());
+			javaObject.put("feature", "최대 인원 " + search_list.get(i).getFilter_max_person() + "명 . 침실 " + search_list.get(i).getFilter_bedroom() + 
+					"개 . 침대 " + search_list.get(i).getFilter_bed() + "개 . 욕실 " + search_list.get(i).getFilter_bathroom() + "개");
 			javaObject.put("rating", search_list.get(i).getRating());
-			javaObject.put("review_num", search_list.get(i).getReview_num());
-			javaObject.put("lat", search_list.get(i).getLat());
-			javaObject.put("lng", search_list.get(i).getLng());
-			javaObject.put("picture", search_list.get(i).getUrl());
+			javaObject.put("reviewCount", search_list.get(i).getReview_num());
+			javaObject.put("price", search_list.get(i).getPrice());
+			javaObject.put("location", latlng.toString());
 			
 			jsonObject.put(i, javaObject);
+			System.out.println("json : " + jsonObject.toString());
 		}
 
-		return jsonObject.toString();
+		String result = jsonObject.toString();
+		try {
+			result = URLEncoder.encode(result, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

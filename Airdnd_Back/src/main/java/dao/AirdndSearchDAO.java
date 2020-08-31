@@ -40,6 +40,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 
 				AirdndSearchVO list = new AirdndSearchVO(
 						rs.getInt("home_idx"),
+						rs.getBoolean("isSuperHost"),
 						rs.getString("sub_title"),
 						rs.getString("title"),
 						rs.getInt("filter_max_person"),

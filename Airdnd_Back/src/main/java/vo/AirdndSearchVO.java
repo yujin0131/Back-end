@@ -6,17 +6,19 @@ public class AirdndSearchVO {
 	private String sub_title, title, lat, lng, place;
 	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num;
 	private double rating;
+	private boolean isSuperHost;
 	private List<String> url;
 	
 	public AirdndSearchVO() {
 
 	}
 
-	public AirdndSearchVO(int home_idx, String sub_title, String title, int filter_max_person,
+	public AirdndSearchVO(int home_idx, boolean isSuperHost, String sub_title, String title, int filter_max_person,
 			int filter_bedroom, int filter_bed, int filter_bathroom, int price, double rating, int review_num,
 			String lat, String lng) {
 
 		this.home_idx = home_idx;
+		this.isSuperHost = isSuperHost;
 		this.sub_title = sub_title;
 		this.title = title;
 		this.filter_max_person = filter_max_person;
@@ -28,6 +30,14 @@ public class AirdndSearchVO {
 		this.review_num = review_num;
 		this.lat = lat;
 		this.lng = lng;
+	}
+
+	public boolean getIsSuperHost() {
+		return isSuperHost;
+	}
+
+	public void setSuperHost(boolean isSuperHost) {
+		this.isSuperHost = isSuperHost;
 	}
 
 	public List<String> getUrl() {
