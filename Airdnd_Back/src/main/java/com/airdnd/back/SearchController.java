@@ -45,7 +45,28 @@ public class SearchController {
 		}
 		model.addAttribute("list", list);
 		model.addAttribute("arr", home_idx_picture);
-
+		
+		
+		/*List<AirdndSearchVO> pricelist = new ArrayList(); //여기에 불러온 가격 넣어주기
+		List<Integer> result = new ArrayList();
+		int start = 0;
+		int end = 2;
+		int save_num = 0;
+		for(int i = 0; i < 50; i++) {
+			for(AirdndSearchVO price : pricelist) {
+				if(start < (int)price.getPrice()/10000 && end >= (int)price.getPrice()/10000) {
+					save_num++;
+				}
+			}
+			result.add(save_num);
+			start += 2;
+			end += 2;
+			save_num = 0;*/
+		//}//후에 return result;
+		
+		
+		
+		
 		return Common.VIEW_PATH + "search.jsp";
 	}
 }
