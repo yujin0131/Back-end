@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import dao.AirdndSearchDAO;
 import vo.AirdndHomePictureVO;
-import vo.AirdndHomeVO;
-import vo.AirdndSearchTotalVO;
 import vo.AirdndSearchVO;
 
 @Service("airdndsearchService")
@@ -34,9 +32,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	}
 
 	@Override
-	public List<AirdndSearchTotalVO> searchtotalselect(String place){
+	public List<AirdndSearchVO> searchtotalselect(String place){
 
-		List<AirdndSearchTotalVO> list = airdnd_search_dao.totalselect(place);
+		List<AirdndSearchVO> list = airdnd_search_dao.totalselect(place);
 
 		return list;
 	}
