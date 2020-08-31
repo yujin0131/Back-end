@@ -39,15 +39,14 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 				// TODO Auto-generated method stub
 
 				AirdndSearchVO list = new AirdndSearchVO(
-						rs.getInt("home_idx"),
-						rs.getString("sub_title"),
-						rs.getString("title"),
-						rs.getInt("filter_max_person"),
-						rs.getInt("filter_bedroom"),
-						rs.getInt("filter_bed"),
-						rs.getInt("filter_bathroom"),
-						rs.getInt("price"));
-
+					rs.getInt("home_idx"),
+					rs.getString("sub_title"),
+					rs.getString("title"),
+					rs.getInt("filter_max_person"),
+					rs.getInt("filter_bedroom"),
+					rs.getInt("filter_bed"),
+					rs.getInt("filter_bathroom"),
+					rs.getInt("price"));
 
 				return list;
 			}
