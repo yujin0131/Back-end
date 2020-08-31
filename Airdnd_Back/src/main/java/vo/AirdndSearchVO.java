@@ -10,7 +10,6 @@ public class AirdndSearchVO {
 
 	public AirdndSearchVO(int home_idx, String sub_title, String title, int filter_max_person,
 			int filter_bedroom, int filter_bed, int filter_bathroom, int price) {
-		
 		this.home_idx = home_idx;
 		this.sub_title = sub_title;
 		this.title = title;
