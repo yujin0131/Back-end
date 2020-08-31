@@ -24,36 +24,36 @@ public class SearchController {
 
 	@Autowired
 	AirdndSearchService airdndsearchService;
-	
+
 	@RequestMapping("/search" )
 	public String check() {
 		String place = "괌";
 		String user_idx = "1";
 		int page = 0;
-		
+
 		JSONObject res = new JSONObject();
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(place, page);
 		int size = search_list.size();
 
 		JSONObject homes = new JSONObject();
-		
+
 		for(int i = 0; i < size; i++) {
 			int home_idx = search_list.get(i).getHome_idx();
 			List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
-			
+
 			List<String> picture_arr = new ArrayList<String>();
 			Map<Object, Object> homes_info = new HashMap<Object, Object>();
 			Map<String, Object> latlng = new HashMap<String, Object>();
 
 			for(int j = 0; j < picture.size(); j++) {
-				
+
 				picture_arr.add(picture.get(j).getUrl());
 			}
-		
+
 			search_list.get(i).setUrl(picture_arr);
 			latlng.put("lat", search_list.get(i).getLat());
 			latlng.put("lng", search_list.get(i).getLng());
-			
+
 			homes_info.put("homeId", search_list.get(i).getHome_idx());
 			homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
 			homes_info.put("isBookmarked", "아직안받아옴");
@@ -73,31 +73,31 @@ public class SearchController {
 		}
 
 		res.put("homes", homes);
-		
+
 		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(place);
 		List<Integer> price_array = new ArrayList();
 		int start = 0;
-	    int end = 2;
-	    int save_num = 0;
-	    for(int i = 0; i < 50; i++) {
-	       for(AirdndSearchVO price : pricelist) {
-	          if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
-	             save_num++;
-	          }
-	       }
-	       price_array.add(save_num);
-	       start += 2;
-	       end += 2;
-	       save_num = 0;
-	    }
+		int end = 2;
+		int save_num = 0;
+		for(int i = 0; i < 50; i++) {
+			for(AirdndSearchVO price : pricelist) {
+				if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
+					save_num++;
+				}
+			}
+			price_array.add(save_num);
+			start += 2;
+			end += 2;
+			save_num = 0;
+		}
 
-	    res.put("priceArray", price_array);
+		res.put("priceArray", price_array);
 
 		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(place);
 		res.put("dataTotal", total.get(0).getData_total());
 		res.put("averagePrice", total.get(0).getAverage_price());
 		System.out.println("최종결과 : " + res.toString());
-		
+
 		return res.toString();
 	}
 
@@ -113,7 +113,7 @@ public class SearchController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		if(location.equals("guam")) {
 			location = "괌";
 		}else if(location.equals("jeju")) {
@@ -121,35 +121,35 @@ public class SearchController {
 		}else {
 			location = "서울";
 		}
-		
+
 		int page = 0;
-		
+
 		JSONObject res = new JSONObject();
-		
+
 		//search_list : 페이지별 숙소 리스트
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page);
 		int size = search_list.size();
-		
+
 		JSONObject homes = new JSONObject();
-		
+
 		for(int i = 0; i < size; i++) {
 			int home_idx = search_list.get(i).getHome_idx();
-			
+
 			List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
 			List<String> picture_arr = new ArrayList<String>();
-			
+
 			Map<Object, Object> homes_info = new HashMap<Object, Object>();
 			Map<String, Object> latlng = new HashMap<String, Object>();
-			
+
 			for(int j = 0; j < picture.size(); j++) {
 				picture_arr.add(picture.get(j).getUrl());
 			}
-		
+
 			search_list.get(i).setUrl(picture_arr);
-			
+
 			latlng.put("lat", search_list.get(i).getLat());
 			latlng.put("lng", search_list.get(i).getLng());
-			
+
 			homes_info.put("homeId", search_list.get(i).getHome_idx());
 			homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
 			homes_info.put("isBookmarked", "아직안받아옴");
@@ -163,33 +163,33 @@ public class SearchController {
 			homes_info.put("reviewCount", search_list.get(i).getReview_num());
 			homes_info.put("price", search_list.get(i).getPrice());
 			homes_info.put("location", latlng.toString());
-			
+
 			homes.put(i, homes_info);
 			System.out.println("json : " + homes.toString());
 		}
 		res.put("homes", homes);
-		
+
 		//가격 분포도
 		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
 		List<Integer> price_array = new ArrayList();
 		int start = 0;
-	    int end = 2;
-	    int save_num = 0;
-	    for(int i = 0; i < 50; i++) {
-	       for(AirdndSearchVO price : pricelist) {
-	          if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
-	             save_num++;
-	          }
-	       }
-	       price_array.add(save_num);
-	       start += 2;
-	       end += 2;
-	       save_num = 0;
-	    }
+		int end = 2;
+		int save_num = 0;
+		for(int i = 0; i < 50; i++) {
+			for(AirdndSearchVO price : pricelist) {
+				if(start <= (int)price.getPrice()/10000 && end > (int)price.getPrice()/10000) {
+					save_num++;
+				}
+			}
+			price_array.add(save_num);
+			start += 2;
+			end += 2;
+			save_num = 0;
+		}
 
-	    res.put("priceArray", price_array);
-		
-	    //전체 숙소 데이터 개수, 1박 평균 가격
+		res.put("priceArray", price_array);
+
+		//전체 숙소 데이터 개수, 1박 평균 가격
 		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(location);
 		res.put("dataTotal", total.get(0).getData_total());
 		res.put("averagePrice", total.get(0).getAverage_price());
