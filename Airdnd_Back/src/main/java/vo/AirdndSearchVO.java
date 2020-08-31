@@ -1,17 +1,24 @@
 package vo;
 
-public class AirdndSearchVO {
-	private String sub_title, title;
-	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price;
+import java.util.List;
 
+public class AirdndSearchVO {
+	private String sub_title, title, lat, lng, place;
+	private int home_idx, filter_max_person, filter_bedroom, filter_bed, filter_bathroom, price, review_num;
+	private double rating;
+	private boolean isSuperHost;
+	private List<String> url;
+	
 	public AirdndSearchVO() {
 
 	}
 
-	public AirdndSearchVO(int home_idx, String sub_title, String title, int filter_max_person,
-			int filter_bedroom, int filter_bed, int filter_bathroom, int price) {
-		
+	public AirdndSearchVO(int home_idx, boolean isSuperHost, String sub_title, String title, int filter_max_person,
+			int filter_bedroom, int filter_bed, int filter_bathroom, int price, double rating, int review_num,
+			String lat, String lng) {
+
 		this.home_idx = home_idx;
+		this.isSuperHost = isSuperHost;
 		this.sub_title = sub_title;
 		this.title = title;
 		this.filter_max_person = filter_max_person;
@@ -19,8 +26,70 @@ public class AirdndSearchVO {
 		this.filter_bed = filter_bed;
 		this.filter_bathroom = filter_bathroom;
 		this.price = price;
+		this.rating = rating;
+		this.review_num = review_num;
+		this.lat = lat;
+		this.lng = lng;
 	}
 
+	public AirdndSearchVO(int price) {
+		this.price = price;
+	}
+	public boolean getIsSuperHost() {
+		return isSuperHost;
+	}
+
+	public void setSuperHost(boolean isSuperHost) {
+		this.isSuperHost = isSuperHost;
+	}
+
+	public List<String> getUrl() {
+		return url;
+	}
+
+	public void setUrl(List<String> url) {
+		this.url = url;
+	}
+
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+
+	public String getLng() {
+		return lng;
+	}
+
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public int getReview_num() {
+		return review_num;
+	}
+
+	public void setReview_num(int review_num) {
+		this.review_num = review_num;
+	}
+
+	public double getRating() {
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
 
 	public int getHome_idx() {
 		return home_idx;
