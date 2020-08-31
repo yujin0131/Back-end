@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
+import vo.AirdndSearchTotalVO;
 import vo.AirdndSearchVO;
 import vo.AirdndUserVO;
 
@@ -28,11 +29,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 	DataSource dataSource;
 
 	@Override   
-	public List<AirdndSearchVO> select(String place){
-
+	public List<AirdndSearchVO> select(String place, int page){
+		page = page * 20;
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "'", new RowMapper<AirdndSearchVO>() {
+		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -87,4 +88,43 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		return list;
 	}
 
+	public List<AirdndSearchTotalVO> totalselect(String place) {
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+		List<AirdndSearchTotalVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + place + "' Group by '" + place + "'", new RowMapper<AirdndSearchTotalVO>() {
+
+			@Override
+			public AirdndSearchTotalVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				// TODO Auto-generated method stub
+
+				AirdndSearchTotalVO list = new AirdndSearchTotalVO(
+						rs.getInt("average_price"),
+						rs.getInt("data_total"));
+
+				return list;
+			}
+
+		});
+		return list;
+	}
+
+	public List<AirdndSearchVO> unitpriceselect(String place) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+		List<AirdndSearchVO> list = jdbcTemplate.query("select price from airdnd_search_view where place = '" + place + "'", new RowMapper<AirdndSearchVO>() {
+
+			@Override
+			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				// TODO Auto-generated method stub
+
+				AirdndSearchVO list = new AirdndSearchVO(
+						rs.getInt("price"));
+
+				return list;
+			}
+
+		});
+		return list;
+	}
 }

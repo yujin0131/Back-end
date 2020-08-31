@@ -32,6 +32,9 @@ public class AirdndSearchVO {
 		this.lng = lng;
 	}
 
+	public AirdndSearchVO(int price) {
+		this.price = price;
+	}
 	public boolean getIsSuperHost() {
 		return isSuperHost;
 	}
