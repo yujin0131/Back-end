@@ -78,7 +78,7 @@ public class UserController {
 		return Common.VIEW_PATH + "user.jsp";
 	}
 
-	@RequestMapping("/autocomplete/{user_input}")
+	@RequestMapping(value="/autocomplete/{user_input}", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public List<String> check2(@PathVariable String user_input) {
 
@@ -132,7 +132,7 @@ public class UserController {
 		return result;
 	}
 
-	@RequestMapping("/autocomplete/json/{user_input}")
+	@RequestMapping(value="/autocomplete/json/{user_input}", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String check3(@PathVariable String user_input) {
 
