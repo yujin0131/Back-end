@@ -7,6 +7,7 @@ public class AirdndHomePictureVO {
 	public AirdndHomePictureVO() {
 
 	}
+	
 	public AirdndHomePictureVO(int idx, int home_idx, String url) {
 		this.idx=idx;
 		this.home_idx=home_idx;
