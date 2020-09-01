@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
+import vo.AirdndUserVO;
 
 @Repository("searchDAO")
 public class AirdndSearchDAO implements AirdndSearchDAOI{
@@ -119,4 +120,46 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		});
 		return list;
 	}
+	
+	@Override   
+	   public List<AirdndSearchVO> facilityList(String place){
+
+	      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+	      List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view where place='"+place+"') group by facility", new RowMapper<AirdndSearchVO>() {
+
+	         @Override
+	         public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	            // TODO Auto-generated method stub
+
+	            AirdndSearchVO list = new AirdndSearchVO(
+	                  rs.getString("facility"));
+	            return list;
+	         }
+	      });
+
+	      return list;
+	   }
+	   
+	   public List<AirdndUserVO> hostLanlist(String place){
+
+	      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+	      List<AirdndUserVO> list = jdbcTemplate.query("SELECT host_language FROM airdnd_host where home_idx = ANY(SELECT home_idx FROM airdnd_search_view where place='"+ place +"') group by host_language", new RowMapper<AirdndUserVO>() {
+
+	         @Override
+	         public AirdndUserVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	            // TODO Auto-generated method stub
+
+	            AirdndUserVO list = new AirdndUserVO(
+	                  rs.getString("host_language"));
+	            return list;
+	         }
+	      });
+
+	      return list;
+	   }
+	
+
+	
 }

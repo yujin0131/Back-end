@@ -11,4 +11,6 @@ public interface AirdndSearchDAOI {
 
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 
+	List<AirdndSearchVO> facilityList(String place);
+
 }
