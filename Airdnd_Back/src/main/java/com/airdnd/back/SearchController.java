@@ -4,16 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.JsonObject;
 
 import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
@@ -24,8 +33,11 @@ public class SearchController {
 
 	@Autowired
 	AirdndSearchService airdndsearchService;
+	HttpServletRequest request;
+	HttpServletResponse response;
 
-	@RequestMapping("/search" )
+	@RequestMapping(value = "/search", produces = "application/json;charset=utf8" )
+	@ResponseBody
 	public String check() {
 		String place = "괌";
 		String user_idx = "1";
@@ -74,6 +86,7 @@ public class SearchController {
 
 		res.put("homes", homes);
 
+
 		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(place);
 		List<Integer> price_array = new ArrayList();
 		int start = 0;
@@ -96,15 +109,21 @@ public class SearchController {
 		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(place);
 		res.put("dataTotal", total.get(0).getData_total());
 		res.put("averagePrice", total.get(0).getAverage_price());
-		System.out.println("최종결과 : " + res.toString());
+
+		Object check = res.get("homes");
 
 		return res.toString();
 	}
 
-	@RequestMapping(value="/initialState/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/adults/{adults}", method=RequestMethod.GET )
-	@ResponseBody			// 어디검색, 몇박며칠, 인원수...
-	public String check(@PathVariable String location, @PathVariable String checkIn, @PathVariable String checkOut, @PathVariable int adult) {
 
+	@RequestMapping(value="/initialState/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/adults/{adults}",
+			method= {RequestMethod.GET,RequestMethod.POST}, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
+	@ResponseBody			// 어디검색, 몇박며칠, 인원수...
+	public String check(@PathVariable("location") String location, @PathVariable("checkIn") String checkIn,
+			@PathVariable("checkOut") String checkOut, @PathVariable("adults") int adults) {
+
+		HttpHeaders resHeaders = new HttpHeaders();
+		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 		try {
 			location = URLEncoder.encode(location, "utf-8");
 			checkIn = URLEncoder.encode(checkIn, "utf-8");
