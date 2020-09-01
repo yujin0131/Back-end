@@ -52,19 +52,19 @@
 	<beans:bean id="airdndhomeService" class="service.AirdndHomeService"/>
 	<beans:bean id="homeDAO" class="dao.AirdndHomeDAO"/>
 
-	<!-- 채팅 -->
+	<!-- MyPage 채팅 -->
 	<beans:bean class="com.airdnd.back.ChatController"/>
 	<beans:bean id="airdndChatService" class="service.AirdndChatService"/>
 	<beans:bean id="airdndChatDAO" class="dao.AirdndChatDAO"/>
-
-	<!--  -->
-	<beans:bean class="com.airdnd.back.BookmarkController"/>
-	<beans:bean id="airdndBookmarkService" class="service.AirdndBookmarkService"/>
-	<beans:bean id="airdndBookmarkDAO" class="dao.AirdndBookmarkDAO"/>
 	
-	<!--  -->
+	<!-- MyPage 여행(예약 페이지) -->
 	<beans:bean class="com.airdnd.back.UserResInfoController"/>
 	<beans:bean id="airdndUserResInfoService" class="service.AirdndUserResInfoService"/>
  	<beans:bean id="airdndUserResInfoDAO" class="dao.AirdndUserResInfoDAO"/>
+
+	<!-- MyPage 저장목록 -->
+	<beans:bean class="com.airdnd.back.BookmarkController"/>
+	<beans:bean id="airdndBookmarkService" class="service.AirdndBookmarkService"/>
+	<beans:bean id="airdndBookmarkDAO" class="dao.AirdndBookmarkDAO"/>
 
 </beans:beans>

@@ -48,7 +48,6 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 						rs.getInt("filter_bathroom"),
 						rs.getInt("price"));
 
-
 				return list;
 			}
 
