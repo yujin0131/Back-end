@@ -49,10 +49,10 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 
 	@Override
 	public AirdndChatVO insert_chat(AirdndChatVO vo) {
-		String sql = "insert into AirdndDB.airdnd_chatting(host_idx, user_idx, content, image_url, send_date_time) values(1, 2, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
+		String sql = "insert into AirdndDB.airdnd_chatting(host_idx, user_idx, content, image_url, send_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.update(sql, vo.getContent(), vo.getImage_url());
+		jdbcTemplate.update(sql, vo.getHost_idx(), vo.getUser_idx(), vo.getContent(), vo.getImage_url());
 		
 		/*
 		Connection con = null;
