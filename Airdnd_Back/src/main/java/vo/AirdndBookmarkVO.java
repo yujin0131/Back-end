@@ -6,6 +6,7 @@ public class AirdndBookmarkVO {
 	private String bookmark_list_title, checkin, checkout, update_date_time;
 	
 	//not DB column
+	
 	private int home_count;
 	
 	public AirdndBookmarkVO() {
