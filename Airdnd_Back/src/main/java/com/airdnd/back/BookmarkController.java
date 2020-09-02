@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import common.Common;
 import service.AirdndBookmarkService;
@@ -25,7 +26,8 @@ public class BookmarkController {
 	@Autowired
 	HttpServletRequest request;
 	
-	@RequestMapping("/bookmark")
+	@RequestMapping(value="/bookmark", produces = "application/json;charset=utf8")
+	@ResponseBody
 	public String bookmark_list(Model model) {
 		//파싱할 최종 데이터
 		JSONObject res = new JSONObject();
