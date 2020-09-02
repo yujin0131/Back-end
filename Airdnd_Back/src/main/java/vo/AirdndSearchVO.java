@@ -9,7 +9,7 @@ public class AirdndSearchVO {
 	private boolean isSuperHost;
 	private List<String> url;
 	private String facilityList;
-	
+
 	public AirdndSearchVO() {
 
 	}
@@ -31,22 +31,22 @@ public class AirdndSearchVO {
 		this.review_num = review_num;
 		this.lat = lat;
 		this.lng = lng;
-		
+
 	}
 
 	public AirdndSearchVO(int price) {
 		this.price = price;
 	}
-	
+
 	public AirdndSearchVO(String facilityList) {
 		this.facilityList = facilityList;
 	}
-		
+
 	public AirdndSearchVO(int average_price, int data_total) {
 		this.average_price = average_price;
 		this.data_total = data_total;
 	}
-	
+
 	public String getFacilityList() {
 		return facilityList;
 	}
@@ -54,7 +54,7 @@ public class AirdndSearchVO {
 	public void setFacilityList(String facilityList) {
 		this.facilityList = facilityList;
 	}
-	
+
 	public int getAverage_price() {
 		return average_price;
 	}
@@ -151,49 +151,45 @@ public class AirdndSearchVO {
 		this.title = title;
 	}
 
-   public void setTitle(String title) {
-      this.title = title;
-   }
+	public int getFilter_max_person() {
+		return filter_max_person;
+	}
 
-   public int getFilter_max_person() {
-      return filter_max_person;
-   }
+	public void setFilter_max_person(int filter_max_person) {
+		this.filter_max_person = filter_max_person;
+	}
 
-   public void setFilter_max_person(int filter_max_person) {
-      this.filter_max_person = filter_max_person;
-   }
+	public int getFilter_bedroom() {
+		return filter_bedroom;
+	}
 
-   public int getFilter_bedroom() {
-      return filter_bedroom;
-   }
+	public void setFilter_bedroom(int filter_bedroom) {
+		this.filter_bedroom = filter_bedroom;
+	}
 
-   public void setFilter_bedroom(int filter_bedroom) {
-      this.filter_bedroom = filter_bedroom;
-   }
+	public int getFilter_bed() {
+		return filter_bed;
+	}
 
-   public int getFilter_bed() {
-      return filter_bed;
-   }
+	public void setFilter_bed(int filter_bed) {
+		this.filter_bed = filter_bed;
+	}
 
-   public void setFilter_bed(int filter_bed) {
-      this.filter_bed = filter_bed;
-   }
+	public int getFilter_bathroom() {
+		return filter_bathroom;
+	}
 
-   public int getFilter_bathroom() {
-      return filter_bathroom;
-   }
+	public void setFilter_bathroom(int filter_bathroom) {
+		this.filter_bathroom = filter_bathroom;
+	}
 
-   public void setFilter_bathroom(int filter_bathroom) {
-      this.filter_bathroom = filter_bathroom;
-   }
+	public int getPrice() {
+		return price;
+	}
 
-   public int getPrice() {
-      return price;
-   }
-
-   public void setPrice(int price) {
-      this.price = price;
-   }
+	public void setPrice(int price) {
+		this.price = price;
+	}
 
 
 } 

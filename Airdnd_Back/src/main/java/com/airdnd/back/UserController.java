@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -206,7 +207,7 @@ public class UserController {
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 
       try {
-         user_input2 = URLEncoder.encode(user_input, "utf-8");
+         user_input2 = URLDecoder.decode(user_input, "utf-8");
       } catch (UnsupportedEncodingException e1) {
          // TODO Auto-generated catch block
          e1.printStackTrace();
@@ -265,7 +266,7 @@ public class UserController {
       HttpHeaders resHeaders = new HttpHeaders();
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");
       try {
-         user_input2 = URLEncoder.encode(user_input, "utf-8");
+         user_input2 = URLDecoder.decode(user_input, "utf-8");
       } catch (UnsupportedEncodingException e1) {
          // TODO Auto-generated catch block
          e1.printStackTrace();
