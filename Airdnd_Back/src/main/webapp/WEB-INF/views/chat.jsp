@@ -22,6 +22,8 @@
 	</script>
 </head>
 <body>
+	${res}<br>
+	
 	Her_k test ㅋㅋㅋvV<br>
 	한글도 테스트 중 특수문자도 ☆★<br>
 	<input type="button" value="모든 메시지" onclick="">

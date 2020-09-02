@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,8 @@ public class ChatController {
 
 	@RequestMapping("/chat")
 	public String chat_list(Model model) {
-		JSONObject jsonObject = new JSONObject();
+		JSONObject resChat = new JSONObject();
+		JSONArray chatList = new JSONArray();
 		
 		List<AirdndChatVO> list = airdndChatService.daoserviceconnect();
 		model.addAttribute("list", list);
@@ -34,7 +36,7 @@ public class ChatController {
 		int size = list.size();
 		
 		for(int i = 0; i < size; i++) {
-			Map<Object, Object> javaObject = new HashMap<Object, Object>();
+			JSONObject javaObject = new JSONObject();
 			
 			javaObject.put("idx", list.get(i).getIdx());
 			javaObject.put("host_idx", list.get(i).getHost_idx());
@@ -45,10 +47,15 @@ public class ChatController {
 			javaObject.put("send_date_time", list.get(i).getSend_date_time());
 			javaObject.put("msg_hidden_or_not", list.get(i).getMsg_hidden_or_not());
 			
-			jsonObject.put(i, javaObject);
+			chatList.add(i, javaObject);
 		}//for
 		
-		//return jsonObject.toString();
+		resChat.put("upcomingList", chatList);
+		
+		model.addAttribute("res", resChat.toString());
+		//System.out.println(resChat.toString());
+		
+		//return resChat.toString();
 		return Common.VIEW_PATH + "chat.jsp";
 	}
 	
