@@ -66,7 +66,7 @@ public class SearchController {
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page);
 		int size = search_list.size();
 
-		JSONObject homes = new JSONObject();
+		List<JSONObject> homes = new ArrayList<JSONObject>();
 
 		for(int i = 0; i < size; i++) {
 			int home_idx = search_list.get(i).getHome_idx();
@@ -100,7 +100,7 @@ public class SearchController {
 			homes_info.put("price", search_list.get(i).getPrice());
 			homes_info.put("location", latlng);
 
-			homes.put(i, homes_info);
+			homes.add(homes_info);
 
 		}
 		res.put("homes", homes);
