@@ -84,7 +84,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
       
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-      List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + place + "' Group by '" + place + "'", new RowMapper<AirdndSearchVO>() {
+		List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + place + "' Group by place", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
