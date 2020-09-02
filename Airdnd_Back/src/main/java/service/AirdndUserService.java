@@ -39,5 +39,12 @@ public class AirdndUserService implements AirdndUserServiecI{
 		return res;
 	}
 	
+	@Override
+	public AirdndUserVO signin(AirdndUserVO vo){
+		
+		AirdndUserVO res = airdnd_user_dao.select_one(vo);
+		return res;
+	}
+	
 
 }

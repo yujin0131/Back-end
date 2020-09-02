@@ -4,6 +4,7 @@ import java.util.List;
 
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
+import vo.AirdndUserVO;
 
 public interface AirdndSearchServiceI {
 	
@@ -12,5 +13,6 @@ public interface AirdndSearchServiceI {
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 	
 	List<AirdndSearchVO> searchtotalselect(String place);
-	
+	List<AirdndSearchVO> facilityList(String place);
+	List<AirdndUserVO> hostLanlist(String place);
 }

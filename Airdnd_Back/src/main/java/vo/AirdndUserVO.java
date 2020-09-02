@@ -3,11 +3,15 @@ package vo;
 public class AirdndUserVO {
 	private int user_idx;
 	private String email, pwd, last_name, first_name, birthday, profileImg, phone, signupDate, description;
+	private String hostLanlist;
 	
 	public AirdndUserVO() {
 		
 	}
-	
+	public AirdndUserVO(String hostLanlist) {
+		this.hostLanlist = hostLanlist;
+	}
+
 	public AirdndUserVO(int user_idx, String email, String pwd, String last_name, String first_name, String birthday, String profileImg, String phone, String signupDate, String description) {
 		this.user_idx = user_idx;
 		this.email = email;
@@ -18,9 +22,16 @@ public class AirdndUserVO {
 		this.phone = phone;
 		this.signupDate = signupDate;
 		this.description = description;
-		
 	}
-
+	
+	public String getHostLanlist() {
+		return hostLanlist;
+	}
+	
+	public void setHostLanlist(String hostLanlist) {
+		this.hostLanlist = hostLanlist;
+	}
+	
 	public int getUser_idx() {
 		return user_idx;
 	}

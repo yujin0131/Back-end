@@ -8,6 +8,7 @@ public class AirdndSearchVO {
 	private double rating;
 	private boolean isSuperHost;
 	private List<String> url;
+	private String facilityList;
 	
 	public AirdndSearchVO() {
 
@@ -30,15 +31,28 @@ public class AirdndSearchVO {
 		this.review_num = review_num;
 		this.lat = lat;
 		this.lng = lng;
+		
 	}
 
 	public AirdndSearchVO(int price) {
 		this.price = price;
 	}
 	
+	public AirdndSearchVO(String facilityList) {
+		this.facilityList = facilityList;
+	}
+		
 	public AirdndSearchVO(int average_price, int data_total) {
 		this.average_price = average_price;
 		this.data_total = data_total;
+	}
+	
+	public String getFacilityList() {
+		return facilityList;
+	}
+
+	public void setFacilityList(String facilityList) {
+		this.facilityList = facilityList;
 	}
 	
 	public int getAverage_price() {
