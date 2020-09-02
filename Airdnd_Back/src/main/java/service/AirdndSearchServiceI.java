@@ -13,7 +13,6 @@ public interface AirdndSearchServiceI {
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 	
 	List<AirdndSearchVO> searchtotalselect(String place);
-
+	List<AirdndSearchVO> facilityList(String place);
 	List<AirdndUserVO> hostLanlist(String place);
-	
 }

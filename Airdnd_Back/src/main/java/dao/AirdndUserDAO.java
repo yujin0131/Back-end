@@ -21,7 +21,7 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 	DataSource dataSource;
 
 	//전체 회원 목록
-	@Override   
+	@Override	
 	public List<AirdndUserVO> select(){
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
@@ -60,11 +60,11 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 		res = jdbcTemplate.queryForObject(sql, Integer.class);
 
 		return res;
-
+		
 	}
-
+	
 	//회원가입 정보 입력
-	@Override   
+	@Override	
 	public int insert(AirdndUserVO vo){
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
@@ -80,21 +80,21 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 
 		int res = jdbcTemplate.update("insert into airdnd_user (user_idx, email, pwd, last_name, first_name, birthday, profileImg, phone, signupDate, description) "
 				+ "VALUES (0, ?, ?, ?, ?, ?, ?, ?, now(), ?)", email, pwd, last_name, first_name, birthday, profileImg, phone, description);
-
+		
 		return res;
 	}
-
-
+	
+	
 	//로그인 정보 가져오기
 	@Override
 	public AirdndUserVO select_one(AirdndUserVO vo) {
-
+		
 		int user_idx = -1;
 		String email = "";
-
+		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		String sql = "select * from airdnd_user where email='" + vo.getEmail() + "' and pwd = '"+ vo.getPwd() + "'";
-
+		
 		List<AirdndUserVO> loginlist = jdbcTemplate.query(sql, new RowMapper<AirdndUserVO>() {
 			@Override
 			public AirdndUserVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -113,23 +113,20 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 				return vo;
 			}
 		});
-
-		try {
-			user_idx = loginlist.get(0).getUser_idx();
-		}catch(Exception e) { 
+		
+		user_idx = loginlist.get(0).getUser_idx();
+		
+		
+		if(user_idx == -1) {//로그인 실패	
 			
-		}
-
-		if(user_idx == -1) {//로그인 실패   
-
 			return null;
-
-		} else {         //로그인 성공
-
+			
+		} else {			//로그인 성공
+			
 			AirdndUserVO loginvo = new AirdndUserVO();
 			loginvo = loginlist.get(0);
 			return loginvo;
-
+			
 		}
 	}
 }
