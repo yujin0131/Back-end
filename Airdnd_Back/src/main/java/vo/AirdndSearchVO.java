@@ -146,15 +146,15 @@ public class AirdndSearchVO {
 	public String getTitle() {
 		return title;
 	}
-
+	/*
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-   public void setTitle(String title) {
-      this.title = title;
-   }
-
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	*/
    public int getFilter_max_person() {
       return filter_max_person;
    }

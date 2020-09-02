@@ -23,7 +23,10 @@
 </head>
 <body>
 	Her_k test ㅋㅋㅋvV<br>
-	한글도 테스트 중 특수문자도 ☆★
+	한글도 테스트 중 특수문자도 ☆★<br>
+	<input type="button" value="모든 메시지" onclick="">
+	<input type="button" value="숨긴 메시지" onclick=""><br><br>
+	
 	<form>
 		<!-- if you pressed the send button or pushed the enter key -->
 		<input type="text" size="100" name="content" onkeypress="if(event.keyCode==13) {send(this.form);}">
