@@ -102,3 +102,5 @@ dist
 
 # TernJS port file
 .tern-port
+/.metadata/
+Airdnd_Back/target/m2e-wtp/web-resources/META-INF/maven/com.airdnd/back/pom.properties
