@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -79,18 +80,28 @@ public class UserController {
          System.out.println("이상한 오류");
          break;
       }
-
+      String lastName = "";
+      String firstName = "";
+      String description = "";
       AirdndUserVO user_vo = new AirdndUserVO();
+      try {
+		lastName = URLDecoder.decode(javaObject.get("lastName").toString(),"utf");
+		firstName = URLDecoder.decode(javaObject.get("firstName").toString(),"utf");
+		description = URLDecoder.decode(javaObject.get("description").toString(),"utf");
+	  } catch (UnsupportedEncodingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	  }
       user_vo.setEmail(javaObject.get("email").toString());
-      user_vo.setLast_name(javaObject.get("lastName").toString());
-      user_vo.setFirst_name(javaObject.get("firstName").toString());
+      user_vo.setLast_name(lastName);
+      user_vo.setFirst_name(firstName);
       user_vo.setPwd(javaObject.get("pwd").toString());
       user_vo.setBirthday(javaObject.get("birthday").toString());
 
       user_vo.setProfileImg(javaObject.get("profileImg").toString());
       user_vo.setPhone(javaObject.get("phone").toString());
       user_vo.setSignupDate(javaObject.get("signupDate").toString());
-      user_vo.setDescription(javaObject.get("description").toString());
+      user_vo.setDescription(description);
       //List<AirdndUserVO> list = airdnduserService.userselect();
       //model.addAttribute("list", list);
 
@@ -206,7 +217,7 @@ public class UserController {
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 
       try {
-         user_input2 = URLEncoder.encode(user_input, "utf-8");
+         user_input2 = URLDecoder.decode(user_input, "utf-8");
       } catch (UnsupportedEncodingException e1) {
          // TODO Auto-generated catch block
          e1.printStackTrace();
@@ -265,7 +276,7 @@ public class UserController {
       HttpHeaders resHeaders = new HttpHeaders();
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");
       try {
-         user_input2 = URLEncoder.encode(user_input, "utf-8");
+         user_input2 = URLDecoder.decode(user_input, "utf-8");
       } catch (UnsupportedEncodingException e1) {
          // TODO Auto-generated catch block
          e1.printStackTrace();

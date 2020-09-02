@@ -1,15 +1,13 @@
 package com.airdnd.back;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +40,12 @@ public class SearchController {
       HttpHeaders resHeaders = new HttpHeaders();
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");
       try {
-         location = URLEncoder.encode(location, "utf-8");
-         checkIn = URLEncoder.encode(checkIn, "utf-8");
-         checkOut = URLEncoder.encode(checkOut, "utf-8");
+         location = URLDecoder.decode(location, "utf-8");
+         checkIn = URLDecoder.decode(checkIn, "utf-8");
+         checkOut = URLDecoder.decode(checkOut, "utf-8");
       } catch (UnsupportedEncodingException e1) {
          // TODO Auto-generated catch block
          e1.printStackTrace();
-      }
-
-      if(location.equals("guam")) {
-         location = "괌";
-      }else if(location.equals("jeju")) {
-         location = "제주도";
-      }else {
-         location = "서울";
       }
 
       int page = 0;
@@ -66,7 +56,7 @@ public class SearchController {
       List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page);
       int size = search_list.size();
 
-      JSONObject homes = new JSONObject();
+      List<JSONObject> homes = new ArrayList<JSONObject>();
       
       Double addLat = 0.0000000;
       Double addLng = 0.0000000;
@@ -106,7 +96,7 @@ public class SearchController {
          homes_info.put("price", search_list.get(i).getPrice());
          homes_info.put("location", latlng);
 
-         homes.put(i, homes_info);
+         homes.add(homes_info);
 
       }
       Double avgLat =(Math.round(addLat/size*10000000)/10000000.0); 
@@ -169,7 +159,7 @@ public class SearchController {
       JSONObject filterCondition = new JSONObject();
       filterCondition.put("instantBooking", true);
       filterCondition.put("bedroom", true);
-      filterCondition.put("convenience ", true);
+      filterCondition.put("convenience", true);
       filterCondition.put("convenienceList", convenienceList);
       filterCondition.put("facilityList", facilityList);
       filterCondition.put("hostLangList", hostLangList);
