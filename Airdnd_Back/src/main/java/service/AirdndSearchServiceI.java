@@ -8,7 +8,7 @@ import vo.AirdndUserVO;
 
 public interface AirdndSearchServiceI {
 	
-	List<AirdndSearchVO> searchselect(String place, int page, int filter_price_min, int filter_price_max);
+	List<AirdndSearchVO> searchselect(String place, int page, int priceMin, int priceMax);
 	
 	List<AirdndHomePictureVO> pictureselect(int home_idx);
 	
