@@ -195,7 +195,7 @@ public class SearchController {
 		Cookie[] cookies = request.getCookies();
 
 		if(cookies == null) {
-			recentHomes.add(null);
+			recentHomes.add( null );
 		}else{
 			for (Cookie cookie : cookies) {
 				if(cookie.getName().contains("AirdndRH")) {
