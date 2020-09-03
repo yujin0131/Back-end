@@ -31,11 +31,11 @@ public class SearchController {
    HttpServletRequest request;
    HttpServletResponse response;
 
-   @RequestMapping(value="/search/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/adults/{adults}",
+   @RequestMapping(value="/search/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/guests/${guests}",
          method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
    @ResponseBody         // 어디검색, 몇박며칠, 인원수...
    public String check(@PathVariable("location") String location, @PathVariable("checkIn") String checkIn,
-         @PathVariable("checkOut") String checkOut, @PathVariable("adults") int adults) {
+         @PathVariable("checkOut") String checkOut, @PathVariable("guests") int guests) {
 
       HttpHeaders resHeaders = new HttpHeaders();
       resHeaders.add("Content-Type", "application/json;charset=UTF-8");

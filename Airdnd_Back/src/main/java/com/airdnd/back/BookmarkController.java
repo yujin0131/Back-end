@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.Common;
 import service.AirdndBookmarkService;
 import vo.AirdndBookmarkVO;
 import vo.AirdndBookmarkedHomesVO;
