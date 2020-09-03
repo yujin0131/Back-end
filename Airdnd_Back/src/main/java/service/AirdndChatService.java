@@ -15,15 +15,17 @@ public class AirdndChatService implements AirdndChatServiceI {
 	
 	//Select chatting list
 	@Override
-	public List<AirdndChatVO> daoserviceconnect(){
-		List<AirdndChatVO> list = airdnd_chat_dao.select();
+	public List<AirdndChatVO> selectChatList(){
+		List<AirdndChatVO> list = airdnd_chat_dao.selectChatList();
+		
 		return list;
 	}
 	
 	//Insert chatting
 	@Override
-	public AirdndChatVO daoserviceinsert(AirdndChatVO vo) {
-		airdnd_chat_dao.insert_chat(vo);
+	public AirdndChatVO insertChat(AirdndChatVO vo) {
+		airdnd_chat_dao.insertChat(vo);
+		
 		return vo;
 	}
 }

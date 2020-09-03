@@ -30,7 +30,7 @@ public class ChatController {
 		JSONObject resChat = new JSONObject();
 		JSONArray chatList = new JSONArray();
 		
-		List<AirdndChatVO> list = airdndChatService.daoserviceconnect();
+		List<AirdndChatVO> list = airdndChatService.selectChatList();
 		model.addAttribute("list", list);
 		
 		int size = list.size();
@@ -50,7 +50,7 @@ public class ChatController {
 			chatList.add(i, javaObject);
 		}//for
 		
-		resChat.put("upcomingList", chatList);
+		resChat.put("chatList", chatList);
 		
 		model.addAttribute("res", resChat.toString());
 		//System.out.println(resChat.toString());
@@ -72,7 +72,7 @@ public class ChatController {
 		
 		//Image
 		
-		airdndChatService.daoserviceinsert(vo);
+		airdndChatService.insertChat(vo);
 		model.addAttribute("vo", vo);
 		
 		return "redirect:chat";

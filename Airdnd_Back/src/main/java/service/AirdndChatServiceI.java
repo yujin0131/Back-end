@@ -5,10 +5,9 @@ import java.util.List;
 import vo.AirdndChatVO;
 
 public interface AirdndChatServiceI {
-	
 	//Select chatting list
-	List<AirdndChatVO> daoserviceconnect();
+	List<AirdndChatVO> selectChatList();
 	
 	//Insert chatting
-	AirdndChatVO daoserviceinsert(AirdndChatVO vo);
+	AirdndChatVO insertChat(AirdndChatVO vo);
 }

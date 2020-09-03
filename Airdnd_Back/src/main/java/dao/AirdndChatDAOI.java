@@ -5,7 +5,9 @@ import java.util.List;
 import vo.AirdndChatVO;
 
 public interface AirdndChatDAOI {
+	//Select chatting list
+	List<AirdndChatVO> selectChatList();
 	
-	List<AirdndChatVO> select();
-	AirdndChatVO insert_chat(AirdndChatVO vo);
+	//Insert chatting
+	AirdndChatVO insertChat(AirdndChatVO vo);
 }

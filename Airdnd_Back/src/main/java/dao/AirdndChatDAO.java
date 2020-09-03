@@ -23,12 +23,13 @@ import vo.AirdndChatVO;
 public class AirdndChatDAO implements AirdndChatDAOI {
 	@Autowired
 	DataSource dataSource;
-
+	
+	//Select User's chat info
 	@Override
-	public List<AirdndChatVO> select(){
+	public List<AirdndChatVO> selectChatList(){
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		List<AirdndChatVO> list = jdbcTemplate.query("select * from airdnd_chatting", new RowMapper<AirdndChatVO>() {
+		List<AirdndChatVO> list = jdbcTemplate.query("select * from airdnd_chatting where user_idx=1", new RowMapper<AirdndChatVO>() {
 			@Override
 			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndChatVO list = new AirdndChatVO(
@@ -46,9 +47,15 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 		
 		return list;
 	}
-
+	
+	//Select the host info
+	
+	//Select the user info
+	
+	
+	//Insert chatting
 	@Override
-	public AirdndChatVO insert_chat(AirdndChatVO vo) {
+	public AirdndChatVO insertChat(AirdndChatVO vo) {
 		String sql = "insert into AirdndDB.airdnd_chatting(host_idx, user_idx, content, image_url, send_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
