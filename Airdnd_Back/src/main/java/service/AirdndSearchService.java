@@ -17,9 +17,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	AirdndSearchDAO airdnd_search_dao;
 
 	@Override
-	public List<AirdndSearchVO> searchselect(String place, int page){
+	public List<AirdndSearchVO> searchselect(String place, int page, int filter_price_min, int filter_price_max){
 
-		List<AirdndSearchVO> list = airdnd_search_dao.select(place, page);
+		List<AirdndSearchVO> list = airdnd_search_dao.select(place, page, filter_price_min, filter_price_max);
 
 		return list;
 	}
@@ -58,5 +58,11 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 		List<AirdndUserVO> list = airdnd_search_dao.hostLanlist(place);
 		return list;
 	}
+	
+	public List<AirdndSearchVO> select_one(int homeIdx) {
+	      
+	      List<AirdndSearchVO> list = airdnd_search_dao.select_one(homeIdx);
+	      return list;
+	   }
 
 }

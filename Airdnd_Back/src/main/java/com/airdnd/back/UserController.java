@@ -42,13 +42,11 @@ public class UserController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	AirdndUserService airdnduserService;
-	HttpServletRequest request;
-	HttpServletResponse response;
 
 	//******회원가입
 	@RequestMapping(value = "/signUp", method=RequestMethod.POST)
 	@ResponseBody
-	public String sign_up(Model model, @RequestBody String payload) {
+	public String sign_up(@RequestBody String payload) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 
@@ -99,8 +97,6 @@ public class UserController {
 			user_vo.setProfileImg(profileImg);
 			user_vo.setPhone(javaObject.get("phone").toString());
 			user_vo.setDescription(description);
-			//List<AirdndUserVO> list = airdnduserService.userselect();
-			//model.addAttribute("list", list);
 
 			int res = airdnduserService.signup(user_vo);
 
@@ -134,7 +130,7 @@ public class UserController {
 	@RequestMapping(value = "/signIn", method=RequestMethod.POST,
 			produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody
-	public String sign_in(Model model, @RequestBody String payload) {
+	public String sign_in(HttpServletRequest request, HttpServletResponse response, @RequestBody String payload) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 
@@ -169,19 +165,13 @@ public class UserController {
 			myCookie.setPath("/"); // 경로 설정
 			response.addCookie(myCookie);
 
-			//*쿠키에서 가져온 세션키로 세션 불러와 정보가져오기*
-			Cookie[] cookies = request.getCookies();
-			for (Cookie cookie : cookies) {
-				if("AirdndSES".equals(cookie.getName())) {
-					sessionKey = cookie.getValue();
-				}
-			}
 			AirdndUserVO userInfoVO = (AirdndUserVO) session.getAttribute(sessionKey);
 			String userEmail = userInfoVO.getEmail();
 			String username = userInfoVO.getLast_name() + userInfoVO.getFirst_name();
 			//필요할때 이렇게 뽑아서 넘겨주기
 
 			resultStr = "Success";
+
 		}
 
 		return resultStr;
@@ -191,26 +181,31 @@ public class UserController {
 	@RequestMapping(value = "/signOut", method=RequestMethod.POST,
 			produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody
-	public String sign_out(Model model, @RequestBody String payload) {
+	public String sign_out(HttpServletRequest request, HttpServletResponse response, @RequestBody String payload) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 
 		HttpSession session = request.getSession();
 		String sessionKey = "";
+		String resultStr = "";
 		//*쿠키에서 가져온 세션키로 세션 불러와 정보가져오기*
 		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if("AirdndSES".equals(cookie.getName())) {
-				sessionKey = cookie.getValue();
+		if(cookies == null) {
+			resultStr = "Fail";
+		}else {
+			for (Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+				}
 			}
-		}
-		session.removeAttribute(sessionKey);
-		Cookie myCookie = new Cookie("AirdndSES", null);
-		myCookie.setMaxAge(0); // 쿠키의 expiration 타임을 0으로 하여 없앤다.
-		myCookie.setPath("/"); // 모든 경로에서 삭제 됬음을 알린다.
-		response.addCookie(myCookie);
+			session.removeAttribute(sessionKey);
+			Cookie myCookie = new Cookie("AirdndSES", null);
+			myCookie.setMaxAge(0); // 쿠키의 expiration 타임을 0으로 하여 없앤다.
+			myCookie.setPath("/"); // 모든 경로에서 삭제 됬음을 알린다.
+			response.addCookie(myCookie);
 
-		String resultStr = "Success";
+			resultStr = "Success";
+		}
 
 		return resultStr;
 	}
