@@ -1,5 +1,6 @@
 package com.airdnd.back;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class BookmarkController {
 		JSONObject bookmark = new JSONObject();
 
 		JSONArray bookmarkHomeList = new JSONArray();
-		JSONObject bookmarkHome = new JSONObject();
+		JSONObject bookmarkHome = null;
 
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
@@ -113,45 +114,33 @@ public class BookmarkController {
 			bookmark.put("bookmark_list_title", list.get(i).getBookmark_list_title());
 			bookmark.put("checkin", list.get(i).getCheckin());
 			bookmark.put("checkout", list.get(i).getCheckout());
-
-			int k  = 1;
-
+			
 			for(int j = 0; j < homes_size; j++) {
+				
+				int k  = 0;
+				
 				if(list.get(i).getHome_count() == 0) {
 					//bookmark.put("homes", null);
 					break;
 				} else {
 					if(list.get(i).getIdx() == homes.get(j).getBookmark_idx()) {
-						bookmarkHomeList = new JSONArray();
 						bookmarkHome = new JSONObject();
 						
-						if(k == 1) {
-							bookmarkHome.put("idx", homes.get(j).getIdx());
-							bookmarkHome.put("bookmarkIdx", homes.get(j).getBookmark_idx());
-							//bookmarkHome.put("userIdx", homes.get(j).getUser_idx());
-							//bookmarkHome.put("homeIdx", homes.get(j).getHome_idx());
-							bookmarkHome.put("url", homes.get(j).getUrl());
-							
-							bookmarkHomeList.add(k - 1, bookmarkHome);
-						} else {
-							if(k == list.get(i).getHome_count()) {
-								break;
-							}
-							k++;
-							continue;
-						}
+						bookmarkHome.put("idx", homes.get(j).getIdx());
+						bookmarkHome.put("bookmarkIdx", homes.get(j).getBookmark_idx());
+						//bookmarkHome.put("userIdx", homes.get(j).getUser_idx());
+						//bookmarkHome.put("homeIdx", homes.get(j).getHome_idx());
+						bookmarkHome.put("url", homes.get(j).getUrl());
 						
+						System.out.print(homes.get(j).getIdx() + "/");
+						System.out.print(homes.get(j).getBookmark_idx() + "/");
+						System.out.println(homes.get(j).getUrl());
+						
+						bookmarkHomeList.add(k, bookmarkHome);
 						bookmark.put("homes", bookmarkHomeList);
 
 						//bookmark.put("homes" + n, bookmarkHome);
 						n++;
-
-						/*
-						Object a = bookmark.get("homes");
-						String b = a.toString();
-						int ab = Integer.parseInt(b);
-						System.out.println("몇 번째" + i + "냐? : " + a);
-						*/
 					}
 				}
 			}//for
