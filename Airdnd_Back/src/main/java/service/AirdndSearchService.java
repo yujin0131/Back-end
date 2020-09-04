@@ -58,5 +58,11 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 		List<AirdndUserVO> list = airdnd_search_dao.hostLanlist(place);
 		return list;
 	}
+	
+	public List<AirdndSearchVO> select_one(int homeIdx) {
+		
+		List<AirdndSearchVO> list = airdnd_search_dao.select_one(homeIdx);
+		return list;
+	}
 
 }
