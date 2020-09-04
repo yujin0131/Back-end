@@ -31,6 +31,14 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 		return list;
 	}
 	
+	//Select bookmark homes where bookidx
+	@Override
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomesIdx(int bookmark_idx) {
+		List<AirdndBookmarkedHomesVO> list = airdnd_bookmark_dao.selectBookmarkHomesIdx(bookmark_idx);
+
+		return list;
+	}
+	
 	//Search bookmark homes' count
 	@Override
 	public int selectBookmarkHomesCount(int bookmark_idx) {
@@ -49,10 +57,10 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 	
 	//Create a new bookmark
 	@Override
-	public AirdndBookmarkVO insert_bookmark(AirdndBookmarkVO vo) {
-		airdnd_bookmark_dao.insert_bookmark(vo);
+	public int insert_bookmark(AirdndBookmarkVO vo) {
+		int res = airdnd_bookmark_dao.insert_bookmark(vo);
 		
-		return vo;
+		return res;
 	}
 	
 	//Search an idx
@@ -65,10 +73,10 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 	
 	//Add the home in the bookmark
 	@Override
-	public AirdndBookmarkedHomesVO insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
-		airdnd_bookmark_dao.insert_bookmarkHome(vo);
+	public int insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
+		int res = airdnd_bookmark_dao.insert_bookmarkHome(vo);
 		
-		return vo;
+		return res;
 	}
 	
 	//Delete the home in the bookmark
@@ -89,9 +97,9 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 	
 	//Update update_date_time
 	@Override
-	public String update_updateTime(int idx) {
-		airdnd_bookmark_dao.update_updateTime(idx);
+	public int update_updateTime(int idx) {
+		int res = airdnd_bookmark_dao.update_updateTime(idx);
 		
-		return null;
+		return res;
 	}
 }
