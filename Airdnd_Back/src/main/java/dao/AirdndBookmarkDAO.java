@@ -130,13 +130,13 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 
 	//Create a new bookmark
 	@Override
-	public AirdndBookmarkVO insert_bookmark(AirdndBookmarkVO vo) {
+	public int insert_bookmark(AirdndBookmarkVO vo) {
 		String sql = "insert into airdnd_bookmark(user_idx, bookmark_list_title, checkin, checkout, update_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.update(sql, vo.getUser_idx(), vo.getBookmark_list_title(), vo.getCheckin(), vo.getCheckout());
+		int res = jdbcTemplate.update(sql, vo.getUser_idx(), vo.getBookmark_list_title(), vo.getCheckin(), vo.getCheckout());
 		
-		return vo;
+		return res;
 	}
 	
 	//Search an idx
@@ -150,13 +150,13 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Add the home in the bookmark
 	@Override
-	public AirdndBookmarkedHomesVO insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
+	public int insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
 		String sql = "insert into airdnd_bookmarked_homes(bookmark_idx, user_idx, home_idx) values(?, ?, ?)";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.update(sql, vo.getBookmark_idx(), vo.getUser_idx(), vo.getHome_idx());
+		int res = jdbcTemplate.update(sql, vo.getBookmark_idx(), vo.getUser_idx(), vo.getHome_idx());
 		
-		return vo;
+		return res;
 	}
 	
 	//Delete the home in the bookmark
@@ -186,13 +186,13 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Update update_date_time
 	@Override
-	public String update_updateTime(int idx) {
+	public int update_updateTime(int idx) {
 		String sql = "update airdnd_bookmark set update_date_time=DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR) where idx=" + idx;
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.update(sql);
+		int res = jdbcTemplate.update(sql);
 		
-		return null;
+		return res;
 	}
 
 }

@@ -18,15 +18,15 @@ public interface AirdndBookmarkDAOI {
 	//Select user's reservation home's main picture
 	List<AirdndHomePictureVO> selectHomeMainPicture(int home_idx);
 	//Create a new bookmark
-	AirdndBookmarkVO insert_bookmark(AirdndBookmarkVO vo);
+	int insert_bookmark(AirdndBookmarkVO vo);
 	//Search an idx
 	int selectIdx(String bookmark_list_title);
 	//Add the home in the bookmark
-	AirdndBookmarkedHomesVO insert_bookmarkHome(AirdndBookmarkedHomesVO vo);
+	int insert_bookmarkHome(AirdndBookmarkedHomesVO vo);
 	//Delete the home in the bookmark
 	String delete_bookmarkHome(int bookmark_idx);
 	//Delete the bookmark
 	String delete_bookmark(int idx);
 	//Update update_date_time
-	String update_updateTime(int idx);
+	int update_updateTime(int idx);
 }
