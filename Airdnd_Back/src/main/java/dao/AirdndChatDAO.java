@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import vo.AirdndChatVO;
+import vo.AirdndHostVO;
+import vo.AirdndUserVO;
 
 @Repository("airdndChatDAO")
 public class AirdndChatDAO implements AirdndChatDAOI {
@@ -48,10 +50,94 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 		return list;
 	}
 	
-	//Select the host info
+	//Select the host info list
+	@Override
+	public List<AirdndHostVO> selectHostList() {
+		String sql = "select * from airdnd_host";
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndHostVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndHostVO>() {
+			@Override
+			public AirdndHostVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndHostVO vo = new AirdndHostVO(
+					rs.getInt("idx"),
+					rs.getInt("home_idx"),
+					rs.getBoolean("check_superhost"),
+					rs.getBoolean("check_certification"),
+					rs.getInt("host_review_num"),
+					rs.getString("host_name"),
+					rs.getString("host_sign_in_date"),
+					rs.getString("host_status_message"),
+					rs.getString("interaction_with_guests"),
+					rs.getString("host_language"),
+					rs.getString("response_rate"),
+					rs.getString("response_time"),
+					rs.getString("host_profileImg"));
+
+				return vo;
+			}
+		});
+		
+		return list;
+	}
 	
 	//Select the user info
+	@Override
+	public List<AirdndUserVO> selectUser(int user_idx) {
+		String sql = "select * from airdnd_user where user_idx=" + user_idx;
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndUserVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndUserVO>() {
+			@Override
+			public AirdndUserVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndUserVO vo = new AirdndUserVO(
+					rs.getInt("user_idx"),
+					rs.getString("email"),
+					rs.getString("pwd"),
+					rs.getString("last_name"),
+					rs.getString("first_name"),
+					rs.getString("birthday"),
+					rs.getString("profileImg"),
+					rs.getString("phone"),
+					rs.getString("signupDate"),
+					rs.getString("description"));
+
+				return vo;
+			}
+		});
+		
+		return list;
+	}
 	
+	//Select the userResInfo
+	/*
+	@Override
+	public List<AirdndUserVO> selectUserResInfo(int user_idx) {
+		String sql = "select * from airdnd_user where user_idx=" + user_idx;
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndUserVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndUserVO>() {
+			@Override
+			public AirdndUserVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndUserVO vo = new AirdndUserVO(
+					rs.getInt("user_idx"),
+					rs.getString("email"),
+					rs.getString("pwd"),
+					rs.getString("last_name"),
+					rs.getString("first_name"),
+					rs.getString("birthday"),
+					rs.getString("profileImg"),
+					rs.getString("phone"),
+					rs.getString("signupDate"),
+					rs.getString("description"));
+
+				return vo;
+			}
+		});
+		
+		return list;
+	}
+	*/
 	
 	//Insert chatting
 	@Override

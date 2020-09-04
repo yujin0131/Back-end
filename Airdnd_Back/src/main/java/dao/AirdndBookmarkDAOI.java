@@ -11,6 +11,8 @@ public interface AirdndBookmarkDAOI {
 	List<AirdndBookmarkVO> selectBookmark();
 	//Select bookmark homes
 	List<AirdndBookmarkedHomesVO> selectBookmarkHomes();
+	//Select bookmark homes where bookidx
+	List<AirdndBookmarkedHomesVO> selectBookmarkHomesIdx(int bookmark_idx);
 	//Search bookmark homes' count
 	int selectBookmarkHomesCount(int bookmark_idx);
 	//Select user's reservation home's main picture

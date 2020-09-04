@@ -31,6 +31,14 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 		return list;
 	}
 	
+	//Select bookmark homes where bookidx
+	@Override
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomesIdx(int bookmark_idx) {
+		List<AirdndBookmarkedHomesVO> list = airdnd_bookmark_dao.selectBookmarkHomesIdx(bookmark_idx);
+
+		return list;
+	}
+	
 	//Search bookmark homes' count
 	@Override
 	public int selectBookmarkHomesCount(int bookmark_idx) {
