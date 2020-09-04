@@ -22,11 +22,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
    DataSource dataSource;
 
    @Override   
-   public List<AirdndSearchVO> select(String place, int page){
+   public List<AirdndSearchVO> select(String place, int page, int priceMin, int priceMax){
       page = page * 20;
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-      List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+      List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' and "+ priceMin + " <= price and price <= " + priceMax + " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -159,7 +159,37 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
       return list;
    }
    
-   
+   public List<AirdndSearchVO> select_one(int homeIdx){
+
+	      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+	      List<AirdndSearchVO> list = jdbcTemplate.query("SELECT * FROM airdnd_search_view where home_idx = "+ homeIdx , new RowMapper<AirdndSearchVO>() {
+
+	         @Override
+	         public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	            // TODO Auto-generated method stub
+
+	            AirdndSearchVO list = new AirdndSearchVO(
+	                  rs.getInt("home_idx"),
+	                  rs.getBoolean("isSuperHost"),
+	                  rs.getString("sub_title"),
+	                  rs.getString("title"),
+	                  rs.getInt("filter_max_person"),
+	                  rs.getInt("filter_bedroom"),
+	                  rs.getInt("filter_bed"),
+	                  rs.getInt("filter_bathroom"),
+	                  rs.getInt("price"),
+	                  rs.getDouble("rating"),
+	                  rs.getInt("review_num"),
+	                  rs.getString("lat"),
+	                  rs.getString("lng"));
+
+	            return list;
+	         }
+	      });
+
+	      return list;
+	   }
    
    
 }
