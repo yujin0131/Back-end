@@ -1,6 +1,5 @@
 package com.airdnd.back;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,36 +74,6 @@ public class BookmarkController {
 		model.addAttribute("homes", homes);
 
 		//JSON
-		/*
-      for(int i = 0; i < list_size; i++) {
-         bookmark = new JSONObject();
-
-         bookmark.put("idx", list.get(i).getIdx());
-         bookmark.put("userIdx", list.get(i).getUser_idx());
-         bookmark.put("bookmarkListTitle", list.get(i).getBookmark_list_title());
-         bookmark.put("checkin", list.get(i).getCheckin());
-         bookmark.put("checkout", list.get(i).getCheckout());
-         bookmark.put("homeCount", list.get(i).getHome_count());
-
-         bookmarkList.add(i, bookmark);
-      }//for
-
-      for(int i = 0; i < homes_size; i++) {
-         bookmarkHome = new JSONObject();
-
-         bookmarkHome.put("idx", homes.get(i).getIdx());
-         bookmarkHome.put("bookmarkIdx", homes.get(i).getBookmark_idx());
-         bookmarkHome.put("userIdx", homes.get(i).getUser_idx());
-         bookmarkHome.put("homeIdx", homes.get(i).getHome_idx());
-         bookmarkHome.put("url", homes.get(i).getUrl());
-
-         System.out.println("test" + homes.get(i).getIdx());
-
-         bookmarkHomeList.add(i, bookmarkHome);
-      }//for
-		 */
-		int n = 0;
-
 		for(int i = 0; i < list_size; i++) {
 			bookmark = new JSONObject();
 			bookmarkHomeList = new JSONArray();
@@ -138,9 +107,6 @@ public class BookmarkController {
 						
 						bookmarkHomeList.add(k, bookmarkHome);
 						bookmark.put("homes", bookmarkHomeList);
-
-						//bookmark.put("homes" + n, bookmarkHome);
-						n++;
 					}
 				}
 			}//for
@@ -148,43 +114,7 @@ public class BookmarkController {
 			bookmarkList.add(i, bookmark);
 		}//for
 
-		for(int i = 0; i < homes_size; i++) {
-			//Object a = bookmark.get("homes");
-			//System.out.println("몇 번째" + i + "냐? : " + a);
-		}
-
-
-		/*
-      for(int i = 0; i < bookmarkList.size(); i++) {
-    	  String str = bookmarkHomeList.get(i).toString();
-
-    	  int n = 0;
-    	  JSONObject tempObject = bookmarkHomeList.g
-
-    	  for(int j = 0; j < homes_size; j++) {
-    		  bookmarkHomeList.get(n);
-
-    		  if(list.get(i).getIdx() == homes.get(j).getBookmark_idx()) {
-    			  if(homes.get(j).getBookmark_idx() != bookmarkHomeList.get(i)) {
-
-    			  }
-
-				bookmarkHomeList.remove(index)
-
-				bookmark.put("homes", bookmarkHomeList);
-				n++;
-				if(j < homes_size - 1) {
-    				temp = homes.get(j + 1).getBookmark_idx();
-    			}
-      		}
-
-    	  }
-      }
-		 */
 		res.put("bookmark", bookmarkList);
-		//res.put("bookmarkHome", bookmarkHomeList);
-
-		//System.out.println(res.toString());
 		//model.addAttribute("res", res.toString());
 
 		return res.toString();
