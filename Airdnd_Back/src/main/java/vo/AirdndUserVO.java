@@ -15,6 +15,7 @@ public class AirdndUserVO {
 	public AirdndUserVO(int user_idx, String email, String pwd, String last_name, String first_name, String birthday, String profileImg, String phone, String signupDate, String description) {
 		this.user_idx = user_idx;
 		this.email = email;
+		this.pwd = pwd;
 		this.last_name = last_name;
 		this.first_name = first_name;
 		this.birthday = birthday;
