@@ -24,8 +24,8 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 
    @Override   
    public List<AirdndSearchVO> select(Map<Object, Object> param){
-      int page = (Integer) param.get("page") * 20;
-
+      int page = (Integer)(param.get("page")) * 20;
+System.out.println(page);
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
       List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + param.get("location") + "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedroomBed")+ " and filter_bedroom>=" + param.get("bedroomRoom")+ " and filter_bathroom>=" + param.get("bedroomBath") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") + " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {

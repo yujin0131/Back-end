@@ -121,8 +121,6 @@ public class SearchController {
 			
 			for(int j = 0; j < homes.size(); j++) {
 				JSONObject lo = (JSONObject) homes.get(j).get("location");
-				System.out.println("lat : " +lat + " / "+ lo.get("lat"));
-				System.out.println("lng : " +lng + " / "+ lo.get("lng"));
 				
 				if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
 
