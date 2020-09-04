@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonObject;
@@ -32,32 +33,31 @@ public class SearchController {
 	@Autowired
 	AirdndSearchService airdndsearchService;
 
-	@RequestMapping(value="/search/user/{userId}/location/{location}/checkIn/{checkIn}/checkOut/{checkOut}/guests/{guests}/lat_from/{lat_from}"
-			+ "/lng_from/{lng_from}/lat_to/{lat_to}/lng_to/{lng_to}/filter_refund/{filter_refund}/filter_roomType_house/{filter_roomType_house}/"
-			+ "filter_roomType_private/{filter_roomType_private}/filter_roomType_shared/{filter_roomType_shared}/filter_price_min/{filter_price_min}/"
-			+ "filter_price_max/{filter_price_max}/filter_instantBooking/{filter_instantBooking}/filter_bedroom_bed/{filter_bedroom_bed}"
-			+ "/filter_bedroom_room/{filter_bedroom_room}/filter_bedroom_bathroom/{filter_bedroom_bathroom}/filter_convenience/{filter_convenience}/"
-			+ "filter_convenienceList/{filter_convenienceList}/filter_facilityList/{filter_facilityList}/filter_hostLangList/{filter_hostLangList}/page/{page}",
+	@RequestMapping(value="/search",
 			method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody         // 어디검색, 몇박며칠, 인원수...
-	public String check(HttpServletRequest request, HttpServletResponse response, @PathVariable int userId, @PathVariable String location, @PathVariable String checkIn, @PathVariable String checkOut,
-			@PathVariable int guests, @PathVariable double lat_from, @PathVariable double lng_from, @PathVariable double lat_to, @PathVariable double lng_to,
-			@PathVariable boolean filter_refund, @PathVariable boolean filter_roomType_house, @PathVariable boolean filter_roomType_private,
-			@PathVariable boolean filter_roomType_shared, @PathVariable int filter_price_min, @PathVariable int filter_price_max,
-			@PathVariable boolean filter_instantBooking, @PathVariable int filter_bedroom_bed, @PathVariable int filter_bedroom_room,
-			@PathVariable int filter_bedroom_bathroom, @PathVariable boolean filter_convenience, @PathVariable String filter_convenienceList,
-			@PathVariable String filter_facilityList, @PathVariable String filter_hostLangList, @PathVariable int page) {
+	public String check(HttpServletRequest request, HttpServletResponse response, String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
+			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
+			@RequestParam(value="latFrom", defaultValue="0")double latFrom, @RequestParam(value="lngFrom", defaultValue="0")double lngFrom,
+			@RequestParam(value="latTo", defaultValue="0")double latTo, @RequestParam(value="lngTo", defaultValue="0")double lngTo,
+			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
+			@RequestParam(value="filterRoomTypePrivate", defaultValue="0")boolean filterRoomTypePrivate,
+			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
+			@RequestParam(value="priceMax", defaultValue="0")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
+			@RequestParam(value="bedroomBed", defaultValue="0")int bedroomBed, @RequestParam(value="bedroomRoom", defaultValue="0")int bedroomRoom,
+			@RequestParam(value="bedroomBathroom", defaultValue="0")int bedroomBathroom, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
+			@RequestParam(value="convenienceList", defaultValue="0")String convenienceList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
+			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
 
-		HttpHeaders resHeaders = new HttpHeaders();
-		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+
 		try {
 			location = URLDecoder.decode(location, "utf-8");
 			checkIn = URLDecoder.decode(checkIn, "utf-8");
 			checkOut = URLDecoder.decode(checkOut, "utf-8");
 
-			filter_convenienceList = URLDecoder.decode(filter_convenienceList, "utf-8");
-			filter_facilityList = URLDecoder.decode(filter_facilityList, "utf-8");
-			filter_hostLangList = URLDecoder.decode(filter_hostLangList, "utf-8");
+			convenienceList = URLDecoder.decode(convenienceList, "utf-8");
+			facilityList = URLDecoder.decode(facilityList, "utf-8");
+			hostLangList = URLDecoder.decode(hostLangList, "utf-8");
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -74,11 +74,11 @@ public class SearchController {
 		JSONObject res = new JSONObject();
 
 		//search_list : 페이지별 숙소 리스트------------------
-		if(filter_price_max == 0) {
-			filter_price_max = 2147483646;
+		if(priceMax == 0) {
+			priceMax = 2147483646;
 		}
 		//if(filter_roomType_house)
-		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page, filter_price_min, filter_price_max);
+		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page, priceMin, priceMax);
 		int size = search_list.size();
 
 		List<JSONObject> homes = new ArrayList<JSONObject>();
@@ -155,25 +155,25 @@ public class SearchController {
 		List<AirdndSearchVO> facilities = airdndsearchService.facilityList(location);
 		//List<AirdndUserVO> hostlanlists = airdndsearchService.hostLanlist(location);
 
-		List<String> facilityList = new ArrayList<String>();
-		List<String> convenienceList = new ArrayList<String>();
-		List<String> hostLangList = new ArrayList<String>();
+		List<String> facilityListStr= new ArrayList<String>();
+		List<String> convenienceListStr = new ArrayList<String>();
+		List<String> hostLangListStr = new ArrayList<String>();
 
 		for(AirdndSearchVO filter : facilities) {
 			if( !filter.getFacilityList().contains("이용 불가:") ) {
 				String element = filter.getFacilityList();
 				if( element.contains("수영장") ||  element.contains("주차") || element.contains("자쿠지") || element.contains("헬스장") ) {
-					facilityList.add(element);
+					facilityListStr.add(element);
 				} else {
-					convenienceList.add(element);
+					convenienceListStr.add(element);
 				}
 			}
 		}
-		hostLangList.add("영어");
-		hostLangList.add("프랑스어");
-		hostLangList.add("한국어");
-		hostLangList.add("스페인어");
-		hostLangList.add("중국어");
+		hostLangListStr.add("영어");
+		hostLangListStr.add("프랑스어");
+		hostLangListStr.add("한국어");
+		hostLangListStr.add("스페인어");
+		hostLangListStr.add("중국어");
 
 		//for(AirdndUserVO filter : hostlanlists) {
 		//  hostlanguagelist.add(filter.getHostLanlist());
@@ -183,9 +183,9 @@ public class SearchController {
 		filterCondition.put("instantBooking", true);
 		filterCondition.put("bedroom", true);
 		filterCondition.put("convenience", true);
-		filterCondition.put("convenienceList", convenienceList);
-		filterCondition.put("facilityList", facilityList);
-		filterCondition.put("hostLangList", hostLangList);
+		filterCondition.put("convenienceList", convenienceListStr);
+		filterCondition.put("facilityList", facilityListStr);
+		filterCondition.put("hostLangList", hostLangListStr);
 
 		//--------최근 본 목록 코드 작성------------ 
 		List<JSONObject> recentHomes = new ArrayList<JSONObject>();//이걸 쿠키로 받아와 검색하는 쿼리문
@@ -195,7 +195,7 @@ public class SearchController {
 		Cookie[] cookies = request.getCookies();
 
 		if(cookies == null) {
-			recentHomes.add(null);
+			
 		}else{
 			for (Cookie cookie : cookies) {
 				if(cookie.getName().contains("AirdndRH")) {

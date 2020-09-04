@@ -22,11 +22,11 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
    DataSource dataSource;
 
    @Override   
-   public List<AirdndSearchVO> select(String place, int page, int filter_price_min, int filter_price_max){
+   public List<AirdndSearchVO> select(String place, int page, int priceMin, int priceMax){
       page = page * 20;
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-      List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' and "+ filter_price_min + " <= price and price <= " + filter_price_max + " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+      List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + place + "' and "+ priceMin + " <= price and price <= " + priceMax + " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
