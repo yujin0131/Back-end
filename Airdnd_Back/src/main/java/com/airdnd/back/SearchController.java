@@ -36,11 +36,18 @@ public class SearchController {
 	@RequestMapping(value="/search",
 			method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody         // 어디검색, 몇박며칠, 인원수...
-	public String check(HttpServletRequest request, HttpServletResponse response, String location, String checkIn, @RequestParam(value = "checkOut", required = false) String checkOut, @RequestParam(value = "guests", required = false) int guests,
-			@RequestParam(value = "latFrom", required = false) double latFrom, @RequestParam(value = "lngFrom", required = false) double lngFrom, @RequestParam(value = "latTo", required = false) double latTo, @RequestParam(value = "lngTo", required = false) double lngTo, @RequestParam(value = "refund", required = false) boolean refund,
-			@RequestParam(value = "roomTypeHouse", required = false) boolean roomTypeHouse, @RequestParam(value = "filterRoomTypePrivate", required = false) boolean filterRoomTypePrivate,
-			@RequestParam(value = "roomTypeShared", required = false) boolean roomTypeShared, @RequestParam(value = "priceMin", required = false) int priceMin, @RequestParam(value = "priceMax", required = false) int priceMax, @RequestParam(value = "instantBooking", required = false) boolean instantBooking, @RequestParam(value = "bedroomBed", required = false) int bedroomBed, @RequestParam(value = "bedroomRoom", required = false) int bedroomRoom, @RequestParam(value = "bedroomBathroom", required = false) int bedroomBathroom,
-			@RequestParam(value = "convenience", required = false) boolean convenience, @RequestParam(value = "convenienceList", required = false) String convenienceList, @RequestParam(value = "facilityList", required = false) String facilityList, @RequestParam(value = "hostLangList", required = false) String hostLangList, @RequestParam(value = "page", required = false) int page) {
+	public String check(HttpServletRequest request, HttpServletResponse response, String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
+			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
+			@RequestParam(value="latFrom", defaultValue="0")double latFrom, @RequestParam(value="lngFrom", defaultValue="0")double lngFrom,
+			@RequestParam(value="latTo", defaultValue="0")double latTo, @RequestParam(value="lngTo", defaultValue="0")double lngTo,
+			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
+			@RequestParam(value="filterRoomTypePrivate", defaultValue="0")boolean filterRoomTypePrivate,
+			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
+			@RequestParam(value="priceMax", defaultValue="0")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
+			@RequestParam(value="bedroomBed", defaultValue="0")int bedroomBed, @RequestParam(value="bedroomRoom", defaultValue="0")int bedroomRoom,
+			@RequestParam(value="bedroomBathroom", defaultValue="0")int bedroomBathroom, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
+			@RequestParam(value="convenienceList", defaultValue="0")String convenienceList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
+			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
 
 
 		try {
@@ -188,7 +195,7 @@ public class SearchController {
 		Cookie[] cookies = request.getCookies();
 
 		if(cookies == null) {
-			recentHomes.add(null);
+			
 		}else{
 			for (Cookie cookie : cookies) {
 				if(cookie.getName().contains("AirdndRH")) {
