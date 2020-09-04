@@ -1,7 +1,9 @@
 package com.airdnd.back;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -36,16 +38,16 @@ public class SearchController {
 	@RequestMapping(value="/search",
 			method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody         // 어디검색, 몇박며칠, 인원수...
-	public String check(HttpServletRequest request, HttpServletResponse response, String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
+	public String check(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="location", required=false)String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
 			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
 			@RequestParam(value="latFrom", defaultValue="0")double latFrom, @RequestParam(value="lngFrom", defaultValue="0")double lngFrom,
 			@RequestParam(value="latTo", defaultValue="0")double latTo, @RequestParam(value="lngTo", defaultValue="0")double lngTo,
 			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
 			@RequestParam(value="filterRoomTypePrivate", defaultValue="0")boolean filterRoomTypePrivate,
 			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
-			@RequestParam(value="priceMax", defaultValue="0")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
+			@RequestParam(value="priceMax", defaultValue="2147483646")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
 			@RequestParam(value="bedroomBed", defaultValue="0")int bedroomBed, @RequestParam(value="bedroomRoom", defaultValue="0")int bedroomRoom,
-			@RequestParam(value="bedroomBathroom", defaultValue="0")int bedroomBathroom, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
+			@RequestParam(value="bedroomBath", defaultValue="0")int bedroomBath, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
 			@RequestParam(value="convenienceList", defaultValue="0")String convenienceList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
 			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
 
@@ -74,17 +76,29 @@ public class SearchController {
 		JSONObject res = new JSONObject();
 
 		//search_list : 페이지별 숙소 리스트------------------
-		if(priceMax == 0) {
-			priceMax = 2147483646;
-		}
+		
+		Map<Object, Object> param = new HashMap();
+		
+		param.put("location", location);
+		param.put("page", page);
+		param.put("guests", guests);
+		param.put("priceMin", priceMin);
+		param.put("priceMax", priceMax);
+		param.put("bedroomBed", bedroomBed);
+		param.put("bedroomRoom", bedroomRoom);
+		param.put("bedroomBath", bedroomBath);
+
+
 		//if(filter_roomType_house)
-		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(location, page, priceMin, priceMax);
+		
+		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 		int size = search_list.size();
 
 		List<JSONObject> homes = new ArrayList<JSONObject>();
 
 		Double addLat = 0.0000000;
 		Double addLng = 0.0000000;
+		int pri = 0;
 
 		for(int i = 0; i < size; i++) {
 			int home_idx = search_list.get(i).getHome_idx();
@@ -100,12 +114,27 @@ public class SearchController {
 			}
 
 			search_list.get(i).setUrl(picture_arr);
-			String lat = search_list.get(i).getLat();
-			String lng = search_list.get(i).getLng();
+			double lat = Double.parseDouble(search_list.get(i).getLat());
+			double lng = Double.parseDouble(search_list.get(i).getLng());
+		
+			System.out.println(homes.size());
+			
+			for(int j = 0; j < homes.size(); j++) {
+				JSONObject lo = (JSONObject) homes.get(j).get("location");
+				System.out.println("lat : " +lat + " / "+ lo.get("lat"));
+				System.out.println("lng : " +lng + " / "+ lo.get("lng"));
+				
+				if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
+
+					lat += 0.01;
+
+				}
+			}
+			
 			latlng.put("lat", lat);
 			latlng.put("lng", lng);
-			addLat +=  Double.parseDouble(lat);
-			addLng +=  Double.parseDouble(lng);
+			addLat +=  lat;
+			addLng +=  lng;
 
 			homes_info.put("homeId", search_list.get(i).getHome_idx());
 			homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
@@ -122,14 +151,15 @@ public class SearchController {
 			homes_info.put("location", latlng);
 
 			homes.add(homes_info);
+			
 
 		}
 		Double avgLat =(Math.round(addLat/size*10000000)/10000000.0); 
 		Double avgLng =(Math.round(addLng/size*10000000)/10000000.0); 
 		//Double avgLng = (double) (Math.round((addLng/size)*10000000)/10000000);
 
-
 		res.put("homes", homes);
+		
 
 		//가격 분포도--------------------------------
 		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
@@ -195,13 +225,10 @@ public class SearchController {
 		Cookie[] cookies = request.getCookies();
 
 		if(cookies == null) {
-			
 		}else{
 			for (Cookie cookie : cookies) {
 				if(cookie.getName().contains("AirdndRH")) {
 					recentHomesIdx.add(Integer.parseInt(cookie.getName()));
-
-
 
 					//int recentHomesIdx[] = {596431, 4010129, 4165392};
 					for(int recenthome:recentHomesIdx) {
@@ -257,7 +284,7 @@ public class SearchController {
 
 		res.put("filterCondition", filterCondition);
 		//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
-		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(location);
+		List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
 
 		res.put("recentHomes", recentHomes);
 		res.put("dataTotal", total.get(0).getData_total());
