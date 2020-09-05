@@ -47,8 +47,8 @@ public class SearchController {
 			@RequestParam(value="priceMax", defaultValue="2147483646")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
 			@RequestParam(value="bedCount", defaultValue="0")int bedCount, @RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount,
 			@RequestParam(value="bathCount", defaultValue="0")int bathCount, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
-			@RequestParam(value="amenityList", defaultValue="%")String amenityList, @RequestParam(value="facilityList", defaultValue="%")String facilityList,
-			@RequestParam(value="hostLangList", defaultValue="%") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
+			@RequestParam(value="amenityList", defaultValue="0")String amenityList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
+			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
 
 
 		try {
@@ -63,15 +63,7 @@ public class SearchController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if(checkIn.equals("null")) {
-			System.out.println("null : " + checkIn);
-		}else if(checkIn.equals("")) {
-			System.out.println("없음 : " + checkIn);
-		}else if(checkIn.isEmpty()) {
-			System.out.println("isempty : " + checkIn);
-		}else {
-			System.out.println("?? : " + checkIn);
-		}
+
 		JSONObject res = new JSONObject();
 
 		//search_list : 페이지별 숙소 리스트------------------
@@ -99,8 +91,10 @@ public class SearchController {
 
 		List<JSONObject> homes = new ArrayList<JSONObject>();
 
+	
 		Double[] maxmin_lat = new Double[2];
 		Double[] maxmin_lng = new Double[2];
+
 		int pri = 0;
 
 		for(int i = 0; i < size; i++) {
@@ -119,9 +113,7 @@ public class SearchController {
 			search_list.get(i).setUrl(picture_arr);
 			double lat = Double.parseDouble(search_list.get(i).getLat());
 			double lng = Double.parseDouble(search_list.get(i).getLng());
-
-			System.out.println(homes.size());
-
+			System.out.println(lat);
 			for(int j = 0; j < homes.size(); j++) {
 				JSONObject lo = (JSONObject) homes.get(j).get("location");
 
@@ -135,18 +127,33 @@ public class SearchController {
 			latlng.put("lat", lat);
 			latlng.put("lng", lng);
 
-			if(lat < maxmin_lat[0] || maxmin_lat[0] == null) {
+			
+			if(maxmin_lat[0] == null) {
+				maxmin_lat[0] = lat;
+			}else if(lat < maxmin_lat[0]) {
 				maxmin_lat[0] = lat;
 			}
-			if(lat > maxmin_lat[1] || maxmin_lat[1] == null) {
+			
+			if(maxmin_lat[1] == null) {
+				maxmin_lat[1] = lat;
+			}else if(lat > maxmin_lat[1]) {
 				maxmin_lat[1] = lat;
 			}
-			if(lng < maxmin_lng[0] || maxmin_lng[0] == null) {
+			
+			if(maxmin_lng[0] == null) {
+				maxmin_lng[0] = lng;
+			}else if(lng < maxmin_lng[0]) {
 				maxmin_lng[0] = lng;
 			}
-			if(lng > maxmin_lng[1] || maxmin_lng[1] == null) {
+			
+			if(maxmin_lng[1] == null) {
+				maxmin_lng[1] = lng;
+			}else if(lng > maxmin_lng[1]) {
 				maxmin_lng[1] = lng;
 			}
+			
+			System.out.println("maxmin_lat : " + maxmin_lat[0]);
+			System.out.println("maxmin_lat : " + maxmin_lat[1]);
 
 			homes_info.put("homeId", search_list.get(i).getHome_idx());
 			homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());

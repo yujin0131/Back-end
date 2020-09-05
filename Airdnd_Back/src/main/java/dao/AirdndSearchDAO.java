@@ -31,7 +31,6 @@ System.out.println(page);
       List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + param.get("location")
       		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
       		+ " and filter_bathroom>="+ param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-      		+ " and lat>=" + param.get("latFrom") + " and lat<=" + param.get("latTo") + " and lng>=" + param.get("lngTo") + " and lng<=" + param.get("lngFrom") 
       		+ " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
     	 
@@ -94,7 +93,6 @@ System.out.println(page);
 		List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + param.get("location") 
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+ " and lat>=" + param.get("latFrom") + " and lat<=" + param.get("latTo") + " and lng>=" + param.get("lngTo") + " and lng<=" + param.get("lngFrom")
 		+" Group by place", new RowMapper<AirdndSearchVO>() {
 
          @Override
