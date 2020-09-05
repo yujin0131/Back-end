@@ -46,6 +46,8 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
                   rs.getInt("review_num"),
                   rs.getString("lat"),
                   rs.getString("lng"));
+            
+            list.setLat("10.1111");
 
             return list;
          }
