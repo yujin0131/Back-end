@@ -44,12 +44,12 @@ public class SearchController {
 			@RequestParam(value="latTo", defaultValue="0")double latTo, @RequestParam(value="lngTo", defaultValue="0")double lngTo,
 			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
 			@RequestParam(value="filterRoomTypePrivate", defaultValue="0")boolean filterRoomTypePrivate,
-			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
+			@RequestParam(value="roomTypeShared", defaultValue="%")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
 			@RequestParam(value="priceMax", defaultValue="2147483646")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
 			@RequestParam(value="bedroomBed", defaultValue="0")int bedroomBed, @RequestParam(value="bedroomRoom", defaultValue="0")int bedroomRoom,
 			@RequestParam(value="bedroomBath", defaultValue="0")int bedroomBath, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
-			@RequestParam(value="convenienceList", defaultValue="0")String convenienceList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
-			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
+			@RequestParam(value="convenienceList", defaultValue="%")String convenienceList, @RequestParam(value="facilityList", defaultValue="%")String facilityList,
+			@RequestParam(value="hostLangList", defaultValue="%") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
 
 
 		try {
