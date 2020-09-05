@@ -11,7 +11,7 @@
 	<script>
 		function insertBookmark() {
 			var bookmark_list_title = document.getElementById("bookmark_list_title").value.trim();
-<<<<<<< HEAD
+			
 			var home_idx = document.getElementById("new_home_idx").value.trim();
 			
 			if(home_idx == null || home_idx == "") {
@@ -33,7 +33,6 @@
 		
 		function deleteBookmark(idx) {
 			location.href = "bookmark_delete?idx=" + idx;
-=======
 			
 			location.href = "bookmark_insert?bookmark_list_title=" + bookmark_list_title;
 		}
@@ -46,12 +45,10 @@
 		
 		function deleteHome(idx) {
 			location.href = "bookmark_deleteHome?idx=" + idx;
->>>>>>> refs/remotes/origin/develop
 		}
 	</script>
 </head>
 <body>
-<<<<<<< HEAD
 	${res}
 	<h2>저는 북마크bookmark-입니다. ^^ 남마크 서마크 동마크 ㅋㅋ ㅈㅅ</h2>
 	<form>
