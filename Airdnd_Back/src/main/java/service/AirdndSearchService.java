@@ -21,8 +21,6 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> searchselect(Map<Object, Object> param){
 
 		List<AirdndSearchVO> list = airdnd_search_dao.select(param);
-
-
 		return list;
 	}
 
@@ -30,7 +28,6 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndHomePictureVO> pictureselect(int home_idx){
 
 		List<AirdndHomePictureVO> list = airdnd_search_dao.pictureselect(home_idx);
-
 		return list;
 	}
 
@@ -38,7 +35,6 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> searchtotalselect(Map<Object, Object> param){
 
 		List<AirdndSearchVO> list = airdnd_search_dao.totalselect(param);
-
 		return list;
 	}
 

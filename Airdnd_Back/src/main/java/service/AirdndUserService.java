@@ -28,7 +28,6 @@ public class AirdndUserService implements AirdndUserServiecI{
 		int res = airdnd_user_dao.select(email_check);
 		
 		return res;
-		
 	}
 	
 	@Override
@@ -46,5 +45,4 @@ public class AirdndUserService implements AirdndUserServiecI{
 		return res;
 	}
 	
-
 }

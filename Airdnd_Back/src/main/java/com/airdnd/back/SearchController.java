@@ -14,16 +14,12 @@ import java.net.URLDecoder;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.google.gson.JsonObject;
 
 import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
@@ -41,14 +37,15 @@ public class SearchController {
 	public String check(HttpServletRequest request, HttpServletResponse response, @RequestParam(value="location", required=false)String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
 			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
 			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
-			@RequestParam(value="roomTypePrivate", defaultValue="0")boolean roomTypePrivate,
-			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="neLat", defaultValue="0")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
-			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="0")double swLng, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
-			@RequestParam(value="priceMax", defaultValue="2147483646")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
-			@RequestParam(value="bedCount", defaultValue="0")int bedCount, @RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount,
-			@RequestParam(value="bathCount", defaultValue="0")int bathCount, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
-			@RequestParam(value="amenityList", defaultValue="%")String amenityList, @RequestParam(value="facilityList", defaultValue="%")String facilityList,
-			@RequestParam(value="hostLangList", defaultValue="%") String hostLangList, @RequestParam(value="page", defaultValue="0")int page) {
+			@RequestParam(value="roomTypePrivate", defaultValue="0")boolean roomTypePrivate, @RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared,
+			@RequestParam(value="neLat", defaultValue="0")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
+			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="0")double swLng,
+			@RequestParam(value="priceMin", defaultValue="0")int priceMin, @RequestParam(value="priceMax", defaultValue="2147483646")int priceMax,
+			@RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking, @RequestParam(value="bedCount", defaultValue="0")int bedCount,
+			@RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount, @RequestParam(value="bathCount", defaultValue="0")int bathCount,
+			@RequestParam(value="convenience", defaultValue="0")boolean convenience, @RequestParam(value="amenityList", defaultValue="0")String amenityList,
+			@RequestParam(value="facilityList", defaultValue="0")String facilityList, @RequestParam(value="hostLangList", defaultValue="0") String hostLangList,
+			@RequestParam(value="page", defaultValue="0")int page) {
 
 
 		try {
@@ -63,19 +60,10 @@ public class SearchController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if(checkIn.equals("null")) {
-			System.out.println("null : " + checkIn);
-		}else if(checkIn.equals("")) {
-			System.out.println("없음 : " + checkIn);
-		}else if(checkIn.isEmpty()) {
-			System.out.println("isempty : " + checkIn);
-		}else {
-			System.out.println("?? : " + checkIn);
-		}
+
 		JSONObject res = new JSONObject();
 
 		//search_list : 페이지별 숙소 리스트------------------
-
 		Map<Object, Object> param = new HashMap();
 
 		param.put("location", location);
@@ -91,7 +79,6 @@ public class SearchController {
 		param.put("swLat", swLat);
 		param.put("swLng", swLng);
 
-
 		//if(filter_roomType_house)
 
 		List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
@@ -101,7 +88,6 @@ public class SearchController {
 
 		Double[] maxmin_lat = new Double[2];
 		Double[] maxmin_lng = new Double[2];
-		int pri = 0;
 
 		for(int i = 0; i < size; i++) {
 			int home_idx = search_list.get(i).getHome_idx();
@@ -120,31 +106,38 @@ public class SearchController {
 			double lat = Double.parseDouble(search_list.get(i).getLat());
 			double lng = Double.parseDouble(search_list.get(i).getLng());
 
-			System.out.println(homes.size());
-
 			for(int j = 0; j < homes.size(); j++) {
 				JSONObject lo = (JSONObject) homes.get(j).get("location");
 
 				if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
-
 					lat += 0.01;
-
 				}
 			}
 
 			latlng.put("lat", lat);
 			latlng.put("lng", lng);
 
-			if(lat < maxmin_lat[0] || maxmin_lat[0] == null) {
+			if(maxmin_lat[0] == null) {
+				maxmin_lat[0] = lat;
+			}else if(lat < maxmin_lat[0]) {
 				maxmin_lat[0] = lat;
 			}
-			if(lat > maxmin_lat[1] || maxmin_lat[1] == null) {
+
+			if(maxmin_lat[1] == null) {
+				maxmin_lat[1] = lat;
+			}else if(lat > maxmin_lat[1]) {
 				maxmin_lat[1] = lat;
 			}
-			if(lng < maxmin_lng[0] || maxmin_lng[0] == null) {
+
+			if(maxmin_lng[0] == null) {
+				maxmin_lng[0] = lng;
+			}else if(lng < maxmin_lng[0]) {
 				maxmin_lng[0] = lng;
 			}
-			if(lng > maxmin_lng[1] || maxmin_lng[1] == null) {
+
+			if(maxmin_lng[1] == null) {
+				maxmin_lng[1] = lng;
+			}else if(lng > maxmin_lng[1]) {
 				maxmin_lng[1] = lng;
 			}
 
@@ -163,15 +156,12 @@ public class SearchController {
 			homes_info.put("location", latlng);
 
 			homes.add(homes_info);
-
-
 		}
 		Double avgLat =(Math.round((maxmin_lat[0] + maxmin_lat[1])/2*10000000)/10000000.0); 
 		Double avgLng =(Math.round((maxmin_lng[0] + maxmin_lng[1])/2*10000000)/10000000.0); 
 		//Double avgLng = (double) (Math.round((addLng/size)*10000000)/10000000);
 
 		res.put("homes", homes);
-
 
 		//가격 분포도--------------------------------
 		List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
