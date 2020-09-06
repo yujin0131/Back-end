@@ -38,8 +38,8 @@ public class SearchController {
 			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
 			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
 			@RequestParam(value="roomTypePrivate", defaultValue="0")boolean roomTypePrivate, @RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared,
-			@RequestParam(value="neLat", defaultValue="0")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
-			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="0")double swLng,
+			@RequestParam(value="neLat", defaultValue="84")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
+			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="180")double swLng,
 			@RequestParam(value="priceMin", defaultValue="0")int priceMin, @RequestParam(value="priceMax", defaultValue="2147483646")int priceMax,
 			@RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking, @RequestParam(value="bedCount", defaultValue="0")int bedCount,
 			@RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount, @RequestParam(value="bathCount", defaultValue="0")int bathCount,
@@ -88,7 +88,6 @@ public class SearchController {
 			param.put("neLng", neLng);
 			param.put("swLat", swLat);
 			param.put("swLng", swLng);
-
 			//if(filter_roomType_house)
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
@@ -127,29 +126,18 @@ public class SearchController {
 				latlng.put("lat", lat);
 				latlng.put("lng", lng);
 
-				if(maxmin_lat[0] == null) {
-					maxmin_lat[0] = lat;
-				}else if(lat < maxmin_lat[0]) {
-					maxmin_lat[0] = lat;
-				}
+				if(maxmin_lat[0] == null) maxmin_lat[0] = lat;
+				else if(lat < maxmin_lat[0]) maxmin_lat[0] = lat;
 
-				if(maxmin_lat[1] == null) {
-					maxmin_lat[1] = lat;
-				}else if(lat > maxmin_lat[1]) {
-					maxmin_lat[1] = lat;
-				}
+				if(maxmin_lat[1] == null) maxmin_lat[1] = lat;
+				else if(lat > maxmin_lat[1]) maxmin_lat[1] = lat;
 
-				if(maxmin_lng[0] == null) {
-					maxmin_lng[0] = lng;
-				}else if(lng < maxmin_lng[0]) {
-					maxmin_lng[0] = lng;
-				}
+				if(maxmin_lng[0] == null) maxmin_lng[0] = lng;
+				else if(lng < maxmin_lng[0]) maxmin_lng[0] = lng;
 
-				if(maxmin_lng[1] == null) {
-					maxmin_lng[1] = lng;
-				}else if(lng > maxmin_lng[1]) {
-					maxmin_lng[1] = lng;
-				}
+				if(maxmin_lng[1] == null) maxmin_lng[1] = lng;
+				else if(lng > maxmin_lng[1]) maxmin_lng[1] = lng;
+
 
 				homes_info.put("homeId", search_list.get(i).getHome_idx());
 				homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
@@ -164,11 +152,23 @@ public class SearchController {
 				homes_info.put("reviewCount", search_list.get(i).getReview_num());
 				homes_info.put("price", search_list.get(i).getPrice());
 				homes_info.put("location", latlng);
-
 				homes.add(homes_info);
 			}
-			Double avgLat =(Math.round((maxmin_lat[0] + maxmin_lat[1])/2*10000000)/10000000.0); 
-			Double avgLng =(Math.round((maxmin_lng[0] + maxmin_lng[1])/2*10000000)/10000000.0); 
+
+			JSONObject mapCenter = new JSONObject();
+			Double avgLat;
+			Double avgLng;
+			try {
+				avgLat =(Math.round((maxmin_lat[0] + maxmin_lat[1])/2*10000000)/10000000.0); 
+				avgLng =(Math.round((maxmin_lng[0] + maxmin_lng[1])/2*10000000)/10000000.0);
+			} catch (Exception e) {
+				avgLat = (swLat+neLat)/2; 
+				avgLng = (swLng+neLng)/2;
+			}
+			
+			mapCenter.put("lat", avgLat);
+			mapCenter.put("lng", avgLng);
+			res.put("mapCenter",mapCenter);
 			//Double avgLng = (double) (Math.round((addLng/size)*10000000)/10000000);
 
 			res.put("homes", homes);
@@ -194,7 +194,7 @@ public class SearchController {
 			res.put("priceArray", price_array);
 
 			//필터조건들 ---------------------------------
-			List<AirdndSearchVO> facilities = airdndsearchService.facilityList(location);
+			List<AirdndSearchVO> facilities = airdndsearchService.facilityList(param);
 			//List<AirdndUserVO> hostlanlists = airdndsearchService.hostLanlist(location);
 
 			List<String> facilityListStr= new ArrayList<String>();
@@ -222,9 +222,8 @@ public class SearchController {
 			//}
 
 			JSONObject filterCondition = new JSONObject();
-			filterCondition.put("superhost", true);
-			filterCondition.put("amenityList", amenityListStr);
-			filterCondition.put("facilityList", facilityListStr);
+			if( amenityListStr.size()!=0) filterCondition.put("amenityList", amenityListStr);
+			if( facilityListStr.size()!=0) filterCondition.put("facilityList", facilityListStr);
 			filterCondition.put("hostLangList", hostLangListStr);
 
 			//--------최근 본 목록 코드 작성------------ 
@@ -280,19 +279,21 @@ public class SearchController {
 					}
 				}
 			}
-
-			JSONObject mapCenter = new JSONObject();
-			mapCenter.put("lat", avgLat);
-			mapCenter.put("lng", avgLng);
-
+			
 			res.put("filterCondition", filterCondition);
 			//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
 			List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
 
 			res.put("recentHomes", recentHomes);
-			res.put("dataTotal", total.get(0).getData_total());
-			res.put("averagePrice", total.get(0).getAverage_price());
-			res.put("mapCenter",mapCenter);
+
+			try {
+				res.put("dataTotal", total.get(0).getData_total());
+				res.put("averagePrice", total.get(0).getAverage_price());
+			} catch (Exception e) {
+				res.put("dataTotal", 0);
+				res.put("averagePrice", 0);
+			}
+			
 		}
 
 		return res.toString();
