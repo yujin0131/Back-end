@@ -159,8 +159,8 @@ public class HomeController {
 		  review_info.add(reviewinfo);
 		  
 	  }
-	  double avgReview = totalReview/review.size();
-	  review_res.put("avgReview", avgReview);
+	  double avgReview = (totalReview/(review.size()*6));
+	  review_res.put("avgReview", Math.round(avgReview*10)/10.0);
 	  review_res.put("reviewCount", review.size());
 	  review_res.put("noticeInfo", review_info);
 	  res.put("review", review_res);
