@@ -73,6 +73,31 @@ public class SearchController {
 			res.put("recenthomes", empty_list);
 		}else {
 
+			
+			String typehouse1 = "devengersOffice";
+			String typehouse2 = "devengersOffice";
+			String typeprivate = "devengersOffice";
+			String typeshared1 = "devengersOffice";
+			String typeshared2 = "devengersOffice";
+			
+			if(roomTypeHouse==false && roomTypePrivate==false && roomTypeShared==false) {
+				typehouse1 = "";
+				typehouse2 = "";
+				typeprivate = "";
+				typeshared1 = "";
+				typeshared2 = "";
+			}
+			
+			if(roomTypeHouse==true) { 
+				typehouse1 = "아파트";
+				typehouse2 = "전체";
+			}
+			if(roomTypePrivate==true) typeprivate = "개인실";
+			if(roomTypeShared==true) {
+				typeshared1 = "다인실";
+				typeshared2 = "객실";
+			}
+
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
 
@@ -88,8 +113,11 @@ public class SearchController {
 			param.put("neLng", neLng);
 			param.put("swLat", swLat);
 			param.put("swLng", swLng);
-			System.out.println("ddddd" + neLat + " / " + neLng + " / " + swLat + " / " + swLng + " / ");
-			System.out.println("fffff" + param.get("neLat") + " / " + param.get("neLng") + " / " + param.get("swLat") + " / " + param.get("swLng") + " / ");
+			param.put("roomTypeHouse1", typehouse1);
+			param.put("roomTypeHouse2", typehouse2);
+			param.put("roomTypePrivate", typeprivate);
+			param.put("roomTypeShared1", typeshared1);
+			param.put("roomTypeShared2", typeshared2);
 			//if(filter_roomType_house)
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
@@ -167,7 +195,7 @@ public class SearchController {
 				avgLat = (swLat+neLat)/2; 
 				avgLng = (swLng+neLng)/2;
 			}
-			
+
 			mapCenter.put("lat", avgLat);
 			mapCenter.put("lng", avgLng);
 			res.put("mapCenter",mapCenter);
@@ -281,7 +309,7 @@ public class SearchController {
 					}
 				}
 			}
-			
+
 			res.put("filterCondition", filterCondition);
 			//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
 			List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
@@ -295,7 +323,7 @@ public class SearchController {
 				res.put("dataTotal", 0);
 				res.put("averagePrice", 0);
 			}
-			
+
 		}
 
 		return res.toString();
