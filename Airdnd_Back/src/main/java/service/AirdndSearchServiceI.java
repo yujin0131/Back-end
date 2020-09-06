@@ -15,7 +15,7 @@ public interface AirdndSearchServiceI {
 	
 	List<AirdndSearchVO> searchtotalselect(Map<Object, Object> param);
 	
-	List<AirdndSearchVO> facilityList(String place);
+	List<AirdndSearchVO> facilityList(Map<Object, Object> param);
 	
 	List<AirdndUserVO> hostLanlist(String place);
 }
