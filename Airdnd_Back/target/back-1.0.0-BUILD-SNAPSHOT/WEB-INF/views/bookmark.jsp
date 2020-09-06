@@ -11,42 +11,27 @@
 	<script>
 		function insertBookmark() {
 			var bookmark_list_title = document.getElementById("bookmark_list_title").value.trim();
-<<<<<<< HEAD
 			var home_idx = document.getElementById("new_home_idx").value.trim();
 			
 			if(home_idx == null || home_idx == "") {
-				location.href = "bookmark_insert?bookmark_list_title=" + bookmark_list_title;
+				location.href = "wishlists_insert?bookmark_list_title=" + bookmark_list_title;
 			} else {
-				location.href = "bookmark_insert?bookmark_list_title=" + bookmark_list_title + "&home_idx=" + home_idx;
+				location.href = "wishlists_insert?bookmark_list_title=" + bookmark_list_title + "&home_idx=" + home_idx;
 			}
 		}
 		
 		function addHome(idx) {
 			var home_idx = document.getElementById("add_home_idx").value.trim();
 			
-			location.href = "bookmark_insertHome?idx=" + idx + "&home_idx=" + home_idx;
+			location.href = "wishlists_insertHome?idx=" + idx + "&home_idx=" + home_idx;
 		}
 		
 		function deleteHome(idx, bookmark_idx) {
-			location.href = "bookmark_deleteHome?idx=" + idx + "&bookmark_idx=" + bookmark_idx;
+			location.href = "wishlists_deleteHome?idx=" + idx + "&bookmark_idx=" + bookmark_idx;
 		}
 		
 		function deleteBookmark(idx) {
-			location.href = "bookmark_delete?idx=" + idx;
-=======
-			
-			location.href = "bookmark_insert?bookmark_list_title=" + bookmark_list_title;
-		}
-		
-		function updateHome(idx) {
-			var home_idx = document.getElementById("new_home_idx").value.trim();
-			
-			location.href = "bookmark_updateHome?idx=" + idx + "&home_idx=" + home_idx;
-		}
-		
-		function deleteHome(idx) {
-			location.href = "bookmark_deleteHome?idx=" + idx;
->>>>>>> refs/remotes/origin/develop
+			location.href = "wishlists_delete?idx=" + idx;
 		}
 	</script>
 </head>

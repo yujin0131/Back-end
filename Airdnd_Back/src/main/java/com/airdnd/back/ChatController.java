@@ -1,5 +1,6 @@
 package com.airdnd.back;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import common.Common;
 import service.AirdndChatService;
@@ -28,67 +30,122 @@ public class ChatController {
 	@Autowired
 	HttpServletRequest request;
 
-	@RequestMapping("/chat")
+	@RequestMapping(value="/guest/inbox", produces="application/json;charset=utf8")
+	@ResponseBody
 	public String chat_list(Model model) {
-		JSONObject resChat = new JSONObject();
-		JSONArray chatList = new JSONArray();
-		JSONObject chatInfo = null;
+		//파싱할 최종 데이터
+		JSONObject res = new JSONObject();			//1
+
+		JSONArray hostArr = new JSONArray();		//2
+		JSONObject hostlists = new JSONObject();	//3
+
+		JSONArray info = new JSONArray();			//4
+		JSONObject contents = null;					//5-1
+		JSONObject chatHistory = null;				//5-2
 		
-		List<AirdndChatVO> list = airdndChatService.selectChatList();
-		model.addAttribute("list", list);
+		int user_idx = 1; //Temp. 세션에서 받아오기
 		
 		//Host Info
-		List<AirdndHostVO> hostList = airdndChatService.selectHostList();
+		List<AirdndHostVO> hostList = airdndChatService.selectHostList(user_idx);
+		System.out.println("hostList size : " + hostList.size());
+		
+		//Chat Info
+		Map<Integer, Object> chatList_host = new HashMap<Integer, Object>();
+		List<AirdndChatVO> list = null;
+		List<AirdndChatVO> list2 = null;
+		
+		for(int i = 0; i < hostList.size(); i++) {
+			System.out.println("흠냐 : " + hostList.get(i).getIdx());
+			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
+			
+			chatList_host.put(i, list);
+		}
 		
 		//User Info
-		int user_idx = 1; //세션에서 받아오기
 		AirdndUserVO userVO = airdndChatService.selectUser(user_idx).get(0);
 		
 		//UserResInfo
+		List<AirdndUserResInfoVO> userResInfo = new ArrayList<AirdndUserResInfoVO>();
+		AirdndUserResInfoVO vo = null;
 		
+		//Latest msg
+		List<AirdndChatVO> chatInfo = null;
+		AirdndChatVO chat_vo = null;
 		
-		int size = list.size();
-		
-		for(int i = 0; i < size; i++) {
-			chatInfo = new JSONObject();
+		for(int i = 0; i < hostList.size(); i++) {
+			hostlists = new JSONObject(); 	//3
+			info = new JSONArray();			//4
+			contents = new JSONObject();	//5-1
 			
-			chatInfo.put("idx", list.get(i).getIdx());
+			int n = 0;
 			
-			//Host
-			chatInfo.put("hostIdx", list.get(i).getHost_idx());
+			//list and vo setting
+			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
+			list2 = (List<AirdndChatVO>)chatList_host.get(i);
+			vo = airdndChatService.selectUserResInfo(user_idx, hostList.get(i).getIdx()).get(0);
+			chat_vo = airdndChatService.selectLatestMsg(user_idx, hostList.get(i).getIdx()).get(0);
 			
-			for(int j = 0; j < hostList.size(); j++) {
-				if(list.get(i).getHost_idx() == hostList.get(j).getIdx()) {
-					chatInfo.put("hostName", hostList.get(j).getHost_name());
-					chatInfo.put("hostProfileImg", hostList.get(j).getHost_profileImg());
+			hostlists.put("id", hostList.get(i).getIdx());
+			hostlists.put("reservationId", vo.getIdx());
+			
+			int count = 0;
+			
+			for(int j = 0; j < list.size(); j++) {
+				System.out.println("list 사이즈 : " + list.size());
+				if(list.get(j).getMsg_hidden_or_not() == 0) {
+					count++;
 				}
-				
-				//UserResInfo
-				//AirdndUserResInfoVO vo = airdndChatService.selectUserResInfo(list.get(i).getUser_idx(), hostList.get(j).getHome_idx());
-				
 			}
 			
-			//User
-			chatInfo.put("userIdx", list.get(i).getUser_idx());
-			chatInfo.put("userName", userVO.getFirst_name());
-			chatInfo.put("userProfileImg", userVO.getProfileImg());
+			if(count == list.size()) {
+				hostlists.put("state", "all");
+			} else if(count == 0) {
+				hostlists.put("state", "hide");
+			} else {
+				hostlists.put("state", "error. 이게 보이면 미래에게 문의하세요.");
+			}
 			
-			chatInfo.put("content", list.get(i).getContent());
-			chatInfo.put("image_url", list.get(i).getImage_url());
-			chatInfo.put("image", list.get(i).getImage());
-			chatInfo.put("send_date_time", list.get(i).getSend_date_time());
-			chatInfo.put("msg_hidden_or_not", list.get(i).getMsg_hidden_or_not());
+			hostlists.put("hostname", hostList.get(i).getHost_name());
 			
-			chatList.add(i, chatInfo);
+			
+			//contents
+			contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
+			
+			//latest message
+			contents.put("lastMsg", chat_vo.getContent());
+			contents.put("lastMsgDate", chat_vo.getSend_date_time());
+			
+			//userResInfo
+			contents.put("isCanceled", vo.getIs_canceled());
+			contents.put("checkin", vo.getCheckin());
+			contents.put("checkout", vo.getCheckout());
+			
+			//info.add(n, contents);
+			hostlists.put("contents", contents);
+			
+			
+			//chatHistory
+			for(int j = 0; j < list2.size(); j++) {
+				chatHistory = new JSONObject();
+				
+				chatHistory.put("id", list2.get(j).getIdx());
+				chatHistory.put("userId", list2.get(j).getUser_idx());
+				chatHistory.put("name", userVO.getFirst_name());
+				chatHistory.put("timeStamp", list2.get(j).getSend_date_time());
+				chatHistory.put("text", list2.get(j).getContent());
+				
+				info.add(n, chatHistory);
+				hostlists.put("chatHistory", info);
+			}
+
+			hostArr.add(i, hostlists);
 		}//for
 		
-		resChat.put("chatList", chatList);
+		res.put("message", hostArr);
+		//model.addAttribute("res", res.toString());
 		
-		model.addAttribute("res", resChat.toString());
-		//System.out.println(resChat.toString());
-		
-		//return resChat.toString();
-		return Common.VIEW_PATH + "chat.jsp";
+		return res.toString();
+		//return Common.VIEW_PATH + "chat.jsp";
 	}
 	
 	@RequestMapping("/insert_chat")

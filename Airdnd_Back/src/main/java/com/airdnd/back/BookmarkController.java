@@ -1,23 +1,34 @@
 package com.airdnd.back;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,32 +135,59 @@ public class BookmarkController {
 		return res.toString();
 		//return Common.VIEW_PATH + "bookmark.jsp";
 	}
-
-	@RequestMapping(value = "/bookmark_insert", method=RequestMethod.POST,
-			produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
-	//@ResponseBody
+	
+	/*(HttpServletRequest request, HttpServletResponse response, String location, @RequestParam(value="checkIn", defaultValue="0")String checkIn,
+			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
+			@RequestParam(value="latFrom", defaultValue="0")double latFrom, @RequestParam(value="lngFrom", defaultValue="0")double lngFrom,
+			@RequestParam(value="latTo", defaultValue="0")double latTo, @RequestParam(value="lngTo", defaultValue="0")double lngTo,
+			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
+			@RequestParam(value="filterRoomTypePrivate", defaultValue="0")boolean filterRoomTypePrivate,
+			@RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared, @RequestParam(value="priceMin", defaultValue="0")int priceMin,
+			@RequestParam(value="priceMax", defaultValue="0")int priceMax, @RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking,
+			@RequestParam(value="bedroomBed", defaultValue="0")int bedroomBed, @RequestParam(value="bedroomRoom", defaultValue="0")int bedroomRoom,
+			@RequestParam(value="bedroomBathroom", defaultValue="0")int bedroomBathroom, @RequestParam(value="convenience", defaultValue="0")boolean convenience,
+			@RequestParam(value="convenienceList", defaultValue="0")String convenienceList, @RequestParam(value="facilityList", defaultValue="0")String facilityList,
+			@RequestParam(value="hostLangList", defaultValue="0") String hostLangList, @RequestParam(value="page", defaultValue="0")int page)*/
+	@RequestMapping(value = "/wishlists/{title}", method=RequestMethod.GET,
+					produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
+	@ResponseBody
 	//public String insert_bookmark(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
-	public String insert_bookmark(@RequestBody String payload) {
+	public String insert_bookmark(HttpServletRequest request, HttpServletResponse response, @RequestBody String title) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 		
+		JSONParser parser = new JSONParser(); //–JSON Parser 생성
+		JSONObject jsonObj = null;
+		
+	    try {
+			jsonObj = (JSONObject)parser.parse(title);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    System.out.println("제이슨 : " + jsonObj);
+	    System.out.println("타이틀 : " + title);
+		
+		/*
 		Map<String, Object> javaObject = null;
 		try {
 			javaObject = mapper.readValue(payload, Map.class);
 		} catch (Exception e) {
-			System.out.println("payload error");
+			System.out.println("payload 오류");
 		}
-		
 		System.out.println("javaObject: " + javaObject);
+		*/
 		
+		/*
 		//북마크 추가
 		JSONObject result = new JSONObject();
 		String result_msg = "";
 		Gson gson = new Gson();
 		int res = 0;
 		
-		AirdndBookmarkVO vo = null;
-		AirdndBookmarkedHomesVO vo2 = null;
+		AirdndBookmarkVO vo = new AirdndBookmarkVO();
+		AirdndBookmarkedHomesVO vo2 = new AirdndBookmarkedHomesVO();
 		
 		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
 		vo.setUser_idx(1);
@@ -199,6 +237,10 @@ public class BookmarkController {
 					res = airdndBookmarkService.update_updateTime(vo.getIdx());
 					
 					if(res == 1) {
+						List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
+						String mainUrl = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
+						vo2.setUrl(mainUrl);
+						
 						System.out.println("새 북마크 및 숙소 추가 완료(북마크 idx : " + vo.getIdx() + ")");
 						result_msg = "Success";
 					} else {
@@ -213,10 +255,6 @@ public class BookmarkController {
 				System.out.println("북마크를 추가하지 못함");
 				result_msg = "Fail_bookmark";
 			}
-
-			List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
-			String url = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
-			vo2.setUrl(url);
 		}
 
 		//bookmark_list_title로 idx 얻어오기
@@ -230,17 +268,19 @@ public class BookmarkController {
 			airdndBookmarkService.update_updateTime(vo.getIdx());
 
 			List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
-			String url = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
-			vo2.setUrl(url);
+			String mainUrl = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
+			vo2.setUrl(mainUrl);
 		}
-
+		*/
+		
 		//model.addAttribute("vo", vo);
 		//model.addAttribute("vo2", vo2);
 
 		return "redirect:bookmark";
+		//return result_msg;
 	}
 
-	@RequestMapping("/bookmark_insertHome")
+	@RequestMapping("/wishlists_insertHome")
 	public String insert_bookmarkHome(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
 		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
 		vo.setUser_idx(1);
@@ -283,7 +323,7 @@ public class BookmarkController {
 		return "redirect:bookmark";
 	}
 
-	@RequestMapping("/bookmark_deleteHome")
+	@RequestMapping("/wishlists_deleteHome")
 	public String delete_bookmarkHome(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		int bookmark_idx = Integer.parseInt(request.getParameter("bookmark_idx"));
@@ -300,7 +340,7 @@ public class BookmarkController {
 		return "redirect:bookmark";
 	}
 
-	@RequestMapping("/bookmark_delete")
+	@RequestMapping("/wishlists_delete")
 	public String delete_bookmark(AirdndBookmarkVO vo, Model model) {
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		vo.setIdx(idx);
