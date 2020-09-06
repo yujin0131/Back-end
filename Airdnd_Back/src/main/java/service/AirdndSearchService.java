@@ -13,7 +13,7 @@ import vo.AirdndUserVO;
 
 @Service("airdndsearchService")
 public class AirdndSearchService implements AirdndSearchServiceI{
-
+ 
 	@Autowired
 	AirdndSearchDAO airdnd_search_dao;
 
@@ -21,6 +21,7 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> searchselect(Map<Object, Object> param){
 
 		List<AirdndSearchVO> list = airdnd_search_dao.select(param);
+		System.out.println("sssss" + param.get("neLat") + " / " + param.get("neLng") + " / " + param.get("swLat") + " / " + param.get("swLng") + " / ");
 		return list;
 	}
 
@@ -44,9 +45,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 		return list;
 	}
 	
-	public List<AirdndSearchVO> facilityList(String place) {
+	public List<AirdndSearchVO> facilityList(Map<Object, Object> param) {
 		
-		List<AirdndSearchVO> list = airdnd_search_dao.facilityList(place);
+		List<AirdndSearchVO> list = airdnd_search_dao.facilityList(param);
 		return list;
 	}
 	
