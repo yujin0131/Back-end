@@ -38,8 +38,8 @@ public class SearchController {
 			@RequestParam(value="checkOut", defaultValue="0")String checkOut, @RequestParam(value="guests", defaultValue="0")int guests,
 			@RequestParam(value="refund", defaultValue="0")boolean refund, @RequestParam(value="roomTypeHouse", defaultValue="0")boolean roomTypeHouse,
 			@RequestParam(value="roomTypePrivate", defaultValue="0")boolean roomTypePrivate, @RequestParam(value="roomTypeShared", defaultValue="0")boolean roomTypeShared,
-			@RequestParam(value="neLat", defaultValue="0")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
-			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="0")double swLng,
+			@RequestParam(value="neLat", defaultValue="84")double neLat, @RequestParam(value="neLng", defaultValue="0")double neLng,
+			@RequestParam(value="swLat", defaultValue="0")double swLat, @RequestParam(value="swLng", defaultValue="180")double swLng,
 			@RequestParam(value="priceMin", defaultValue="0")int priceMin, @RequestParam(value="priceMax", defaultValue="2147483646")int priceMax,
 			@RequestParam(value="instantBooking", defaultValue="0")boolean instantBooking, @RequestParam(value="bedCount", defaultValue="0")int bedCount,
 			@RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount, @RequestParam(value="bathCount", defaultValue="0")int bathCount,
@@ -127,29 +127,17 @@ public class SearchController {
 				latlng.put("lat", lat);
 				latlng.put("lng", lng);
 
-				if(maxmin_lat[0] == null) {
-					maxmin_lat[0] = lat;
-				}else if(lat < maxmin_lat[0]) {
-					maxmin_lat[0] = lat;
-				}
+				if(maxmin_lat[0] == null) maxmin_lat[0] = lat;
+				else if(lat < maxmin_lat[0]) maxmin_lat[0] = lat;
 
-				if(maxmin_lat[1] == null) {
-					maxmin_lat[1] = lat;
-				}else if(lat > maxmin_lat[1]) {
-					maxmin_lat[1] = lat;
-				}
+				if(maxmin_lat[1] == null) maxmin_lat[1] = lat;
+				else if(lat > maxmin_lat[1]) maxmin_lat[1] = lat;
 
-				if(maxmin_lng[0] == null) {
-					maxmin_lng[0] = lng;
-				}else if(lng < maxmin_lng[0]) {
-					maxmin_lng[0] = lng;
-				}
+				if(maxmin_lng[0] == null) maxmin_lng[0] = lng;
+				else if(lng < maxmin_lng[0]) maxmin_lng[0] = lng;
 
-				if(maxmin_lng[1] == null) {
-					maxmin_lng[1] = lng;
-				}else if(lng > maxmin_lng[1]) {
-					maxmin_lng[1] = lng;
-				}
+				if(maxmin_lng[1] == null) maxmin_lng[1] = lng;
+				else if(lng > maxmin_lng[1]) maxmin_lng[1] = lng;
 
 				homes_info.put("homeId", search_list.get(i).getHome_idx());
 				homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
