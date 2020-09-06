@@ -7,11 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import common.Common;
 import service.AirdndUserResInfoService;
@@ -23,9 +25,11 @@ public class UserResInfoController {
 	@Autowired
 	AirdndUserResInfoService airdndUserResInfoService;
 	
-	@RequestMapping("/userResInfo_upcoming")
+	@RequestMapping(value = "/userResInfo_upcoming", produces = "application/json;charset=utf8")
+	@ResponseBody
 	public String user_res_info_list1(Model model) {
-		JSONObject jsonObject1 = new JSONObject();
+		JSONObject resUpcoming = new JSONObject();
+		JSONArray upcomingList = new JSONArray();
 		
 		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
 		//1. Upcoming reservation list
@@ -49,9 +53,9 @@ public class UserResInfoController {
 		String checkout = "";
 		int checkoutDate = 0;
 		
+		System.out.println("사이즈 : " + size);
+		
 		for(int i = 0; i < size; i++) {
-			Map<Object, Object> javaObject = new HashMap<Object, Object>();
-			
 			if(list.get(i).getIs_canceled() == 0) {
 				checkout_temp = list.get(i).getCheckout().split("-");
 				checkout = "";
@@ -68,6 +72,11 @@ public class UserResInfoController {
 					model.addAttribute("list1", list1);
 				}
 			}
+		}//for
+		
+		for(int i = 0; i < list1.size(); i++) {
+			JSONObject javaObject = new JSONObject();
+			
 			javaObject.put("idx", list1.get(i).getIdx());
 			javaObject.put("user_idx", list1.get(i).getUser_idx());
 			javaObject.put("home_idx", list1.get(i).getHome_idx());
@@ -75,17 +84,25 @@ public class UserResInfoController {
 			javaObject.put("checkout", list1.get(i).getCheckout());
 			javaObject.put("guest_idx", list1.get(i).getGuest_idx());
 			javaObject.put("is_canceled", list1.get(i).getIs_canceled());
+			javaObject.put("url", list1.get(i).getUrl());
 			
-			jsonObject1.put(i, javaObject);
-		}//for
+			upcomingList.add(i, javaObject);
+		}
 		
-		//return jsonObject1.toString();
-		return Common.VIEW_PATH + "userResInfo_1upcoming.jsp";
+		resUpcoming.put("upcomingList", upcomingList);
+		
+		model.addAttribute("res", resUpcoming.toString());
+		//System.out.println(resUpcoming.toString());
+		
+		return resUpcoming.toString();
+		//return Common.VIEW_PATH + "userResInfo_1upcoming.jsp";
 	}
 	
-	@RequestMapping("/userResInfo_past")
+	@RequestMapping(value = "/userResInfo_past", produces = "application/json;charset=utf8")
+	@ResponseBody
 	public String user_res_info_list2(Model model) {
-		JSONObject jsonObject2 = new JSONObject();
+		JSONObject resPast = new JSONObject();
+		JSONArray pastList = new JSONArray();
 		
 		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
 		//2. Past reservation list
@@ -110,8 +127,6 @@ public class UserResInfoController {
 		int checkoutDate = 0;
 		
 		for(int i = 0; i < size; i++) {
-			Map<Object, Object> javaObject = new HashMap<Object, Object>();
-			
 			if(list.get(i).getIs_canceled() == 0) {
 				checkout_temp = list.get(i).getCheckout().split("-");
 				checkout = "";
@@ -128,6 +143,11 @@ public class UserResInfoController {
 					model.addAttribute("list2", list2);
 				}
 			}
+		}//for
+		
+		for(int i = 0; i < list2.size(); i++) {
+			JSONObject javaObject = new JSONObject();
+			
 			javaObject.put("idx", list2.get(i).getIdx());
 			javaObject.put("user_idx", list2.get(i).getUser_idx());
 			javaObject.put("home_idx", list2.get(i).getHome_idx());
@@ -135,17 +155,28 @@ public class UserResInfoController {
 			javaObject.put("checkout", list2.get(i).getCheckout());
 			javaObject.put("guest_idx", list2.get(i).getGuest_idx());
 			javaObject.put("is_canceled", list2.get(i).getIs_canceled());
+			javaObject.put("url", list2.get(i).getUrl());
 			
-			jsonObject2.put(i, javaObject);
-		}//for
+			pastList.add(i, javaObject);
+		}
 		
-		//return jsonObject2.toString();
-		return Common.VIEW_PATH + "userResInfo_2past.jsp";
+		resPast.put("pastList", pastList);
+		
+		model.addAttribute("res", resPast.toString());
+		System.out.println(resPast.toString());
+		
+		return resPast.toString();
+		//return Common.VIEW_PATH + "userResInfo_2past.jsp";
 	}
 	
-	@RequestMapping("/userResInfo_canceled")
+	@RequestMapping(value = "/userResInfo_canceled", produces = "application/json;charset=utf8")
+	@ResponseBody
 	public String user_res_info_list3(Model model) {
-		JSONObject jsonObject3 = new JSONObject();
+		JSONObject resCanceled = new JSONObject();
+		JSONArray canceledList = new JSONArray();
+		
+		JSONObject jsonObject = new JSONObject();
+		
 		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
 		//3. Canceled reservation list
 		List<AirdndUserResInfoVO> list3 = new ArrayList<AirdndUserResInfoVO>();
@@ -161,12 +192,15 @@ public class UserResInfoController {
 		
 		//3. Canceled reservation
 		for(int i = 0; i < size; i++) {
-			Map<Object, Object> javaObject = new HashMap<Object, Object>();
-			
 			if(list.get(i).getIs_canceled() != 0) {
 				list3.add(list.get(i));
 				model.addAttribute("list3", list3);
 			}
+		}//for
+		
+		for(int i = 0; i < list3.size(); i++) {
+			JSONObject javaObject = new JSONObject();
+			
 			javaObject.put("idx", list3.get(i).getIdx());
 			javaObject.put("user_idx", list3.get(i).getUser_idx());
 			javaObject.put("home_idx", list3.get(i).getHome_idx());
@@ -174,11 +208,19 @@ public class UserResInfoController {
 			javaObject.put("checkout", list3.get(i).getCheckout());
 			javaObject.put("guest_idx", list3.get(i).getGuest_idx());
 			javaObject.put("is_canceled", list3.get(i).getIs_canceled());
+			javaObject.put("url", list3.get(i).getUrl());
 			
-			jsonObject3.put(i, javaObject);
-		}//for
+			jsonObject.put(i, javaObject);
+			
+			canceledList.add(i, javaObject);
+		}
 		
-		//return jsonObject3.toString();
-		return Common.VIEW_PATH + "userResInfo_3canceled.jsp";
+		resCanceled.put("canceledList", canceledList);
+		
+		model.addAttribute("res", resCanceled.toString());
+		System.out.println(resCanceled.toString());
+		
+		return resCanceled.toString();
+		//return Common.VIEW_PATH + "userResInfo_3canceled.jsp";
 	}
 }
