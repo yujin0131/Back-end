@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	AirdndSearchDAO airdnd_search_dao;
 
 	@Override
-	public List<AirdndSearchVO> searchselect(String place, int page, int priceMin, int priceMax){
+	public List<AirdndSearchVO> searchselect(Map<Object, Object> param){
 
-		List<AirdndSearchVO> list = airdnd_search_dao.select(place, page, priceMin, priceMax);
-
+		List<AirdndSearchVO> list = airdnd_search_dao.select(param);
 		return list;
 	}
 
@@ -28,15 +28,13 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndHomePictureVO> pictureselect(int home_idx){
 
 		List<AirdndHomePictureVO> list = airdnd_search_dao.pictureselect(home_idx);
-
 		return list;
 	}
 
 	@Override
-	public List<AirdndSearchVO> searchtotalselect(String place){
+	public List<AirdndSearchVO> searchtotalselect(Map<Object, Object> param){
 
-		List<AirdndSearchVO> list = airdnd_search_dao.totalselect(place);
-
+		List<AirdndSearchVO> list = airdnd_search_dao.totalselect(param);
 		return list;
 	}
 
