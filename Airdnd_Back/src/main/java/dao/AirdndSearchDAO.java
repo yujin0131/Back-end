@@ -32,7 +32,9 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
       		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
       		+ " and filter_bathroom>="+ param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
       		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
-      		+ "' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+      		+ "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+      		+ "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+      		+ "%' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
     	  //param.get("swLat")
 
     	 
@@ -98,7 +100,9 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
 		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
-		+ "' Group by place", new RowMapper<AirdndSearchVO>() {
+		+ "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+		+ "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+		+ "%' Group by place", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -143,7 +147,9 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
       + "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
       + " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
       + " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swlng") + "' and lat <= '" + param.get("neLat") + "' and lng >= '" + param.get("nelng")
-      + "') group by facility", new RowMapper<AirdndSearchVO>() {
+      + "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+      + "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+      + "%') group by facility", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
