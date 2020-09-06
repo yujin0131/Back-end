@@ -38,7 +38,8 @@ import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
-import vo.AirdndRuleVO;
+import vo.AirdndSafetyRuleVO;
+import vo.AirdndUseRuleVO;
 
 @Controller
 public class HomeController {
@@ -165,14 +166,14 @@ public class HomeController {
 	  res.put("review", review_res);
 	  
 	  List<String> safetyrule_info = new ArrayList<String>();
-	  List<AirdndRuleVO> safetyrule = airdndhomeService.safetyruleselect(home_idx);
+	  List<AirdndSafetyRuleVO> safetyrule = airdndhomeService.safetyruleselect(home_idx);
 	  for( int i = 0; i< safetyrule.size(); i++) {
 		  safetyrule_info.add(safetyrule.get(i).getSafety_rule());
 	  }
 	  res.put("safetyruleInfo", safetyrule_info);
 	  
 	  List<String> userule_info = new ArrayList<String>();
-	  List<AirdndRuleVO> userule = airdndhomeService.useruleselect(home_idx);
+	  List<AirdndUseRuleVO> userule = airdndhomeService.useruleselect(home_idx);
 	  for( int i = 0; i< userule.size(); i++) {
 		  userule_info.add(userule.get(i).getUse_rule());
 	  }
