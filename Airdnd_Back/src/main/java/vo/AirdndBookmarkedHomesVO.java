@@ -17,6 +17,10 @@ public class AirdndBookmarkedHomesVO {
 		this.home_idx = home_idx;
 	}
 	
+	public AirdndBookmarkedHomesVO(int home_idx) {
+		this.home_idx = home_idx;
+	}
+	
 	public int getIdx() {
 		return idx;
 	}
