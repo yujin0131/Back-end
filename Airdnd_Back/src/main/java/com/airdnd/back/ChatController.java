@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,6 +35,30 @@ public class ChatController {
 	@RequestMapping(value="/guest/inbox", produces="application/json;charset=utf8")
 	@ResponseBody
 	public String chat_list(Model model) {
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+		
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+		
 		//Final data
 		JSONObject res = new JSONObject();			//1
 
@@ -43,10 +69,8 @@ public class ChatController {
 		JSONObject contents = null;					//5-1
 		JSONObject chatHistory = null;				//5-2
 		
-		int user_idx = 1; //Temp. 세션에서 받아오기
-		
 		//Host Info
-		List<AirdndHostVO> hostList = airdndChatService.selectHostList(user_idx);
+		List<AirdndHostVO> hostList = airdndChatService.selectHostList(signInIdx);
 		System.out.println("hostList size : " + hostList.size());
 		
 		//Chat Info
@@ -56,13 +80,13 @@ public class ChatController {
 		
 		for(int i = 0; i < hostList.size(); i++) {
 			System.out.println("흠냐 : " + hostList.get(i).getIdx());
-			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
+			list = airdndChatService.selectChatList(signInIdx, hostList.get(i).getIdx());
 			
 			chatList_host.put(i, list);
 		}
 		
 		//User Info
-		AirdndUserVO userVO = airdndChatService.selectUser(user_idx).get(0);
+		AirdndUserVO userVO = airdndChatService.selectUser(signInIdx).get(0);
 		
 		//UserResInfo
 		List<AirdndUserResInfoVO> userResInfo = new ArrayList<AirdndUserResInfoVO>();
@@ -80,10 +104,10 @@ public class ChatController {
 			int n = 0;
 			
 			//list and vo setting
-			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
+			list = airdndChatService.selectChatList(signInIdx, hostList.get(i).getIdx());
 			list2 = (List<AirdndChatVO>)chatList_host.get(i);
-			vo = airdndChatService.selectUserResInfo(user_idx, hostList.get(i).getIdx()).get(0);
-			chat_vo = airdndChatService.selectLatestMsg(user_idx, hostList.get(i).getIdx()).get(0);
+			vo = airdndChatService.selectUserResInfo(signInIdx, hostList.get(i).getIdx()).get(0);
+			chat_vo = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx()).get(0);
 			
 			hostlists.put("id", hostList.get(i).getIdx());
 			hostlists.put("reservationId", vo.getIdx());
@@ -150,8 +174,32 @@ public class ChatController {
 	
 	@RequestMapping("/insert_chat")
 	public String insert_chat(AirdndChatVO vo, Model model) {
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+		
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+		
 		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
-		vo.setUser_idx(2);
+		vo.setUser_idx(signInIdx);
 		//이건 어디서 받아오지.. detail 페이지인가..?
 		vo.setHost_idx(2);
 		
