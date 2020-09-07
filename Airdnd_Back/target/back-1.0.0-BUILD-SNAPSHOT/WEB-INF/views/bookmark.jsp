@@ -11,6 +11,10 @@
 	<script>
 		function insertBookmark() {
 			var bookmark_list_title = document.getElementById("bookmark_list_title").value.trim();
+<<<<<<< HEAD
+=======
+			
+>>>>>>> refs/remotes/pmorigin/develop
 			var home_idx = document.getElementById("new_home_idx").value.trim();
 			
 			if(home_idx == null || home_idx == "") {
@@ -31,12 +35,27 @@
 		}
 		
 		function deleteBookmark(idx) {
+<<<<<<< HEAD
 			location.href = "wishlists_delete?idx=" + idx;
+=======
+			location.href = "bookmark_delete?idx=" + idx;
+			
+			location.href = "bookmark_insert?bookmark_list_title=" + bookmark_list_title;
+		}
+		
+		function updateHome(idx) {
+			var home_idx = document.getElementById("new_home_idx").value.trim();
+			
+			location.href = "bookmark_updateHome?idx=" + idx + "&home_idx=" + home_idx;
+		}
+		
+		function deleteHome(idx) {
+			location.href = "bookmark_deleteHome?idx=" + idx;
+>>>>>>> refs/remotes/pmorigin/develop
 		}
 	</script>
 </head>
 <body>
-<<<<<<< HEAD
 	${res}
 	<h2>저는 북마크bookmark-입니다. ^^ 남마크 서마크 동마크 ㅋㅋ ㅈㅅ</h2>
 	<form>

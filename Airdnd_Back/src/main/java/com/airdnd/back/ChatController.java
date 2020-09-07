@@ -33,7 +33,7 @@ public class ChatController {
 	@RequestMapping(value="/guest/inbox", produces="application/json;charset=utf8")
 	@ResponseBody
 	public String chat_list(Model model) {
-		//파싱할 최종 데이터
+		//Final data
 		JSONObject res = new JSONObject();			//1
 
 		JSONArray hostArr = new JSONArray();		//2

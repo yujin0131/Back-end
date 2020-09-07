@@ -52,14 +52,14 @@ public class BookmarkController {
 	@RequestMapping(value = "/wishlists", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String bookmark_list(Model model) {
-		//파싱할 최종 데이터
-		JSONObject res = new JSONObject();
+		//Final data
+		JSONObject res = new JSONObject();			  //1
 
-		JSONArray bookmarkList = new JSONArray();
-		JSONObject bookmark = new JSONObject();
+		JSONArray bookmarkList = new JSONArray();	  //2
+		JSONObject bookmark = new JSONObject();		  //3
 
-		JSONArray bookmarkHomeList = new JSONArray();
-		JSONObject bookmarkHome = null;
+		JSONArray bookmarkHomeList = new JSONArray(); //4
+		JSONObject bookmarkHome = null;				  //5
 
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 

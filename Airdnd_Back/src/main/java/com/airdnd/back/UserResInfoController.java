@@ -21,7 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import common.Common;
 import service.AirdndUserResInfoService;
 import vo.AirdndHomePictureVO;
+import vo.AirdndHomeVO;
+import vo.AirdndHostVO;
+import vo.AirdndUseRuleVO;
 import vo.AirdndUserResInfoVO;
+import vo.AirdndUserVO;
 
 @Controller
 public class UserResInfoController {
@@ -31,45 +35,60 @@ public class UserResInfoController {
 	@RequestMapping(value = "/trips/v1", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String user_res_info_list(Model model, @RequestParam(value="tab", defaultValue="")String tab) {
+		try {
+			tab = URLDecoder.decode(tab, "utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		System.out.println("탭 : " + tab);
+		
+		//파싱할 최종 데이터
+		JSONObject res = new JSONObject();			//1
+		JSONArray resArr = new JSONArray();			//1-2
+		JSONObject userInfo = new JSONObject();		//2
+		
+		JSONArray resArr2 = new JSONArray();	//3
+		JSONObject resInfo = new JSONObject();	//4
+
+		JSONArray rules = new JSONArray();			//5
+		JSONObject locationInfo = null;				//6-1
+		JSONObject rulesInfo = null;				//6-2
+		JSONObject guestInfo = null;				//6-3
+		
+		//temp. 세션이나 쿠키에서 받아오렴
+		int user_idx = 1;
+		AirdndUserVO userVO = airdndUserResInfoService.selectUserInfo(user_idx);
+		
+		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo(user_idx);
+		List<AirdndUserResInfoVO> list1 = new ArrayList<AirdndUserResInfoVO>();
+		List<AirdndUserResInfoVO> list2 = new ArrayList<AirdndUserResInfoVO>();
+		List<AirdndUserResInfoVO> list3 = new ArrayList<AirdndUserResInfoVO>();
+		
+		//main picture url
+		for(int i = 0; i < list.size(); i++) {
+			int home_idx = list.get(i).getHome_idx();
+			
+			List<AirdndHomePictureVO> mainPictures = airdndUserResInfoService.selectHomeMainPicture(home_idx);
+			String url = mainPictures.get(0).getUrl(); //맨 처음 메인 사진만 가져옴
+			list.get(i).setUrl(url);
+		}//for
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		Date date = new Date();
+		//Today's date
+		int ymd = Integer.parseInt(format.format(date));
+		
+		String[] checkout_temp = null;
+		String checkout = "";
+		int checkoutDate = 0;
+		
+		
+		
 		if(tab.equalsIgnoreCase("upcoming")) {
-			try {
-				tab = URLDecoder.decode(tab, "utf-8");
-			} catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			System.out.println("탭 : " + tab);
-			
-			//JSON~
-			JSONObject resUpcoming = new JSONObject();
-			JSONArray upcomingList = new JSONArray();
-			
-			List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
 			//1. Upcoming reservation list
-			List<AirdndUserResInfoVO> list1 = new ArrayList<AirdndUserResInfoVO>();
-			int size = list.size();
-			
-			for(int i = 0; i < size; i++) {
-				int home_idx = list.get(i).getHome_idx();
-				
-				List<AirdndHomePictureVO> mainPictures = airdndUserResInfoService.selectHomeMainPicture(home_idx);
-				String url = mainPictures.get(0).getUrl(); //맨 처음 메인 사진만 가져옴
-				list.get(i).setUrl(url);
-			}//for
-			
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			Date date = new Date();
-			//Today's date
-			int ymd = Integer.parseInt(format.format(date));
-			
-			String[] checkout_temp = null;
-			String checkout = "";
-			int checkoutDate = 0;
-			
-			System.out.println("사이즈 : " + size);
-			
-			for(int i = 0; i < size; i++) {
+			for(int i = 0; i < list.size(); i++) {
 				if(list.get(i).getIs_canceled() == 0) {
 					checkout_temp = list.get(i).getCheckout().split("-");
 					checkout = "";
@@ -89,55 +108,91 @@ public class UserResInfoController {
 			}//for
 			
 			for(int i = 0; i < list1.size(); i++) {
-				JSONObject javaObject = new JSONObject();
+				resInfo = new JSONObject(); //4
+				rules = new JSONArray();		 //5
+				locationInfo = new JSONObject(); //6-1
+				guestInfo = new JSONObject();	 //6-3
 				
-				javaObject.put("idx", list1.get(i).getIdx());
-				javaObject.put("user_idx", list1.get(i).getUser_idx());
-				javaObject.put("home_idx", list1.get(i).getHome_idx());
-				javaObject.put("checkin", list1.get(i).getCheckin());
-				javaObject.put("checkout", list1.get(i).getCheckout());
-				javaObject.put("guest_idx", list1.get(i).getGuest_idx());
-				javaObject.put("is_canceled", list1.get(i).getIs_canceled());
-				javaObject.put("url", list1.get(i).getUrl());
+				int n = 0;
 				
-				upcomingList.add(i, javaObject);
-			}
-			
-			resUpcoming.put("upcomingList", upcomingList);
-			
-			model.addAttribute("res", resUpcoming.toString());
-			//System.out.println(resUpcoming.toString());
-			
-			return resUpcoming.toString();
-			
-		} else if(tab.equalsIgnoreCase("past")) {
-			
-			JSONObject resPast = new JSONObject();
-			JSONArray pastList = new JSONArray();
-			
-			List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
-			//2. Past reservation list
-			List<AirdndUserResInfoVO> list2 = new ArrayList<AirdndUserResInfoVO>();
-			int size = list.size();
-			
-			for(int i = 0; i < size; i++) {
-				int home_idx = list.get(i).getHome_idx();
+				AirdndHostVO hostVO = airdndUserResInfoService.selectHostInfo(list1.get(i).getHome_idx());
 				
-				List<AirdndHomePictureVO> mainPictures = airdndUserResInfoService.selectHomeMainPicture(home_idx);
-				String url = mainPictures.get(0).getUrl(); //맨 처음 메인 사진만 가져옴
-				list.get(i).setUrl(url);
+				resInfo.put("reservationId", list1.get(i).getIdx());
+				resInfo.put("homeId", list1.get(i).getHome_idx());
+				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("homeImage", list1.get(i).getUrl());
+				resInfo.put("hostId", hostVO.getIdx());
+				resInfo.put("checkin", list1.get(i).getCheckin());
+				resInfo.put("checkout", list1.get(i).getCheckout());
+				
+				AirdndHomeVO homeVO = airdndUserResInfoService.selectHomeInfo(list1.get(i).getHome_idx());
+				
+				resInfo.put("addr", homeVO.getAddr());
+				
+				locationInfo.put("lat", homeVO.getLat());
+				locationInfo.put("lng", homeVO.getLng());
+				
+				resInfo.put("location", locationInfo);
+				
+				resInfo.put("price", homeVO.getPrice());
+				
+				
+				//rules
+				List<AirdndUseRuleVO> useRuleList = airdndUserResInfoService.selectUseRuleInfo(list1.get(i).getHome_idx());
+				
+				
+				for(int j = 0; j < useRuleList.size(); j++) {
+					int m = 0;
+					
+					rulesInfo = new JSONObject(); 	 //6-2
+					rulesInfo.put("name", useRuleList.get(j).getUse_rule());
+					
+					rules.add(m, rulesInfo);
+					resInfo.put("rules", rules);
+				}
+				
+				resInfo.put("isCanceled", list1.get(i).getIs_canceled());
+				resInfo.put("title", homeVO.getTitle());
+				
+				if(list1.get(i).getGuest_idx() == 0) {
+					resInfo.put("withGuest", false);
+					resInfo.put("guest", null);
+				} else {
+					resInfo.put("withGuest", true);
+					AirdndUserVO guestVO = airdndUserResInfoService.selectUserInfo(list1.get(i).getGuest_idx());
+					
+					guestInfo = new JSONObject();
+					guestInfo.put("id", guestVO.getUser_idx());
+					guestInfo.put("firstName", guestVO.getFirst_name());
+					guestInfo.put("lastName", guestVO.getLast_name());
+					guestInfo.put("profileImg", guestVO.getProfileImg());
+					
+					resInfo.put("guest", guestInfo);
+				}
+				
+				resArr2.add(n, resInfo);
+				userInfo.put("reservations", resArr2);
+				//resArr.add(i, userInfo);
 			}//for
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-			Date date = new Date();
-			//Today's date
-			int ymd = Integer.parseInt(format.format(date));
+			userInfo.put("firstName", userVO.getFirst_name());
+			userInfo.put("lastName", userVO.getLast_name());
+			userInfo.put("profileImg", userVO.getProfileImg());
+			userInfo.put("isHost", false);
+			res.put("upcoming", userInfo);
 			
-			String[] checkout_temp = null;
-			String checkout = "";
-			int checkoutDate = 0;
+			model.addAttribute("res", res.toString());
+			//System.out.println(resUpcoming.toString());
 			
-			for(int i = 0; i < size; i++) {
+			return res.toString();
+			
+			
+			
+			
+			
+		} else if(tab.equalsIgnoreCase("past")) {
+			//2. Past reservation list
+			for(int i = 0; i < list.size(); i++) {
 				if(list.get(i).getIs_canceled() == 0) {
 					checkout_temp = list.get(i).getCheckout().split("-");
 					checkout = "";
@@ -157,49 +212,88 @@ public class UserResInfoController {
 			}//for
 			
 			for(int i = 0; i < list2.size(); i++) {
-				JSONObject javaObject = new JSONObject();
+				resInfo = new JSONObject(); //4
+				rules = new JSONArray();		 //5
+				locationInfo = new JSONObject(); //6-1
+				guestInfo = new JSONObject();	 //6-3
 				
-				javaObject.put("idx", list2.get(i).getIdx());
-				javaObject.put("user_idx", list2.get(i).getUser_idx());
-				javaObject.put("home_idx", list2.get(i).getHome_idx());
-				javaObject.put("checkin", list2.get(i).getCheckin());
-				javaObject.put("checkout", list2.get(i).getCheckout());
-				javaObject.put("guest_idx", list2.get(i).getGuest_idx());
-				javaObject.put("is_canceled", list2.get(i).getIs_canceled());
-				javaObject.put("url", list2.get(i).getUrl());
+				int n = 0;
 				
-				pastList.add(i, javaObject);
-			}
-			
-			resPast.put("pastList", pastList);
-			
-			model.addAttribute("res", resPast.toString());
-			System.out.println(resPast.toString());
-			
-			return resPast.toString();
-			
-		} else if(tab.equalsIgnoreCase("canceled")) {
-			
-			JSONObject resCanceled = new JSONObject();
-			JSONArray canceledList = new JSONArray();
-			
-			JSONObject jsonObject = new JSONObject();
-			
-			List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo();
-			//3. Canceled reservation list
-			List<AirdndUserResInfoVO> list3 = new ArrayList<AirdndUserResInfoVO>();
-			int size = list.size();
-			
-			for(int i = 0; i < size; i++) {
-				int home_idx = list.get(i).getHome_idx();
+				AirdndHostVO hostVO = airdndUserResInfoService.selectHostInfo(list2.get(i).getHome_idx());
 				
-				List<AirdndHomePictureVO> mainPictures = airdndUserResInfoService.selectHomeMainPicture(home_idx);
-				String url = mainPictures.get(0).getUrl(); //맨 처음 메인 사진만 가져옴
-				list.get(i).setUrl(url);
+				resInfo.put("reservationId", list2.get(i).getIdx());
+				resInfo.put("homeId", list2.get(i).getHome_idx());
+				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("homeImage", list2.get(i).getUrl());
+				resInfo.put("hostId", hostVO.getIdx());
+				resInfo.put("checkin", list2.get(i).getCheckin());
+				resInfo.put("checkout", list2.get(i).getCheckout());
+				
+				AirdndHomeVO homeVO = airdndUserResInfoService.selectHomeInfo(list2.get(i).getHome_idx());
+				
+				resInfo.put("addr", homeVO.getAddr());
+				
+				locationInfo.put("lat", homeVO.getLat());
+				locationInfo.put("lng", homeVO.getLng());
+				
+				resInfo.put("location", locationInfo);
+				
+				resInfo.put("price", homeVO.getPrice());
+				
+				
+				//rules
+				List<AirdndUseRuleVO> useRuleList = airdndUserResInfoService.selectUseRuleInfo(list2.get(i).getHome_idx());
+				
+				
+				for(int j = 0; j < useRuleList.size(); j++) {
+					int m = 0;
+					
+					rulesInfo = new JSONObject(); 	 //6-2
+					rulesInfo.put("name", useRuleList.get(j).getUse_rule());
+					
+					rules.add(m, rulesInfo);
+					resInfo.put("rules", rules);
+				}
+				
+				resInfo.put("isCanceled", list2.get(i).getIs_canceled());
+				resInfo.put("title", homeVO.getTitle());
+				
+				if(list2.get(i).getGuest_idx() == 0) {
+					resInfo.put("withGuest", false);
+					resInfo.put("guest", null);
+				} else {
+					resInfo.put("withGuest", true);
+					AirdndUserVO guestVO = airdndUserResInfoService.selectUserInfo(list2.get(i).getGuest_idx());
+					
+					guestInfo = new JSONObject();
+					guestInfo.put("id", guestVO.getUser_idx());
+					guestInfo.put("firstName", guestVO.getFirst_name());
+					guestInfo.put("lastName", guestVO.getLast_name());
+					guestInfo.put("profileImg", guestVO.getProfileImg());
+					
+					resInfo.put("guest", guestInfo);
+				}
+				
+				resArr2.add(n, resInfo);
+				userInfo.put("reservations", resArr2);
+				//resArr.add(i, userInfo);
 			}//for
 			
-			//3. Canceled reservation
-			for(int i = 0; i < size; i++) {
+			userInfo.put("firstName", userVO.getFirst_name());
+			userInfo.put("lastName", userVO.getLast_name());
+			userInfo.put("profileImg", userVO.getProfileImg());
+			userInfo.put("isHost", false);
+			res.put("past", userInfo);
+			
+			model.addAttribute("res", res.toString());
+			//System.out.println(resUpcoming.toString());
+			
+			return res.toString();
+			
+			
+		} else if(tab.equalsIgnoreCase("canceled")) {
+			//3. Canceled reservation list
+			for(int i = 0; i < list.size(); i++) {
 				if(list.get(i).getIs_canceled() != 0) {
 					list3.add(list.get(i));
 					model.addAttribute("list3", list3);
@@ -207,28 +301,83 @@ public class UserResInfoController {
 			}//for
 			
 			for(int i = 0; i < list3.size(); i++) {
-				JSONObject javaObject = new JSONObject();
+				resInfo = new JSONObject(); //4
+				rules = new JSONArray();		 //5
+				locationInfo = new JSONObject(); //6-1
+				guestInfo = new JSONObject();	 //6-3
 				
-				javaObject.put("idx", list3.get(i).getIdx());
-				javaObject.put("user_idx", list3.get(i).getUser_idx());
-				javaObject.put("home_idx", list3.get(i).getHome_idx());
-				javaObject.put("checkin", list3.get(i).getCheckin());
-				javaObject.put("checkout", list3.get(i).getCheckout());
-				javaObject.put("guest_idx", list3.get(i).getGuest_idx());
-				javaObject.put("is_canceled", list3.get(i).getIs_canceled());
-				javaObject.put("url", list3.get(i).getUrl());
+				int n = 0;
 				
-				jsonObject.put(i, javaObject);
+				AirdndHostVO hostVO = airdndUserResInfoService.selectHostInfo(list3.get(i).getHome_idx());
 				
-				canceledList.add(i, javaObject);
-			}
+				resInfo.put("reservationId", list3.get(i).getIdx());
+				resInfo.put("homeId", list3.get(i).getHome_idx());
+				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("homeImage", list3.get(i).getUrl());
+				resInfo.put("hostId", hostVO.getIdx());
+				resInfo.put("checkin", list3.get(i).getCheckin());
+				resInfo.put("checkout", list3.get(i).getCheckout());
+				
+				AirdndHomeVO homeVO = airdndUserResInfoService.selectHomeInfo(list3.get(i).getHome_idx());
+				
+				resInfo.put("addr", homeVO.getAddr());
+				
+				locationInfo.put("lat", homeVO.getLat());
+				locationInfo.put("lng", homeVO.getLng());
+				
+				resInfo.put("location", locationInfo);
+				
+				resInfo.put("price", homeVO.getPrice());
+				
+				
+				//rules
+				List<AirdndUseRuleVO> useRuleList = airdndUserResInfoService.selectUseRuleInfo(list3.get(i).getHome_idx());
+				
+				
+				for(int j = 0; j < useRuleList.size(); j++) {
+					int m = 0;
+					
+					rulesInfo = new JSONObject(); 	 //6-2
+					rulesInfo.put("name", useRuleList.get(j).getUse_rule());
+					
+					rules.add(m, rulesInfo);
+					resInfo.put("rules", rules);
+				}
+				
+				resInfo.put("isCanceled", list3.get(i).getIs_canceled());
+				resInfo.put("title", homeVO.getTitle());
+				
+				if(list3.get(i).getGuest_idx() == 0) {
+					resInfo.put("withGuest", false);
+					resInfo.put("guest", null);
+				} else {
+					resInfo.put("withGuest", true);
+					AirdndUserVO guestVO = airdndUserResInfoService.selectUserInfo(list3.get(i).getGuest_idx());
+					
+					guestInfo = new JSONObject();
+					guestInfo.put("id", guestVO.getUser_idx());
+					guestInfo.put("firstName", guestVO.getFirst_name());
+					guestInfo.put("lastName", guestVO.getLast_name());
+					guestInfo.put("profileImg", guestVO.getProfileImg());
+					
+					resInfo.put("guest", guestInfo);
+				}
+				
+				resArr2.add(n, resInfo);
+				userInfo.put("reservations", resArr2);
+				//resArr.add(i, userInfo);
+			}//for
 			
-			resCanceled.put("canceledList", canceledList);
+			userInfo.put("firstName", userVO.getFirst_name());
+			userInfo.put("lastName", userVO.getLast_name());
+			userInfo.put("profileImg", userVO.getProfileImg());
+			userInfo.put("isHost", false);
+			res.put("canceled", userInfo);
 			
-			model.addAttribute("res", resCanceled.toString());
-			System.out.println(resCanceled.toString());
+			model.addAttribute("res", res.toString());
+			//System.out.println(resUpcoming.toString());
 			
-			return resCanceled.toString();
+			return res.toString();
 		}
 		return null;
 	}
