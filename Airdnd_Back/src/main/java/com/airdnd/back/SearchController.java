@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import service.AirdndSearchService;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
 
@@ -73,13 +74,12 @@ public class SearchController {
 			res.put("recenthomes", empty_list);
 		}else {
 
-			
 			String typehouse1 = "devengersOffice";
 			String typehouse2 = "devengersOffice";
 			String typeprivate = "devengersOffice";
 			String typeshared1 = "devengersOffice";
 			String typeshared2 = "devengersOffice";
-			
+
 			if(roomTypeHouse==false && roomTypePrivate==false && roomTypeShared==false) {
 				typehouse1 = "";
 				typehouse2 = "";
@@ -87,7 +87,7 @@ public class SearchController {
 				typeshared1 = "";
 				typeshared2 = "";
 			}
-			
+
 			if(roomTypeHouse==true) { 
 				typehouse1 = "아파트";
 				typehouse2 = "전체";
@@ -118,7 +118,6 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
-			//if(filter_roomType_house)
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 			int size = search_list.size();
@@ -128,7 +127,11 @@ public class SearchController {
 			Double[] maxmin_lat = new Double[2];
 			Double[] maxmin_lng = new Double[2];
 
+			int user_idx = 1; //쿠키로 받아와야함
+			List<AirdndBookmarkedHomesVO> bookmarkList = airdndsearchService.bookmarkselect(user_idx);
+
 			for(int i = 0; i < size; i++) {
+				Boolean bookmark = false;
 				int home_idx = search_list.get(i).getHome_idx();
 
 				List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
@@ -136,6 +139,12 @@ public class SearchController {
 
 				JSONObject homes_info = new JSONObject();
 				JSONObject latlng = new JSONObject();
+
+				for(int j = 0; j < bookmarkList.size(); j++) {
+					if(bookmarkList.get(j).getHome_idx() == home_idx) {
+						bookmark = true;
+					}
+				}
 
 				for(int j = 0; j < picture.size(); j++) {
 					picture_arr.add(picture.get(j).getUrl());
@@ -171,7 +180,7 @@ public class SearchController {
 
 				homes_info.put("homeId", search_list.get(i).getHome_idx());
 				homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
-				homes_info.put("isBookmarked", "아직안받아옴");
+				homes_info.put("isBookmarked", bookmark);
 				homes_info.put("imageArray", search_list.get(i).getUrl());
 				homes_info.put("imageCount", search_list.get(i).getUrl().size());
 				homes_info.put("subTitle", search_list.get(i).getSub_title());
