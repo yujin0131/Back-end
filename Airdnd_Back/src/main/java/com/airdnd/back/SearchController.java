@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import service.AirdndSearchService;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
+import vo.AirdndUserVO;
 
 @Controller
 public class SearchController {
@@ -58,6 +60,28 @@ public class SearchController {
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx;
+		String signInEmail;
+		String signInName;
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for (Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
 		}
 
 		JSONObject res = new JSONObject();
@@ -261,7 +285,7 @@ public class SearchController {
 			List<Integer> recentHomesIdx = new ArrayList<Integer>();
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
 
-			Cookie[] cookies = request.getCookies();
+			//Cookie[] cookies = request.getCookies();
 
 			if(cookies == null) {
 			}else{

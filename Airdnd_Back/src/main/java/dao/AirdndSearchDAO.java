@@ -25,7 +25,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
    @Override   
    public List<AirdndSearchVO> select(Map<Object, Object> param){
       int page = (Integer)(param.get("page")) * 20;
-
+      System.out.println("dddd"+param.get("bathCount"));
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
       
       List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + param.get("location")
@@ -56,8 +56,6 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
                   rs.getInt("review_num"),
                   rs.getString("lat"),
                   rs.getString("lng"));
-            
-            list.setLat("10.1111");
 
             return list;
          }
