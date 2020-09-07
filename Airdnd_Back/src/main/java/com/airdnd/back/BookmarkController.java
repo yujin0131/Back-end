@@ -1,5 +1,7 @@
 package com.airdnd.back;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -156,19 +159,11 @@ public class BookmarkController {
 					produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody
 	//public String insert_bookmark(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
-	public String insert_bookmark(HttpServletRequest request, HttpServletResponse response, @RequestBody String payload) {
+	public String insert_bookmark(@RequestBody String payload,
+								  @RequestParam(value="checkIn")String checkin,
+								  @RequestParam(value="checkOut")String checkout) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
-		
-		Map<String, Object> javaObject = null;
-		try {
-			javaObject = mapper.readValue(payload, Map.class);
-		} catch (Exception e) {
-			System.out.println("payload 오류");
-		}
-		System.out.println("javaObject: " + javaObject);
-		
-		String title = javaObject.get("email").toString();
 		
 		//Login cookie
 		HttpSession session = request.getSession();
@@ -194,69 +189,41 @@ public class BookmarkController {
 			}
 		}//if
 		
-		/*
-		
-		
-		JSONParser parser = new JSONParser(); //–JSON Parser 생성
-		JSONObject jsonObj = null;
-		
-	    try {
-			jsonObj = (JSONObject)parser.parse(title);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    
-	    System.out.println("제이슨 : " + jsonObj);
-	    System.out.println("타이틀 : " + title);
-		*/
-		/*
-		Map<String, Object> javaObject = null;
-		try {
-			javaObject = mapper.readValue(payload, Map.class);
-		} catch (Exception e) {
-			System.out.println("payload 오류");
-		}
-		System.out.println("javaObject: " + javaObject);
-		*/
-		
-		/*
+
 		//북마크 추가
 		JSONObject result = new JSONObject();
 		String result_msg = "";
-		Gson gson = new Gson();
 		int res = 0;
 		
 		AirdndBookmarkVO vo = new AirdndBookmarkVO();
 		AirdndBookmarkedHomesVO vo2 = new AirdndBookmarkedHomesVO();
 		
-		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
+		//from Login cookie
 		vo.setUser_idx(signInIdx);
 
 		//search나 detail 페이지에서 받아와야 함
 		int home_idx = 0;
+		/*
 		if(javaObject.get("home_idx").toString() == null || javaObject.get("home_idx").toString() == "") {
 			home_idx = 0;
 		} else {
 			home_idx = Integer.parseInt(javaObject.get("home_idx").toString());
 		}
 		vo2.setHome_idx(home_idx);
-
-		String bookmark_list_title = "";
-		//이건 파라미터인가 search 페이지에서 받아오는가에 대한 고찰
-		String checkin = null;
-		String checkout = null;
+		*/
+		//from Parameter
+		checkin = null;
+		checkout = null;
 		
 		try {
-			bookmark_list_title = URLDecoder.decode(javaObject.get("bookmarkListTitle").toString(), "utf-8");
-			checkin = URLDecoder.decode(javaObject.get("checkin").toString(), "utf-8");
-			checkout = URLDecoder.decode(javaObject.get("checkout").toString(), "utf-8");
+			checkin = URLDecoder.decode(checkin, "utf-8");
+			checkout = URLDecoder.decode(checkout, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		vo.setBookmark_list_title(bookmark_list_title);
+		vo.setBookmark_list_title(payload);
 		//북마크 추가
 		res = airdndBookmarkService.insert_bookmark(vo);
 		
@@ -312,7 +279,6 @@ public class BookmarkController {
 			String mainUrl = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
 			vo2.setUrl(mainUrl);
 		}
-		*/
 		
 		//model.addAttribute("vo", vo);
 		//model.addAttribute("vo2", vo2);
