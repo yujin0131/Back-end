@@ -87,7 +87,12 @@ public class HomeController {
 	  hostres.put("isSupperhost", hostvo.isCheck_superhost());
 	  hostres.put("responseRate", hostvo.getResponse_rate());
 	  hostres.put("responseTime", hostvo.getResponse_time());
-	  hostres.put("communication", hostvo.getHost_status_message());
+	  String communi = hostvo.getHost_status_message();
+	  if(communi.equals("None")) communi = "";
+	  String interac = hostvo.getInteraction_with_guests();
+	  if(interac.equals("None")) interac = "";
+	  hostres.put("selfExplanation", communi);
+	  hostres.put("communication", interac);
 	  
 	  res.put("host", hostres);
 	  
@@ -116,7 +121,6 @@ public class HomeController {
 	  res.put("reservedDates", reservedDate);
 	  
 	  String checkin = ""; String checkout = "";
-	  List<JSONObject> notice_first = new ArrayList<JSONObject>();
 	  JSONObject notice_for = new JSONObject();
 	  List<JSONObject> userule_info = new ArrayList<JSONObject>();
 	  List<AirdndUseRuleVO> userule = airdndhomeService.useruleselect(home_idx);
@@ -144,7 +148,6 @@ public class HomeController {
 		  safetyrule_info.add(rule_name);
 	  }
 	  notice_for.put("safeties", safetyrule_info);
-	  notice_first.add(notice_for);
 	  
 	  res.put("checkin", checkin);
 	  res.put("checkout", checkout);
@@ -199,7 +202,7 @@ public class HomeController {
 	  }
 	  res.put("amenities", facility_info);
 	  
-	  res.put("notice", notice_first);
+	  res.put("notice", notice_for);
 	  
 	  JSONObject review_res = new JSONObject();
 	  List<JSONObject> review_info = new ArrayList<JSONObject>();
