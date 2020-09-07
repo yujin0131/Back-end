@@ -23,8 +23,9 @@ import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
-import vo.AirdndRuleVO;
+import vo.AirdndSafetyRuleVO;
 import vo.AirdndSearchVO;
+import vo.AirdndUseRuleVO;
 import vo.AirdndUserVO;
 
 @Repository("homeDAO")
@@ -223,15 +224,15 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	
 	//안전규칙
 	@Override
-	public List<AirdndRuleVO> selectSafetyRule(int home_idx) {
+	public List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		List<AirdndRuleVO> list = jdbcTemplate.query("select * from airdnd_home_safety_rule where home_idx=" + home_idx, new RowMapper<AirdndRuleVO>() {
+		List<AirdndSafetyRuleVO> list = jdbcTemplate.query("select * from airdnd_home_safety_rule where home_idx=" + home_idx, new RowMapper<AirdndSafetyRuleVO>() {
 
 	         @Override
-	         public AirdndRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	         public AirdndSafetyRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-	        	 AirdndRuleVO list = new AirdndRuleVO(
-	        			 rs.getString("safety_rule"), null);
+	        	 AirdndSafetyRuleVO list = new AirdndSafetyRuleVO(
+	        			 rowNum, rowNum, rs.getString("safety_rule"));
 
 	            return list;
 	         }
@@ -242,15 +243,15 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	
 	//사용규칙
 	@Override
-	public List<AirdndRuleVO> selectUseRule(int home_idx) {
+	public List<AirdndUseRuleVO> selectUseRule(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		List<AirdndRuleVO> list = jdbcTemplate.query("select * from airdnd_home_use_rule where home_idx=" + home_idx, new RowMapper<AirdndRuleVO>() {
+		List<AirdndUseRuleVO> list = jdbcTemplate.query("select * from airdnd_home_use_rule where home_idx=" + home_idx, new RowMapper<AirdndUseRuleVO>() {
 
 	         @Override
-	         public AirdndRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	         public AirdndUseRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-	        	 AirdndRuleVO list = new AirdndRuleVO(
-	                  null, rs.getString("use_rule"));
+	        	 AirdndUseRuleVO list = new AirdndUseRuleVO(
+	                  rowNum, rowNum, rs.getString("use_rule"));
 
 	            return list;
 	         }

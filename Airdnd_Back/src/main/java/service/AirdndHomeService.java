@@ -14,7 +14,8 @@ import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
-import vo.AirdndRuleVO;
+import vo.AirdndSafetyRuleVO;
+import vo.AirdndUseRuleVO;
 
 
 @Service("airdndhomeService")
@@ -74,14 +75,14 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 	}
 	
 	@Override
-	public List<AirdndRuleVO> safetyruleselect(int home_idx) {
-		List<AirdndRuleVO> list = airdnd_home_dao.selectSafetyRule(home_idx);
+	public List<AirdndSafetyRuleVO> safetyruleselect(int home_idx) {
+		List<AirdndSafetyRuleVO> list = airdnd_home_dao.selectSafetyRule(home_idx);
 		return list;
 	}
 	
 	@Override
-	public List<AirdndRuleVO> useruleselect(int home_idx) {
-		List<AirdndRuleVO> list = airdnd_home_dao.selectUseRule(home_idx);
+	public List<AirdndUseRuleVO> useruleselect(int home_idx) {
+		List<AirdndUseRuleVO> list = airdnd_home_dao.selectUseRule(home_idx);
 		return list;
 	}
 
