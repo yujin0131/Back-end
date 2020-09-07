@@ -6,15 +6,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import vo.AirdndBedroomVO;
 import vo.AirdndDistanceVO;
@@ -23,9 +18,9 @@ import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
-import vo.AirdndRuleVO;
-import vo.AirdndSearchVO;
-import vo.AirdndUserVO;
+import vo.AirdndSafetyRuleVO;
+
+import vo.AirdndUseRuleVO;
 
 @Repository("homeDAO")
 public class AirdndHomeDAO implements AirdndHomeDAOI {
@@ -223,17 +218,14 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	
 	//안전규칙
 	@Override
-	public List<AirdndRuleVO> selectSafetyRule(int home_idx) {
+	public List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		List<AirdndRuleVO> list = jdbcTemplate.query("select * from airdnd_home_safety_rule where home_idx=" + home_idx, new RowMapper<AirdndRuleVO>() {
-
+		List<AirdndSafetyRuleVO> list = jdbcTemplate.query("select * from airdnd_home_safety_rule where home_idx=" + home_idx, new RowMapper<AirdndSafetyRuleVO>() {
 	         @Override
-	         public AirdndRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	         public AirdndSafetyRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				 AirdndSafetyRuleVO list = new AirdndSafetyRuleVO(rowNum, rowNum, rs.getString("safety_rule"));
 
-	        	 AirdndRuleVO list = new AirdndRuleVO(
-	        			 rs.getString("safety_rule"), null);
-
-	            return list;
+				 return list;
 	         }
 
 	      });
@@ -242,19 +234,15 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	
 	//사용규칙
 	@Override
-	public List<AirdndRuleVO> selectUseRule(int home_idx) {
+	public List<AirdndUseRuleVO> selectUseRule(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		List<AirdndRuleVO> list = jdbcTemplate.query("select * from airdnd_home_use_rule where home_idx=" + home_idx, new RowMapper<AirdndRuleVO>() {
-
+		List<AirdndUseRuleVO> list = jdbcTemplate.query("select * from airdnd_home_use_rule where home_idx=" + home_idx, new RowMapper<AirdndUseRuleVO>() {
 	         @Override
-	         public AirdndRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	         public AirdndUseRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	 AirdndUseRuleVO list = new AirdndUseRuleVO(rowNum, rowNum, rs.getString("use_rule"));
 
-	        	 AirdndRuleVO list = new AirdndRuleVO(
-	                  null, rs.getString("use_rule"));
-
-	            return list;
+	        	 return list;
 	         }
-
 	      });
 		return list;
 	}

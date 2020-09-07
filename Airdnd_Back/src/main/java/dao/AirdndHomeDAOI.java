@@ -9,7 +9,8 @@ import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
-import vo.AirdndRuleVO;
+import vo.AirdndSafetyRuleVO;
+import vo.AirdndUseRuleVO;
 
 public interface AirdndHomeDAOI {
 	
@@ -21,7 +22,7 @@ public interface AirdndHomeDAOI {
 	List<AirdndFacilityVO> selectFacility(int home_idx);
 	List<AirdndNoticeVO> selectNotice(int home_idx);
 	List<AirdndReviewVO> selectReview(int home_idx);
-	List<AirdndRuleVO> selectSafetyRule(int home_idx);
-	List<AirdndRuleVO> selectUseRule(int home_idx);
+	List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx);
+	List<AirdndUseRuleVO> selectUseRule(int home_idx);
 
 }
