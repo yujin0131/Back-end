@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -25,6 +26,7 @@ import service.AirdndSearchService;
 import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
+import vo.AirdndUserVO;
 
 @Controller
 public class SearchController {
@@ -59,6 +61,28 @@ public class SearchController {
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx;
+		String signInEmail;
+		String signInName;
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for (Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
 		}
 
 		JSONObject res = new JSONObject();
@@ -97,6 +121,17 @@ public class SearchController {
 				typeshared1 = "다인실";
 				typeshared2 = "객실";
 			}
+			
+			Map<Integer, String> hostlangmap = new HashMap<Integer, String>();
+			for(int i = 0; i < 5; i++) hostlangmap.put(i, "devengerslang");
+			
+			if(hostLangList.equals("0")) for(int i = 0; i < 5; i++) hostlangmap.put(i, "");
+			else {
+
+				String[] hostlang = hostLangList.replace("중국어", "中文").replace("영어", "English").replace("프랑스어", "Français").replace("스페인어", "Español").split("-");
+				for(int i = 0; i < hostlang.length; i++) hostlangmap.replace(i, hostlang[i]);
+			}
+			
 
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
@@ -118,6 +153,9 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
+			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
+			System.out.println(hostlangmap.toString());
+			
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 			int size = search_list.size();
@@ -200,9 +238,11 @@ public class SearchController {
 			try {
 				avgLat =(Math.round((maxmin_lat[0] + maxmin_lat[1])/2*10000000)/10000000.0); 
 				avgLng =(Math.round((maxmin_lng[0] + maxmin_lng[1])/2*10000000)/10000000.0);
+
 			} catch (Exception e) {
 				avgLat = (swLat+neLat)/2; 
 				avgLng = (swLng+neLng)/2;
+
 			}
 
 			mapCenter.put("lat", avgLat);
@@ -213,7 +253,7 @@ public class SearchController {
 			res.put("homes", homes);
 
 			//가격 분포도--------------------------------
-			List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
+			List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(param);
 			List<Integer> price_array = new ArrayList();
 			int start = 0;
 			int end = 2;
@@ -269,8 +309,6 @@ public class SearchController {
 			List<JSONObject> recentHomes = new ArrayList<JSONObject>();//이걸 쿠키로 받아와 검색하는 쿼리문
 			List<Integer> recentHomesIdx = new ArrayList<Integer>();
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
-
-			Cookie[] cookies = request.getCookies();
 
 			if(cookies == null) {
 			}else{
