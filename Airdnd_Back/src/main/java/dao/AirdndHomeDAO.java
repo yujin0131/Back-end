@@ -16,11 +16,13 @@ import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
+import vo.AirdndHostVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
 import vo.AirdndSafetyRuleVO;
 
 import vo.AirdndUseRuleVO;
+import vo.AirdndUserResInfoVO;
 
 @Repository("homeDAO")
 public class AirdndHomeDAO implements AirdndHomeDAOI {
@@ -30,17 +32,18 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 
 	//호스트 정보
 	@Override
-	public AirdndHomeVO selectHost(int home_idx) {
+	public AirdndHostVO selectHost(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-		AirdndHomeVO hostvo = jdbcTemplate.queryForObject("select * from airdnd_host where home_idx='" + home_idx + "'",
-			new RowMapper<AirdndHomeVO>() {
+		AirdndHostVO hostvo = jdbcTemplate.queryForObject("select * from airdnd_host where home_idx='" + home_idx + "'",
+			new RowMapper<AirdndHostVO>() {
 
 				@Override
-				public AirdndHomeVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-					AirdndHomeVO vo = new AirdndHomeVO();
-					vo.setCheck_superhost(rs.getInt("check_superhost"));
-					 vo.setCheck_certification(rs.getInt("check_certification"));
+				public AirdndHostVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+					AirdndHostVO vo = new AirdndHostVO();
+					 vo.setIdx(rs.getInt("idx"));
+					 vo.setCheck_superhost(rs.getBoolean("check_superhost"));
+					 vo.setCheck_certification(rs.getBoolean("check_certification"));
 					 vo.setHost_review_num(rs.getInt("host_review_num"));
 					 vo.setHost_name(rs.getString("host_name"));
 					 vo.setHost_sign_in_date(rs.getString("host_sign_in_date"));
@@ -199,6 +202,7 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	         public AirdndReviewVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 	        	 AirdndReviewVO list = new AirdndReviewVO(
+	        	      rs.getInt("idx"),
 	                  rs.getString("user_name"),
 	                  rs.getString("review_date"),
 	                  rs.getString("review_content"),
@@ -240,6 +244,19 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	         @Override
 	         public AirdndUseRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 	        	 AirdndUseRuleVO list = new AirdndUseRuleVO(rowNum, rowNum, rs.getString("use_rule"));
+
+	        	 return list;
+	         }
+	      });
+		return list;
+	}
+
+	public List<AirdndUserResInfoVO> selectUserResInfo(int home_idx) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		List<AirdndUserResInfoVO> list = jdbcTemplate.query("select * from airdnd_user_res_info where home_idx=" + home_idx, new RowMapper<AirdndUserResInfoVO>() {
+	         @Override
+	         public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	 AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum);
 
 	        	 return list;
 	         }

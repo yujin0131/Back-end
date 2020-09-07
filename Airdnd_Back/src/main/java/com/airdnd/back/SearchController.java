@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import service.AirdndSearchService;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
 import vo.AirdndUserVO;
@@ -84,6 +85,28 @@ public class SearchController {
 			}
 		}
 
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx;
+		String signInEmail;
+		String signInName;
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for (Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}
+
 		JSONObject res = new JSONObject();
 		JSONObject empty = new JSONObject();
 		List empty_list = new ArrayList<Object>();
@@ -97,13 +120,12 @@ public class SearchController {
 			res.put("recenthomes", empty_list);
 		}else {
 
-			
 			String typehouse1 = "devengersOffice";
 			String typehouse2 = "devengersOffice";
 			String typeprivate = "devengersOffice";
 			String typeshared1 = "devengersOffice";
 			String typeshared2 = "devengersOffice";
-			
+
 			if(roomTypeHouse==false && roomTypePrivate==false && roomTypeShared==false) {
 				typehouse1 = "";
 				typehouse2 = "";
@@ -111,7 +133,7 @@ public class SearchController {
 				typeshared1 = "";
 				typeshared2 = "";
 			}
-			
+
 			if(roomTypeHouse==true) { 
 				typehouse1 = "아파트";
 				typehouse2 = "전체";
@@ -121,6 +143,17 @@ public class SearchController {
 				typeshared1 = "다인실";
 				typeshared2 = "객실";
 			}
+			
+			Map<Integer, String> hostlangmap = new HashMap<Integer, String>();
+			for(int i = 0; i < 5; i++) hostlangmap.put(i, "devengerslang");
+			
+			if(hostLangList.equals("0")) for(int i = 0; i < 5; i++) hostlangmap.put(i, "");
+			else {
+
+				String[] hostlang = hostLangList.replace("중국어", "中文").replace("영어", "English").replace("프랑스어", "Français").replace("스페인어", "Español").split("-");
+				for(int i = 0; i < hostlang.length; i++) hostlangmap.replace(i, hostlang[i]);
+			}
+			
 
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
@@ -142,7 +175,9 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
-			//if(filter_roomType_house)
+			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
+			System.out.println(hostlangmap.toString());
+			
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 			int size = search_list.size();
@@ -152,7 +187,11 @@ public class SearchController {
 			Double[] maxmin_lat = new Double[2];
 			Double[] maxmin_lng = new Double[2];
 
+			int user_idx = 1; //쿠키로 받아와야함
+			List<AirdndBookmarkedHomesVO> bookmarkList = airdndsearchService.bookmarkselect(user_idx);
+
 			for(int i = 0; i < size; i++) {
+				Boolean bookmark = false;
 				int home_idx = search_list.get(i).getHome_idx();
 
 				List<AirdndHomePictureVO> picture = airdndsearchService.pictureselect(home_idx);
@@ -160,6 +199,12 @@ public class SearchController {
 
 				JSONObject homes_info = new JSONObject();
 				JSONObject latlng = new JSONObject();
+
+				for(int j = 0; j < bookmarkList.size(); j++) {
+					if(bookmarkList.get(j).getHome_idx() == home_idx) {
+						bookmark = true;
+					}
+				}
 
 				for(int j = 0; j < picture.size(); j++) {
 					picture_arr.add(picture.get(j).getUrl());
@@ -195,7 +240,7 @@ public class SearchController {
 
 				homes_info.put("homeId", search_list.get(i).getHome_idx());
 				homes_info.put("isSuperhost", search_list.get(i).getIsSuperHost());
-				homes_info.put("isBookmarked", "아직안받아옴");
+				homes_info.put("isBookmarked", bookmark);
 				homes_info.put("imageArray", search_list.get(i).getUrl());
 				homes_info.put("imageCount", search_list.get(i).getUrl().size());
 				homes_info.put("subTitle", search_list.get(i).getSub_title());
@@ -215,9 +260,11 @@ public class SearchController {
 			try {
 				avgLat =(Math.round((maxmin_lat[0] + maxmin_lat[1])/2*10000000)/10000000.0); 
 				avgLng =(Math.round((maxmin_lng[0] + maxmin_lng[1])/2*10000000)/10000000.0);
+
 			} catch (Exception e) {
 				avgLat = (swLat+neLat)/2; 
 				avgLng = (swLng+neLng)/2;
+
 			}
 
 			mapCenter.put("lat", avgLat);
@@ -228,7 +275,7 @@ public class SearchController {
 			res.put("homes", homes);
 
 			//가격 분포도--------------------------------
-			List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(location);
+			List<AirdndSearchVO> pricelist = airdndsearchService.unitpriceselect(param);
 			List<Integer> price_array = new ArrayList();
 			int start = 0;
 			int end = 2;
@@ -284,8 +331,6 @@ public class SearchController {
 			List<JSONObject> recentHomes = new ArrayList<JSONObject>();//이걸 쿠키로 받아와 검색하는 쿼리문
 			List<Integer> recentHomesIdx = new ArrayList<Integer>();
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
-
-			//Cookie[] cookies = request.getCookies();
 
 			if(cookies == null) {
 			}else{
