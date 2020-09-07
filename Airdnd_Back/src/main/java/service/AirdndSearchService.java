@@ -40,9 +40,9 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 		return list;
 	}
 
-	public List<AirdndSearchVO> unitpriceselect(String place) {
-
-		List<AirdndSearchVO> list = airdnd_search_dao.unitpriceselect(place);
+	public List<AirdndSearchVO> unitpriceselect(Map<Object, Object> param) {
+		System.out.println("service : " + param.get("bedCount"));
+		List<AirdndSearchVO> list = airdnd_search_dao.unitpriceselect(param);
 		return list;
 	}
 	
