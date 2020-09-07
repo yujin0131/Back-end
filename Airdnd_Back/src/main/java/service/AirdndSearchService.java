@@ -49,6 +49,8 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> facilityList(Map<Object, Object> param) {
 		
 		List<AirdndSearchVO> list = airdnd_search_dao.facilityList(param);
+		
+		System.out.println("service : " + list.toString());
 		return list;
 	}
 	

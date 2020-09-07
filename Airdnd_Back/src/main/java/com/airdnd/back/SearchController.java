@@ -275,6 +275,7 @@ public class SearchController {
 			//필터조건들 ---------------------------------
 			List<AirdndSearchVO> facilities = airdndsearchService.facilityList(param);
 			//List<AirdndUserVO> hostlanlists = airdndsearchService.hostLanlist(location);
+			System.out.println("controller : " + facilities.toString());
 
 			List<String> facilityListStr= new ArrayList<String>();
 			List<String> amenityListStr = new ArrayList<String>();
@@ -301,6 +302,7 @@ public class SearchController {
 			//}
 
 			JSONObject filterCondition = new JSONObject();
+			System.out.println("size " + amenityListStr.size());
 			if( amenityListStr.size()!=0) filterCondition.put("amenityList", amenityListStr);
 			if( facilityListStr.size()!=0) filterCondition.put("facilityList", facilityListStr);
 			filterCondition.put("hostLangList", hostLangListStr);
