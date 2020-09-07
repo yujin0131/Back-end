@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,13 @@ import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
+import vo.AirdndHostVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
 import vo.AirdndSafetyRuleVO;
 import vo.AirdndUseRuleVO;
+import vo.AirdndUserResInfoVO;
+import vo.AirdndUserVO;
 
 @Controller
 public class HomeController {
@@ -43,41 +48,192 @@ public class HomeController {
 		   method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
    @ResponseBody
    public String check(HttpServletRequest request, HttpServletResponse response, int home_idx) {
+	   
+	  HttpSession session = request.getSession();
+      Cookie[] cookies = request.getCookies();
+      String sessionKey = "";
+      int signInIdx;
+      String signInEmail;
+      String signInName;
+      if(cookies == null) {
+         System.out.println("not cookies");
+      }else {
+         for (Cookie cookie : cookies) {
+            if("AirdndSES".equals(cookie.getName())) {
+               sessionKey = cookie.getValue();
+               AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
+               signInIdx = signInVO.getUser_idx();
+               signInEmail = signInVO.getEmail();
+               signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+            } else {
+               System.out.println("not login");
+            }
+         }
+      }
       
 	  JSONObject res = new JSONObject();
 	  
-	  AirdndHomeVO hostvo = airdndhomeService.hostselect(home_idx);
-	  boolean isSupperhost = false;
-	  boolean isCertification = false;//보증된 호스트인지
-	  if(hostvo.getCheck_superhost() == 1) isSupperhost = true;
-	  if(hostvo.getCheck_certification() == 1) isCertification = true;
-	  res.put("hostName", hostvo.getHost_name());
-	  res.put("hostSigninDate", hostvo.getHost_sign_in_date());
-	  res.put("isSupperhost", isSupperhost);
-	  res.put("isCertification", isCertification);
-	  res.put("hostStatusMessage", hostvo.getHost_status_message());
-	  res.put("interaction", hostvo.getInteraction_with_guests());
-	  res.put("language", hostvo.getHost_language());
-	  res.put("resRate", hostvo.getResponse_rate());
-	  res.put("resTime", hostvo.getResponse_time());
-	  res.put("hostProfile", hostvo.getHost_profileImg());
+	  AirdndHostVO hostvo = airdndhomeService.hostselect(home_idx);
+	  res.put("id", home_idx);
+
+	  
+	  JSONObject hostres = new JSONObject();
+	  hostres.put("hostId", hostvo.getIdx());
+	  hostres.put("hostFirstName", hostvo.getHost_name());
+	  hostres.put("profileImg", hostvo.getHost_profileImg());
+	  hostres.put("signupDate", hostvo.getHost_sign_in_date());
+	  hostres.put("reviewCount", hostvo.getHost_review_num());
+	  hostres.put("identityVerified", hostvo.isCheck_certification());
+	  hostres.put("isSupperhost", hostvo.isCheck_superhost());
+	  hostres.put("responseRate", hostvo.getResponse_rate());
+	  hostres.put("responseTime", hostvo.getResponse_time());
+	  hostres.put("communication", hostvo.getHost_status_message());
+	  
+	  res.put("host", hostres);
 	  
 	  AirdndHomeVO homevo = airdndhomeService.homeselect(home_idx);
-	  res.put("place", homevo.getPlace());
 	  res.put("title", homevo.getTitle());
-	  res.put("addr", homevo.getAddr());
-	  res.put("lat", homevo.getLat());
-	  res.put("lng", homevo.getLng());
-	  res.put("sub_title", homevo.getSub_title());
-	  res.put("filter_max_person", homevo.getFilter_max_person());
-	  res.put("filter_bedroom", homevo.getFilter_bedroom());
-	  res.put("filter_bed", homevo.getFilter_bed());
-	  res.put("filter_bathroom", homevo.getFilter_bathroom());
-	  res.put("price", homevo.getPrice());
-	  res.put("host_notice", homevo.getHost_notice());
-	  res.put("loc_info", homevo.getLoc_info());
+	  res.put("subTitle", homevo.getSub_title());
+	  res.put("feature", "최대 인원 " + homevo.getFilter_max_person() + "명 · 침실 " + homevo.getFilter_bedroom() + "개 · 침대"+ homevo.getFilter_bed() + "개 · 욕실 " + homevo.getFilter_bathroom() + "개");
 	  
-	  List<JSONObject> attractions_info = new ArrayList<JSONObject>();
+	  JSONObject locationres = new JSONObject();
+	  locationres.put("lat", homevo.getLat());
+	  locationres.put("lng", homevo.getLng());
+	  res.put("location", locationres);
+
+	  res.put("address", homevo.getAddr());
+	  res.put("addressDescription", homevo.getLoc_info());
+	  res.put("homeType", "개인실");
+	  res.put("capacity", homevo.getFilter_max_person());
+	  
+	  List<String> reservedDate = new ArrayList<String>();
+	  List<AirdndUserResInfoVO> reservedDatelist = airdndhomeService.userresinfoselect(home_idx);
+	  for( int i = 0; i< reservedDatelist.size(); i++) {
+		  String str = reservedDatelist.get(i).getCheckin();
+		  str = str.replace("-", ".");
+		  reservedDate.add(str);
+	  }
+	  res.put("reservedDates", reservedDate);
+	  
+	  String checkin = ""; String checkout = "";
+	  List<JSONObject> notice_first = new ArrayList<JSONObject>();
+	  JSONObject notice_for = new JSONObject();
+	  List<JSONObject> userule_info = new ArrayList<JSONObject>();
+	  List<AirdndUseRuleVO> userule = airdndhomeService.useruleselect(home_idx);
+	  for( int i = 0; i< userule.size(); i++) {
+		  JSONObject rule_name = new JSONObject();
+		  rule_name.put("name", userule.get(i).getUse_rule());
+		  userule_info.add(rule_name);
+		  if(userule.get(i).getUse_rule().indexOf("체크아웃 시간:") != -1) {
+			  checkout = userule.get(i).getUse_rule();
+			  checkout = checkout.replaceAll("체크아웃 시간: ", "");
+		  }
+		  
+		  if(userule.get(i).getUse_rule().indexOf("체크인 시간:") != -1) {
+			  checkin = userule.get(i).getUse_rule();
+			  checkin = checkin.replaceAll("체크인 시간: ", "");
+		  }
+	  }
+	  notice_for.put("rules", userule_info);
+
+	  List<JSONObject> safetyrule_info = new ArrayList<JSONObject>();
+	  List<AirdndSafetyRuleVO> safetyrule = airdndhomeService.safetyruleselect(home_idx);
+	  for( int i = 0; i< safetyrule.size(); i++) {
+		  JSONObject rule_name = new JSONObject();
+		  rule_name.put("name", safetyrule.get(i).getSafety_rule());
+		  safetyrule_info.add(rule_name);
+	  }
+	  notice_for.put("safeties", safetyrule_info);
+	  notice_first.add(notice_for);
+	  
+	  res.put("checkin", checkin);
+	  res.put("checkout", checkout);
+	  res.put("price", String.format("%,d", homevo.getPrice()));
+	  res.put("isBookmarked", "true");
+	  
+	  List<String> picture = new ArrayList<String>();
+	  List<AirdndHomePictureVO> picturelist = airdndhomeService.pictureselect(home_idx);
+	  for(int i = 0; i < picturelist.size(); i++) {
+		  picture.add( picturelist.get(i).getUrl() );
+	  }
+	  res.put("images", picture);
+	  
+	  List<JSONObject> notice_info = new ArrayList<JSONObject>();
+	  List<AirdndNoticeVO> notice = airdndhomeService.noticeselect(home_idx);
+	  for( int i = 0; i< notice.size(); i++) {
+		  JSONObject noticeinfo = new JSONObject();
+		  noticeinfo.put("text", notice.get(i).getHome_notice_sort());
+		  noticeinfo.put("subText", notice.get(i).getHome_notice_content());
+		  noticeinfo.put("icon", notice.get(i).getHome_notice_icon());
+		  
+		  notice_info.add(noticeinfo);
+	  }
+	  res.put("explains", notice_info);
+	  
+	  String desc = homevo.getHost_notice();
+	  desc = desc.replace(". ", ".<br>");
+	  res.put("description", desc);
+	  
+	  List<JSONObject> bedroom_info = new ArrayList<JSONObject>();
+	  List<AirdndBedroomVO> bedroom = airdndhomeService.bedroomeselect(home_idx);
+	  for( int i = 0; i< bedroom.size(); i++) {
+		  JSONObject bedroominfo = new JSONObject();
+		  List<String> bedroom_icon_arr = new ArrayList<String>();
+		  bedroom_icon_arr.add(bedroom.get(i).getBed_icons());
+		  bedroominfo.put("icons", bedroom_icon_arr);
+		  bedroominfo.put("room", bedroom.get(i).getBed_room_name());
+		  bedroominfo.put("size", bedroom.get(i).getBed_room_option());
+		  
+		  bedroom_info.add(bedroominfo);
+	  }
+	  res.put("bedrooms", bedroom_info);
+
+	  List<JSONObject> facility_info = new ArrayList<JSONObject>();
+	  List<AirdndFacilityVO> facility = airdndhomeService.facilityselect(home_idx);
+	  for( int i = 0; i< facility.size(); i++) {
+		  JSONObject facilityinfo = new JSONObject();
+		  facilityinfo.put("name", facility.get(i).getFacility());
+		  facilityinfo.put("icon",facility.get(i).getFacility_icon());
+		  
+		  facility_info.add(facilityinfo);
+	  }
+	  res.put("amenities", facility_info);
+	  
+	  res.put("notice", notice_first);
+	  
+	  JSONObject review_res = new JSONObject();
+	  List<JSONObject> review_info = new ArrayList<JSONObject>();
+	  List<AirdndReviewVO> review = airdndhomeService.reviewselect(home_idx);
+	  double totalReview = 0.0;
+	  for( int i = 0; i< review.size(); i++) {
+		  JSONObject reviewinfo = new JSONObject();		  
+		  reviewinfo.put("userId", review.get(i).getIdx());
+		  reviewinfo.put("userProfileImg", "https://a0.muscache.com/im/pictures/user/02d1c910-7279-445e-a392-6ecba45874bd.jpg?im_w=720");
+		  reviewinfo.put("userFirstName", review.get(i).getUser_name());
+		  reviewinfo.put("date", review.get(i).getReview_date());
+		  reviewinfo.put("contents", review.get(i).getReview_content());
+		  
+		  totalReview += (review.get(i).getRoom_cleanliness() + review.get(i).getRoom_accuracy() + review.get(i).getRoom_communication() + review.get(i).getRoom_position() + review.get(i).getRoom_checkin() + review.get(i).getRoom_cost_effectiveness());
+		  
+		  review_info.add(reviewinfo);
+		  
+	  }
+	  double avgReview = (totalReview/(review.size()*6));
+	  review_res.put("cleanliness", review.get(0).getRoom_cleanliness());
+	  review_res.put("accuracy", review.get(0).getRoom_accuracy());
+	  review_res.put("communication", review.get(0).getRoom_communication());
+	  review_res.put("location", review.get(0).getRoom_position());
+	  review_res.put("checkin", review.get(0).getRoom_checkin());
+	  review_res.put("value", review.get(0).getRoom_cost_effectiveness());
+	  review_res.put("count", review.size());
+	  review_res.put("rating", Math.round(avgReview*100)/100.0);
+	  review_res.put("reviewCount", review.size());
+	  review_res.put("comments", review_info);
+	  res.put("reviews", review_res);
+	  
+      return res.toString();
+      
+      /*List<JSONObject> attractions_info = new ArrayList<JSONObject>();
 	  List<AirdndDistanceVO> distancelist = airdndhomeService.distanceselect(home_idx);
 	  for( int i = 0; i< distancelist.size(); i++) {
 		  JSONObject distance_info = new JSONObject();
@@ -86,92 +242,7 @@ public class HomeController {
 		  
 		  attractions_info.add(distance_info);
 	  }
-	  res.put("attractions_info", attractions_info);
-	  
-	  List<String> picture = new ArrayList<String>();
-	  List<AirdndHomePictureVO> picturelist = airdndhomeService.pictureselect(home_idx);
-	  for(int i = 0; i < picturelist.size(); i++) {
-		  picture.add( picturelist.get(i).getUrl() );
-	  }
-	  res.put("picture_url", picture);
-	  
-	  List<JSONObject> bedroom_info = new ArrayList<JSONObject>();
-	  List<AirdndBedroomVO> bedroom = airdndhomeService.bedroomeselect(home_idx);
-	  for( int i = 0; i< bedroom.size(); i++) {
-		  JSONObject bedroominfo = new JSONObject();
-		  bedroominfo.put("bedroomName", bedroom.get(i).getBed_room_name());
-		  bedroominfo.put("bedroomOption", bedroom.get(i).getBed_room_option());
-		  bedroominfo.put("bedIcons", bedroom.get(i).getBed_icons());
-		  
-		  bedroom_info.add(bedroominfo);
-	  }
-	  res.put("bedroomInfo", bedroom_info);
-	  
-	  List<JSONObject> facility_info = new ArrayList<JSONObject>();
-	  List<AirdndFacilityVO> facility = airdndhomeService.facilityselect(home_idx);
-	  for( int i = 0; i< facility.size(); i++) {
-		  JSONObject facilityinfo = new JSONObject();
-		  facilityinfo.put("facility", facility.get(i).getFacility());
-		  facilityinfo.put("facilityIcon", facility.get(i).getFacility_icon());
-		  
-		  facility_info.add(facilityinfo);
-	  }
-	  res.put("facilityInfo", facility_info);
-	  
-	  List<JSONObject> notice_info = new ArrayList<JSONObject>();
-	  List<AirdndNoticeVO> notice = airdndhomeService.noticeselect(home_idx);
-	  for( int i = 0; i< notice.size(); i++) {
-		  JSONObject noticeinfo = new JSONObject();
-		  noticeinfo.put("noticeSort", notice.get(i).getHome_notice_sort());
-		  noticeinfo.put("noticeContent", notice.get(i).getHome_notice_content());
-		  noticeinfo.put("noticeIcon", notice.get(i).getHome_notice_icon());
-		  
-		  notice_info.add(noticeinfo);
-	  }
-	  res.put("noticeInfo", notice_info);
-	  	  
-	  JSONObject review_res = new JSONObject();
-	  List<JSONObject> review_info = new ArrayList<JSONObject>();
-	  List<AirdndReviewVO> review = airdndhomeService.reviewselect(home_idx);
-	  double totalReview = 0.0;
-	  for( int i = 0; i< review.size(); i++) {
-		  JSONObject reviewinfo = new JSONObject();
-		  reviewinfo.put("userName", review.get(i).getUser_name());
-		  reviewinfo.put("reviewDate", review.get(i).getReview_date());
-		  reviewinfo.put("reviewContent", review.get(i).getReview_content());
-		  reviewinfo.put("cleanliness", review.get(i).getRoom_cleanliness());
-		  reviewinfo.put("accuracy", review.get(i).getRoom_accuracy());
-		  reviewinfo.put("communication", review.get(i).getRoom_communication());
-		  reviewinfo.put("roomPosition", review.get(i).getRoom_position());
-		  reviewinfo.put("checkin", review.get(i).getRoom_checkin());
-		  reviewinfo.put("costEffectiveness", review.get(i).getRoom_cost_effectiveness());
-		  
-		  totalReview += (review.get(i).getRoom_cleanliness() + review.get(i).getRoom_accuracy() + review.get(i).getRoom_communication() + review.get(i).getRoom_position() + review.get(i).getRoom_checkin() + review.get(i).getRoom_cost_effectiveness());
-		  
-		  review_info.add(reviewinfo);
-		  
-	  }
-	  double avgReview = (totalReview/(review.size()*6));
-	  review_res.put("avgReview", Math.round(avgReview*10)/10.0);
-	  review_res.put("reviewCount", review.size());
-	  review_res.put("noticeInfo", review_info);
-	  res.put("review", review_res);
-	  
-	  List<String> safetyrule_info = new ArrayList<String>();
-	  List<AirdndSafetyRuleVO> safetyrule = airdndhomeService.safetyruleselect(home_idx);
-	  for( int i = 0; i< safetyrule.size(); i++) {
-		  safetyrule_info.add(safetyrule.get(i).getSafety_rule());
-	  }
-	  res.put("safetyruleInfo", safetyrule_info);
-	  
-	  List<String> userule_info = new ArrayList<String>();
-	  List<AirdndUseRuleVO> userule = airdndhomeService.useruleselect(home_idx);
-	  for( int i = 0; i< userule.size(); i++) {
-		  userule_info.add(userule.get(i).getUse_rule());
-	  }
-	  res.put("useruleInfo", userule_info);
-	  
-      return res.toString();
+	  res.put("attractions_info", attractions_info);*/
    }
    
 }

@@ -12,10 +12,12 @@ import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
+import vo.AirdndHostVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
 import vo.AirdndSafetyRuleVO;
 import vo.AirdndUseRuleVO;
+import vo.AirdndUserResInfoVO;
 
 
 @Service("airdndhomeService")
@@ -25,9 +27,9 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 	AirdndHomeDAO airdnd_home_dao;
 	
 	@Override
-	public AirdndHomeVO hostselect(int home_idx){
+	public AirdndHostVO hostselect(int home_idx){
 
-		AirdndHomeVO vo = airdnd_home_dao.selectHost(home_idx);
+		AirdndHostVO vo = airdnd_home_dao.selectHost(home_idx);
 
 		return vo;
 	}
@@ -83,6 +85,12 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 	@Override
 	public List<AirdndUseRuleVO> useruleselect(int home_idx) {
 		List<AirdndUseRuleVO> list = airdnd_home_dao.selectUseRule(home_idx);
+		return list;
+	}
+	
+	@Override
+	public List<AirdndUserResInfoVO> userresinfoselect(int home_idx) {
+		List<AirdndUserResInfoVO> list = airdnd_home_dao.selectUserResInfo(home_idx);
 		return list;
 	}
 
