@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.AirdndSearchDAO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndSearchVO;
 import vo.AirdndUserVO;
@@ -61,6 +62,13 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> select_one(int homeIdx) {
 		
 		List<AirdndSearchVO> list = airdnd_search_dao.select_one(homeIdx);
+		return list;
+	}
+
+	public List<AirdndBookmarkedHomesVO> bookmarkselect(int user_idx) {
+		
+		List<AirdndBookmarkedHomesVO> list = airdnd_search_dao.bookmarkselect(user_idx);
+	
 		return list;
 	}
 
