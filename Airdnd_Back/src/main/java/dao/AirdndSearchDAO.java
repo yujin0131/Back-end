@@ -25,13 +25,17 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
    @Override   
    public List<AirdndSearchVO> select(Map<Object, Object> param){
       int page = (Integer)(param.get("page")) * 20;
-System.out.println(page);
-      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
+      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+      
       List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view where place='" + param.get("location")
       		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
       		+ " and filter_bathroom>="+ param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-      		+ " limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+      		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+      		+ "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+      		+ "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+      		+ "%' limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+    	  //param.get("swLat")
 
     	 
          @Override
@@ -52,6 +56,8 @@ System.out.println(page);
                   rs.getInt("review_num"),
                   rs.getString("lat"),
                   rs.getString("lng"));
+            
+            list.setLat("10.1111");
 
             return list;
          }
@@ -93,7 +99,10 @@ System.out.println(page);
 		List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view where place = '" + param.get("location") 
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+" Group by place", new RowMapper<AirdndSearchVO>() {
+		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+		+ "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+		+ "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+		+ "%' Group by place", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -130,11 +139,17 @@ System.out.println(page);
    }
    
    @Override   
-   public List<AirdndSearchVO> facilityList(String place){
+   public List<AirdndSearchVO> facilityList(Map<Object, Object> param){
 
       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-      List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view where place='"+place+"') group by facility", new RowMapper<AirdndSearchVO>() {
+      List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view where place='"+param.get("location") 
+      + "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
+      + " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
+      + " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swlng") + "' and lat <= '" + param.get("neLat") + "' and lng >= '" + param.get("nelng")
+      + "' and sub_title like '%" + param.get("roomTypeHouse1") + "%' or sub_title like '%"  + param.get("roomTypePrivate") + "%' or sub_title like '%"  + param.get("roomTypeShared1")
+      + "%' or sub_title like '%"  + param.get("roomTypeHouse2") + "%' or sub_title like '%"  + param.get("roomTypeShared2") 
+      + "%') group by facility", new RowMapper<AirdndSearchVO>() {
 
          @Override
          public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -6,15 +6,10 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import vo.AirdndBedroomVO;
 import vo.AirdndDistanceVO;
@@ -24,9 +19,8 @@ import vo.AirdndHomeVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
 import vo.AirdndSafetyRuleVO;
+
 import vo.AirdndUseRuleVO;
-import vo.AirdndSearchVO;
-import vo.AirdndUserVO;
 
 @Repository("homeDAO")
 public class AirdndHomeDAO implements AirdndHomeDAOI {
@@ -229,12 +223,9 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 		List<AirdndSafetyRuleVO> list = jdbcTemplate.query("select * from airdnd_home_safety_rule where home_idx=" + home_idx, new RowMapper<AirdndSafetyRuleVO>() {
 	         @Override
 	         public AirdndSafetyRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-	        	 AirdndSafetyRuleVO list = new AirdndSafetyRuleVO(
-	        			 rs.getInt("idx"),
-	        			 rs.getInt("home_idx"),
-	        			 rs.getString("safety_rule"));
+				 AirdndSafetyRuleVO list = new AirdndSafetyRuleVO(rowNum, rowNum, rs.getString("safety_rule"));
 
-	            return list;
+				 return list;
 	         }
 
 	      });
@@ -246,18 +237,12 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	public List<AirdndUseRuleVO> selectUseRule(int home_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		List<AirdndUseRuleVO> list = jdbcTemplate.query("select * from airdnd_home_use_rule where home_idx=" + home_idx, new RowMapper<AirdndUseRuleVO>() {
-
 	         @Override
 	         public AirdndUseRuleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	 AirdndUseRuleVO list = new AirdndUseRuleVO(rowNum, rowNum, rs.getString("use_rule"));
 
-	        	 AirdndUseRuleVO list = new AirdndUseRuleVO(
-	        		rs.getInt("idx"),
-	        		rs.getInt("home_idx"),
-	                rs.getString("use_rule"));
-
-	            return list;
+	        	 return list;
 	         }
-
 	      });
 		return list;
 	}
