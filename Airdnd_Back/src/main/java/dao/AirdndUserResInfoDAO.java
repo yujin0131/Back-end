@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import vo.AirdndBookmarkVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
 import vo.AirdndHostVO;
@@ -180,5 +181,16 @@ public class AirdndUserResInfoDAO implements AirdndUserResInfoDAOI {
 		});
 		
 		return list;
+	}
+	
+	//Update is_canceled
+	@Override
+	public int userResIsCanceled(int idx) {
+		String sql = "update airdnd_user_res_info set is_canceled=1 where idx=" + idx;
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		int res = jdbcTemplate.update(sql);
+		
+		return res;
 	}
 }

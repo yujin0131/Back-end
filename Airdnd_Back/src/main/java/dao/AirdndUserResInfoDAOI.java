@@ -22,4 +22,6 @@ public interface AirdndUserResInfoDAOI {
 	AirdndHomeVO selectHomeInfo(int home_idx);
 	//Select UseRule's information
 	List<AirdndUseRuleVO> selectUseRuleInfo(int home_idx);
+	//Update is_canceled
+	int userResIsCanceled(int idx);
 }

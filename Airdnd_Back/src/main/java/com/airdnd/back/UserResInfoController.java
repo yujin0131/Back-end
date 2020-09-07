@@ -44,13 +44,13 @@ public class UserResInfoController {
 		
 		System.out.println("탭 : " + tab);
 		
-		//파싱할 최종 데이터
+		//JSON
 		JSONObject res = new JSONObject();			//1
 		JSONArray resArr = new JSONArray();			//1-2
 		JSONObject userInfo = new JSONObject();		//2
 		
-		JSONArray resArr2 = new JSONArray();	//3
-		JSONObject resInfo = new JSONObject();	//4
+		JSONArray resArr2 = new JSONArray();		//3
+		JSONObject resInfo = new JSONObject();		//4
 
 		JSONArray rules = new JSONArray();			//5
 		JSONObject locationInfo = null;				//6-1
@@ -184,10 +184,7 @@ public class UserResInfoController {
 			model.addAttribute("res", res.toString());
 			//System.out.println(resUpcoming.toString());
 			
-			return res.toString();
-			
-			
-			
+			return res.toString();	
 			
 			
 		} else if(tab.equalsIgnoreCase("past")) {
@@ -380,5 +377,26 @@ public class UserResInfoController {
 			return res.toString();
 		}
 		return null;
+	}
+	
+	
+	
+	@RequestMapping(value = "", produces = "application/json;charset=utf8")
+	@ResponseBody
+	public String user_res_iscanceled() {
+		//temp. 세션이나 쿠키에서 받아오렴
+		//idx 못 받으면 user_idx와 home_idx로 함
+		int idx = 1;
+		int result = airdndUserResInfoService.userResIsCanceled(idx);
+		
+		JSONObject res = new JSONObject();
+		
+		if(result == 1) {
+			res.put("result", "success");
+		} else {
+			res.put("result", "fail");
+		}
+		
+		return res.toString();
 	}
 }

@@ -65,4 +65,12 @@ public class AirdndUserResInfoService implements AirdndUserResInfoServiceI {
 		
 		return list;
 	}
+	
+	//Update is_canceled
+	@Override
+	public int userResIsCanceled(int idx) {
+		int res = airdnd_user_res_info_dao.userResIsCanceled(idx);
+		
+		return res;
+	}
 }
