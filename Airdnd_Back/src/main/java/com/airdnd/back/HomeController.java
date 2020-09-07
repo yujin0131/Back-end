@@ -230,7 +230,7 @@ public class HomeController {
 	  review_res.put("value", review.get(0).getRoom_cost_effectiveness());
 	  review_res.put("count", review.size());
 	  review_res.put("rating", Math.round(avgReview*100)/100.0);
-	  review_res.put("reviewCount", review.size());
+	  review_res.put("reviewCount", hostvo.getHost_review_num());
 	  review_res.put("comments", review_info);
 	  res.put("reviews", review_res);
 	  
