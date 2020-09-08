@@ -35,7 +35,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
-		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%') limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
+		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("amenityquery") +" limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -100,7 +100,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
-		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%') Group by place", new RowMapper<AirdndSearchVO>() {
+		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("amenityquery") +" Group by place", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -126,7 +126,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
-		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')", new RowMapper<AirdndSearchVO>() {
+		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("amenityquery"), new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -153,7 +153,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
-		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')) group by facility", new RowMapper<AirdndSearchVO>() {
+		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("amenityquery")+") group by facility", new RowMapper<AirdndSearchVO>() {
 
 			@Override
 			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {

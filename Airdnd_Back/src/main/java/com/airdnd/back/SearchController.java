@@ -1,6 +1,7 @@
 package com.airdnd.back;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import org.apache.ibatis.reflection.ArrayUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -133,17 +135,43 @@ public class SearchController {
 			}
 
 			String[] amenityListArr = amenityList.split("-");
+			String[] facilityListArr = facilityList.split("-");
+			String[] ListArr = new String[20];
+			System.arraycopy(amenityListArr, 0, ListArr, 0, amenityListArr.length);
+			System.arraycopy(facilityListArr, 0, ListArr, amenityListArr.length, facilityListArr.length);
+			System.out.println(ListArr[0].toString() + ListArr[1].toString());
+			
+			System.out.println(amenityListArr.length);
 			String queryFirst = " and (facility like '%";
-			String queryMiddle = "%' or '%";
+			String queryMiddle = "%' or facility like'%";
 			String queryLast = "%')";
 			String query = queryFirst;
-			for(int i = 0; i < amenityListArr.length; i++) {
-				if(amenityListArr.length == 1) {
+
+			outer : for(int i = 0; i < ListArr.length; i++) {
+				
+				//둘다 값 안받은거
+				if(ListArr[i].equals("0") && ListArr[i+1].equals("0")) {// 둘다 없을때
 					query = "";
-				}else if(i == amenityListArr.length-1) {
-					query += amenityListArr[i] + queryLast;
-				}else {
-					query += amenityListArr[i] + queryMiddle;
+					break outer ;
+				}else if(!(ListArr[0].equals("0")) && !(ListArr[i].equals("0")) && ListArr[i+1] == null) { //fac, ame 다 있는 마지막
+					query += ListArr[i] + queryLast;
+					System.out.println("다있는 마지막 " + query);
+					break outer;
+				}else if(ListArr[i].equals("0") && !(ListArr[i+1].equals("0"))) { //ame이 없을 0번 넘겨주는 코드
+					System.out.println("ame 없는 처음 " + query);
+					continue outer;
+				}else if(ListArr[0].equals("0") && !(ListArr[i].equals("0")) && ListArr[i+1] == null ) { //ame이 없고 facil이 마지막
+					query += ListArr[i] + queryLast;
+					System.out.println("ame없는 마지막 " + query);
+					break outer;
+				}else if(ListArr[i] != null && ListArr[i+1].equals("0") && ListArr[i+2] == null ) { //facilitylist가 없을때
+					query += ListArr[i] + queryLast;
+					System.out.println("facility없는 마지막 " + query);
+					break outer;
+				}else{//ame만 있거나 둘다 많이씩 있을때
+					query += ListArr[i] + queryMiddle;
+					System.out.println("중간 : " + query);
+					
 				}
 			}
 			System.out.println(query);
@@ -169,6 +197,7 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
+			param.put("amenityquery", query);
 			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
 
 
