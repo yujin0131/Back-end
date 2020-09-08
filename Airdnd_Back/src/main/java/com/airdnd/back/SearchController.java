@@ -197,7 +197,7 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
-			param.put("amenityquery", query);
+			param.put("Listquery", query);
 			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
 
 
