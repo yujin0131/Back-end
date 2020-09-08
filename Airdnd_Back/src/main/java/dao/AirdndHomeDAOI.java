@@ -7,14 +7,16 @@ import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
+import vo.AirdndHostVO;
 import vo.AirdndNoticeVO;
 import vo.AirdndReviewVO;
 import vo.AirdndSafetyRuleVO;
 import vo.AirdndUseRuleVO;
+import vo.AirdndUserResInfoVO;
 
 public interface AirdndHomeDAOI {
 	
-	AirdndHomeVO selectHost(int home_idx);
+	AirdndHostVO selectHost(int home_idx);
 	AirdndHomeVO selectHome(int home_idx);
 	List<AirdndDistanceVO> selectDistance(int home_idx);
 	List<AirdndHomePictureVO> selectPicture(int home_idx);
@@ -24,5 +26,6 @@ public interface AirdndHomeDAOI {
 	List<AirdndReviewVO> selectReview(int home_idx);
 	List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx);
 	List<AirdndUseRuleVO> selectUseRule(int home_idx);
+	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx);
 
 }

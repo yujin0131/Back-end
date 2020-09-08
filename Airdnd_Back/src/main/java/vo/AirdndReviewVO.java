@@ -1,6 +1,7 @@
 package vo;
 
 public class AirdndReviewVO {
+	private int idx;
 	private String user_name, review_date, review_content;
 	private double room_cleanliness, room_accuracy, room_communication, room_position, room_checkin, room_cost_effectiveness;
 	
@@ -8,8 +9,9 @@ public class AirdndReviewVO {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public AirdndReviewVO(String user_name, String review_date, String review_content, double room_cleanliness, double room_accuracy, double room_communication, double room_position, double room_checkin, double room_cost_effectiveness) {
+	public AirdndReviewVO(int idx, String user_name, String review_date, String review_content, double room_cleanliness, double room_accuracy, double room_communication, double room_position, double room_checkin, double room_cost_effectiveness) {
 		// TODO Auto-generated constructor stub
+		this.idx = idx;
 		this.user_name = user_name;
 		this.review_date = review_date;
 		this.review_content = review_content;
@@ -20,6 +22,14 @@ public class AirdndReviewVO {
 		this.room_checkin=room_checkin;
 		this.room_cost_effectiveness=room_cost_effectiveness;
 		
+	}
+
+	public int getIdx() {
+		return idx;
+	}
+
+	public void setIdx(int idx) {
+		this.idx = idx;
 	}
 
 	public String getUser_name() {
