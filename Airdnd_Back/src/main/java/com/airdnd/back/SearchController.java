@@ -121,17 +121,33 @@ public class SearchController {
 				typeshared1 = "다인실";
 				typeshared2 = "객실";
 			}
-			
+
 			Map<Integer, String> hostlangmap = new HashMap<Integer, String>();
 			for(int i = 0; i < 5; i++) hostlangmap.put(i, "devengerslang");
-			
+
 			if(hostLangList.equals("0")) for(int i = 0; i < 5; i++) hostlangmap.put(i, "");
 			else {
 
 				String[] hostlang = hostLangList.replace("중국어", "中文").replace("영어", "English").replace("프랑스어", "Français").replace("스페인어", "Español").split("-");
 				for(int i = 0; i < hostlang.length; i++) hostlangmap.replace(i, hostlang[i]);
 			}
-			
+
+			String[] amenityListArr = amenityList.split("-");
+			String queryFirst = " and (facility like '%";
+			String queryMiddle = "%' or '%";
+			String queryLast = "%')";
+			String query = queryFirst;
+			for(int i = 0; i < amenityListArr.length; i++) {
+				if(amenityListArr.length == 1) {
+					query = "";
+				}else if(i == amenityListArr.length-1) {
+					query += amenityListArr[i] + queryLast;
+				}else {
+					query += amenityListArr[i] + queryMiddle;
+				}
+			}
+			System.out.println(query);
+
 
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
@@ -154,8 +170,7 @@ public class SearchController {
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
 			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
-			System.out.println(hostlangmap.toString());
-			
+
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 			int size = search_list.size();
@@ -275,7 +290,6 @@ public class SearchController {
 			//필터조건들 ---------------------------------
 			List<AirdndSearchVO> facilities = airdndsearchService.facilityList(param);
 			//List<AirdndUserVO> hostlanlists = airdndsearchService.hostLanlist(location);
-			System.out.println("controller : " + facilities.toString());
 
 			List<String> facilityListStr= new ArrayList<String>();
 			List<String> amenityListStr = new ArrayList<String>();
@@ -302,7 +316,7 @@ public class SearchController {
 			//}
 
 			JSONObject filterCondition = new JSONObject();
-			System.out.println("size " + amenityListStr.size());
+
 			if( amenityListStr.size()!=0) filterCondition.put("amenityList", amenityListStr);
 			if( facilityListStr.size()!=0) filterCondition.put("facilityList", facilityListStr);
 			filterCondition.put("hostLangList", hostLangListStr);

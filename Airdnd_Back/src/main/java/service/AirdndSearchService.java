@@ -22,7 +22,6 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> searchselect(Map<Object, Object> param){
 
 		List<AirdndSearchVO> list = airdnd_search_dao.select(param);
-		System.out.println("sssss" + param.get("neLat") + " / " + param.get("neLng") + " / " + param.get("swLat") + " / " + param.get("swLng") + " / ");
 		return list;
 	}
 
@@ -41,7 +40,7 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	}
 
 	public List<AirdndSearchVO> unitpriceselect(Map<Object, Object> param) {
-		System.out.println("service : " + param.get("bedCount"));
+		
 		List<AirdndSearchVO> list = airdnd_search_dao.unitpriceselect(param);
 		return list;
 	}
@@ -49,8 +48,6 @@ public class AirdndSearchService implements AirdndSearchServiceI{
 	public List<AirdndSearchVO> facilityList(Map<Object, Object> param) {
 		
 		List<AirdndSearchVO> list = airdnd_search_dao.facilityList(param);
-		
-		System.out.println("service : " + list.toString());
 		return list;
 	}
 	
