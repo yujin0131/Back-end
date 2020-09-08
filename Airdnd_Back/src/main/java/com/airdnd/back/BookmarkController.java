@@ -160,8 +160,8 @@ public class BookmarkController {
 	@ResponseBody
 	//public String insert_bookmark(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
 	public String insert_bookmark(@RequestBody String payload,
-								  @RequestParam(value="checkIn")String checkin,
-								  @RequestParam(value="checkOut")String checkout) {
+								  @RequestParam(value="checkIn")String checkIn,
+								  @RequestParam(value="checkOut")String checkOut) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 		
@@ -189,171 +189,118 @@ public class BookmarkController {
 			}
 		}//if
 		
-
-		//북마크 추가
+		//initialization
 		JSONObject result = new JSONObject();
-		String result_msg = "";
+		Map<String, Object> javaObject = null;
+		int result_idx = 0;
 		int res = 0;
 		
 		AirdndBookmarkVO vo = new AirdndBookmarkVO();
 		AirdndBookmarkedHomesVO vo2 = new AirdndBookmarkedHomesVO();
 		
+		int home_idx = 0;
+		String bookmark_list_title = null;
+		String url = null;
+		
 		//from Login cookie
 		vo.setUser_idx(signInIdx);
-
-		//search나 detail 페이지에서 받아와야 함
-		int home_idx = 0;
-		/*
-		if(javaObject.get("home_idx").toString() == null || javaObject.get("home_idx").toString() == "") {
-			home_idx = 0;
-		} else {
-			home_idx = Integer.parseInt(javaObject.get("home_idx").toString());
-		}
-		vo2.setHome_idx(home_idx);
-		*/
+		vo2.setUser_idx(signInIdx);
+		
 		//from Parameter
-		checkin = null;
-		checkout = null;
+		checkIn = null;
+		checkOut = null;
 		
 		try {
-			checkin = URLDecoder.decode(checkin, "utf-8");
-			checkout = URLDecoder.decode(checkout, "utf-8");
+			checkIn = URLDecoder.decode(checkIn, "utf-8");
+			checkOut = URLDecoder.decode(checkOut, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		vo.setBookmark_list_title(payload);
-		//북마크 추가
-		res = airdndBookmarkService.insert_bookmark(vo);
+		//from Payload
+		try {
+			javaObject = mapper.readValue(payload, Map.class);
+		} catch (Exception e) {
+			System.out.println("payload 오류");
+		}
+		System.out.println("javaObject: " + javaObject);
 		
-		if(home_idx == 0) {
-			//숙소 없이 북마크만 추가할 때
+		home_idx = Integer.parseInt(javaObject.get("bookmarkHomeId").toString());
+		bookmark_list_title = javaObject.get("bookmarkListTitle").toString();
+		url = javaObject.get("bookmarkImage").toString();
+		
+		if(checkIn != null) {
+			vo.setCheckin(checkIn);
+		}
+		if(checkOut != null) {
+			vo.setCheckout(checkOut);
+		}
+		
+		//create bookmark without home
+		if(home_idx == 0 && bookmark_list_title != null && url == null) {
+			vo.setBookmark_list_title(bookmark_list_title);
+			
+			res = airdndBookmarkService.insert_bookmark(vo);
+			
 			if(res == 1) {
 				System.out.println("새 북마크 추가(북마크 idx : " + vo.getIdx() + ")");
-				result_msg = "Success";
+				result_idx = vo.getIdx();
 			} else {
 				System.out.println("북마크를 추가하지 못함");
-				result_msg = "Fail";
 			}
-		} else {
-			//숙소 + 북마크 추가할 때
+		  //add home in bookmark
+		} else if(home_idx != 0 && bookmark_list_title == null && url != null) {
+			vo2.setHome_idx(home_idx);
+			vo2.setUrl(url);
+
+			res = airdndBookmarkService.insert_bookmarkHome(vo2);
+			
 			if(res == 1) {
+				res = airdndBookmarkService.update_updateTime(vo.getIdx());
+				
+				if(res == 1) {
+					System.out.println("숙소 추가 완료(북마크 idx : " + vo.getIdx() + ")");
+					result_idx = vo.getIdx();
+				}
+			} else {
+				System.out.println("북마크를 추가하지 못함");
+			}
+		  //create bookmark with home
+		} else if(home_idx != 0 && bookmark_list_title != null && url != null) {
+			vo2.setHome_idx(home_idx);
+			vo.setBookmark_list_title(bookmark_list_title);
+			vo2.setUrl(url);
+			
+			res = airdndBookmarkService.insert_bookmark(vo);
+			
+			if(res == 1) {
+				vo2.setBookmark_idx(signInIdx);
 				res = airdndBookmarkService.insert_bookmarkHome(vo2);
 				
 				if(res == 1) {
 					res = airdndBookmarkService.update_updateTime(vo.getIdx());
 					
 					if(res == 1) {
-						List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
-						String mainUrl = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
-						vo2.setUrl(mainUrl);
-						
 						System.out.println("새 북마크 및 숙소 추가 완료(북마크 idx : " + vo.getIdx() + ")");
-						result_msg = "Success";
-					} else {
-						System.out.println("시간을 DB에 저장하지 못함");
-						result_msg = "Fail_time";
+						result_idx = vo.getIdx();
 					}
-				} else {
-					System.out.println("숙소를 추가하지 못함");
-					result_msg = "Fail_home";
 				}
 			} else {
 				System.out.println("북마크를 추가하지 못함");
-				result_msg = "Fail_bookmark";
 			}
 		}
-
-		//bookmark_list_title로 idx 얻어오기
-		int idx = airdndBookmarkService.selectIdx(vo.getBookmark_list_title());
-
-		vo2.setBookmark_idx(idx);
-		vo2.setUser_idx(vo.getUser_idx());
 		
-		if(vo2.getHome_idx() != 0) {
-			airdndBookmarkService.insert_bookmarkHome(vo2);
-			airdndBookmarkService.update_updateTime(vo.getIdx());
+		result.put("result", result_idx);
 
-			List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
-			String mainUrl = mainPictures.get(0).getUrl(); //메인 사진만 가져옴
-			vo2.setUrl(mainUrl);
-		}
-		
 		//model.addAttribute("vo", vo);
 		//model.addAttribute("vo2", vo2);
 
-		return "redirect:bookmark";
-		//return result_msg;
+		//return "redirect:bookmark";
+		return result.toString();
 	}
-
-	@RequestMapping("/wishlist_insertHome")
-	public String insert_bookmarkHome(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
-		//Login cookie
-		HttpSession session = request.getSession();
-		Cookie[] cookies = request.getCookies();
-		String sessionKey = "";
-		int signInIdx = 1; //temp
-		String signInEmail = "";
-		String signInName = "";
-		
-		if(cookies == null) {
-			System.out.println("not cookies");
-		}else {
-			for(Cookie cookie : cookies) {
-				if("AirdndSES".equals(cookie.getName())) {
-					sessionKey = cookie.getValue();
-					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
-					signInIdx = signInVO.getUser_idx();
-					signInEmail = signInVO.getEmail();
-					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
-				} else {
-					System.out.println("not login");
-				}
-			}
-		}//if
-		
-		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
-		vo.setUser_idx(signInIdx);
-
-		//vo의 idx이자 vo2의 bookmark_idx
-		int idx = 0;
-
-		if(request.getParameter("idx") == null) {
-			idx = 0;
-		} else if(request.getParameter("idx") != null || Integer.parseInt(request.getParameter("idx")) != 0) {
-			idx = Integer.parseInt(request.getParameter("idx"));
-			vo.setIdx(idx);
-		}
-
-		//search나 detail 페이지에서 받아와야 함
-		int home_idx = 0;
-
-		if(request.getParameter("home_idx") == null) {
-			home_idx = 0;
-		} else if(request.getParameter("home_idx") != null || Integer.parseInt(request.getParameter("home_idx")) != 0) {
-			home_idx = Integer.parseInt(request.getParameter("home_idx"));
-		}
-
-		vo2.setBookmark_idx(vo.getIdx());
-		vo2.setUser_idx(vo.getUser_idx());
-		vo2.setHome_idx(home_idx);
-
-		if(vo2.getHome_idx() != 0) {
-			airdndBookmarkService.insert_bookmarkHome(vo2);
-			airdndBookmarkService.update_updateTime(vo.getIdx());
-
-			List<AirdndHomePictureVO> mainPictures = airdndBookmarkService.selectHomeMainPicture(home_idx);
-			String url = mainPictures.get(0).getUrl(); //맨 처음 메인 사진만 가져옴
-			vo2.setUrl(url);
-		}
-
-		model.addAttribute("vo", vo);
-		model.addAttribute("vo2", vo2);
-
-		return "redirect:bookmark";
-	}
-
+	
+	/*
 	@RequestMapping("/wishlist_deleteHome")
 	public String delete_bookmarkHome(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
 		//Login cookie
@@ -430,4 +377,5 @@ public class BookmarkController {
 
 		return "redirect:bookmark";
 	}
+	*/
 }
