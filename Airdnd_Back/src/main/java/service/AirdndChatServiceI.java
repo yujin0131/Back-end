@@ -23,6 +23,10 @@ public interface AirdndChatServiceI {
 	List<AirdndHostVO> selectHostList(int user_idx, String all_hidden_unread);
 	//Select the userResInfo
 	AirdndUserResInfoVO selectUserResInfo(int user_idx, int host_idx);
+	//Select host_idx chatting
+	AirdndChatVO selectHostChat(int user_idx, int host_idx);
 	//Insert chatting
-	AirdndChatMsgsVO insertChat(AirdndChatMsgsVO vo);
+	AirdndChatVO insertChat(AirdndChatVO vo);
+	//Insert message
+	int insertMsg(AirdndChatMsgsVO vo);
 }
