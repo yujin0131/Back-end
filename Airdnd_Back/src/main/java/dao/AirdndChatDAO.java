@@ -231,14 +231,50 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 		return list.get(0);
 	}
 	
+	//Select host_idx chatting
+	@Override
+	public AirdndChatVO selectHostChat(int user_idx, int host_idx) {
+		String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " AND host_idx=" + host_idx;
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
+			@Override
+			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndChatVO list = new AirdndChatVO(
+					rs.getInt("idx"),
+					rs.getInt("host_idx"),
+					rs.getString("host_profile_imgurl"),
+					rs.getInt("user_idx"),
+					rs.getString("all_hidden_unread"),
+					rs.getString("checkin"),
+					rs.getString("checkout"));
+
+				return list;
+			}
+		});
+		
+		return list.get(0);
+	}
+	
 	//Insert chatting
 	@Override
-	public AirdndChatMsgsVO insertChat(AirdndChatMsgsVO vo) {
+	public AirdndChatVO insertChat(AirdndChatVO vo) {
+		String sql = "insert into airdnd_chatting(host_idx, host_profile_imgurl, user_idx, all_hidden_unread, checkin, checkout) values(?, ?, ?, ?, ?, ?)";
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		jdbcTemplate.update(sql, vo.getHost_idx(), vo.getHost_profile_imgurl(), vo.getUser_idx(), vo.getAll_hidden_unread(), vo.getCheckin(), vo.getCheckout());
+		
+		return vo;
+	}
+	
+	//Insert message
+	@Override
+	public int insertMsg(AirdndChatMsgsVO vo) {
 		String sql = "insert into airdnd_chatting_msgs(message_idx, from_idx, to_idx, content, send_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.update(sql, vo.getMessage_idx(), vo.getFrom_idx(), vo.getTo_idx(), vo.getContent());
+		int res = jdbcTemplate.update(sql, vo.getMessage_idx(), vo.getFrom_idx(), vo.getTo_idx(), vo.getContent());
 		
-		return vo;
+		return res;
 	}
 }

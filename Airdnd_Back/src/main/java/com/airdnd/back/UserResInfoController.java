@@ -406,7 +406,7 @@ public class UserResInfoController {
 	
 	
 	
-	@RequestMapping(produces = "application/json;charset=utf8")
+	@RequestMapping(value = "/trips/resCanceled", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String user_res_iscanceled() {
 		//Login cookie

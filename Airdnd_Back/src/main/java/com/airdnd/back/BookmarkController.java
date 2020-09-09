@@ -2,13 +2,13 @@ package com.airdnd.back;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
@@ -125,7 +125,8 @@ public class BookmarkController {
 				int n  = 0;
 				
 				if(list.get(i).getHome_count() == 0) {
-					//bookmark.put("homes", null);
+					List arr = new ArrayList();
+					bookmark.put("bookmarks", arr);
 					break;
 				} else {
 					if(list.get(i).getIdx() == homes.get(j).getBookmark_idx()) {
@@ -153,15 +154,11 @@ public class BookmarkController {
 		//return Common.VIEW_PATH + "bookmark.jsp";
 	}
 	
-	
-												//얘 나중에 POST로 바꿔 주셈
-	@RequestMapping(value = "/wishlist_insert", method=RequestMethod.GET,
-					produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
+	@RequestMapping(value="/wishlist_insert", method=RequestMethod.POST,
+					produces="application/json;charset=utf8", consumes=MediaType.ALL_VALUE)
+	//, @RequestParam(value="checkIn")String checkIn, @RequestParam(value="checkOut")String checkOut
 	@ResponseBody
-	//public String insert_bookmark(AirdndBookmarkVO vo, AirdndBookmarkedHomesVO vo2, Model model) {
-	public String insert_bookmark(@RequestBody String payload,
-								  @RequestParam(value="checkIn")String checkIn,
-								  @RequestParam(value="checkOut")String checkOut) {
+	public String insert_bookmark(@RequestBody String payload) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
 		
@@ -207,8 +204,8 @@ public class BookmarkController {
 		vo2.setUser_idx(signInIdx);
 		
 		//from Parameter
-		checkIn = null;
-		checkOut = null;
+		String checkIn = null;
+		String checkOut = null;
 		
 		try {
 			checkIn = URLDecoder.decode(checkIn, "utf-8");

@@ -72,11 +72,27 @@ public class AirdndChatService implements AirdndChatServiceI {
 		return vo;
 	}
 	
-	//Insert chatting
+	//Select host_idx chatting
 	@Override
-	public AirdndChatMsgsVO insertChat(AirdndChatMsgsVO vo) {
-		airdnd_chat_dao.insertChat(vo);
+	public AirdndChatVO selectHostChat(int user_idx, int host_idx) {
+		AirdndChatVO vo = airdnd_chat_dao.selectHostChat(user_idx, host_idx);
 		
 		return vo;
+	}
+	
+	//Insert chatting
+	@Override
+	public AirdndChatVO insertChat(AirdndChatVO vo) {
+		AirdndChatVO vo2 = airdnd_chat_dao.insertChat(vo);
+		
+		return vo2;
+	}
+	
+	//Insert chatting
+	@Override
+	public int insertMsg(AirdndChatMsgsVO vo) {
+		int res = airdnd_chat_dao.insertMsg(vo);
+		
+		return res;
 	}
 }
