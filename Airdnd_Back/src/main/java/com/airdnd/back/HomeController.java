@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -233,6 +234,9 @@ public class HomeController {
 	  review_res.put("reviewCount", hostvo.getHost_review_num());
 	  review_res.put("comments", review_info);
 	  res.put("reviews", review_res);
+	  
+	  int random = new Random().nextInt(3) + 1;
+	  res.put("minimumStay", random);
 	  
       return res.toString();
       
