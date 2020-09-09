@@ -85,28 +85,6 @@ public class SearchController {
 			}
 		}
 
-		HttpSession session = request.getSession();
-		Cookie[] cookies = request.getCookies();
-		String sessionKey = "";
-		int signInIdx;
-		String signInEmail;
-		String signInName;
-		if(cookies == null) {
-			System.out.println("not cookies");
-		}else {
-			for (Cookie cookie : cookies) {
-				if("AirdndSES".equals(cookie.getName())) {
-					sessionKey = cookie.getValue();
-					AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
-					signInIdx = signInVO.getUser_idx();
-					signInEmail = signInVO.getEmail();
-					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
-				} else {
-					System.out.println("not login");
-				}
-			}
-		}
-
 		JSONObject res = new JSONObject();
 		JSONObject empty = new JSONObject();
 		List empty_list = new ArrayList<Object>();
