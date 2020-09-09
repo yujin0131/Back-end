@@ -143,30 +143,29 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 	}
 
 	@Override   
-	public List<AirdndSearchVO> facilityList(Map<Object, Object> param){
+	   public List<AirdndSearchVO> facilityList(Map<Object, Object> param){
 
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+	      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-		List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view_final where place='"+param.get("location") 
-		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
-		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swlng") + "' and lat <= '" + param.get("neLat") + "' and lng >= '" + param.get("nelng")
-		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
-		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
-		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')) group by facility", new RowMapper<AirdndSearchVO>() {
+	      List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view_final where place='"+param.get("location") 
+	      + "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
+	      + " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
+	      + " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+	      + "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
+	      + "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
+	      + "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')) group by facility", new RowMapper<AirdndSearchVO>() {
 
-			@Override
-			public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				// TODO Auto-generated method stub
+	         @Override
+	         public AirdndSearchVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-				AirdndSearchVO list = new AirdndSearchVO(
-						rs.getString("facility"));
-				return list;
-			}
-		});
-
-		return list;
-	}
+	            AirdndSearchVO list = new AirdndSearchVO(
+	                  rs.getString("facility"));
+	            return list;
+	         }
+	         
+	      });
+	      return list;
+	   }
 
 	public List<AirdndUserVO> hostLanlist(String place){
 
