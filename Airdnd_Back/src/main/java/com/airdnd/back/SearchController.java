@@ -121,17 +121,55 @@ public class SearchController {
 				typeshared1 = "다인실";
 				typeshared2 = "객실";
 			}
-			
+
 			Map<Integer, String> hostlangmap = new HashMap<Integer, String>();
 			for(int i = 0; i < 5; i++) hostlangmap.put(i, "devengerslang");
-			
+
 			if(hostLangList.equals("0")) for(int i = 0; i < 5; i++) hostlangmap.put(i, "");
 			else {
 
 				String[] hostlang = hostLangList.replace("중국어", "中文").replace("영어", "English").replace("프랑스어", "Français").replace("스페인어", "Español").split("-");
 				for(int i = 0; i < hostlang.length; i++) hostlangmap.replace(i, hostlang[i]);
 			}
-			
+
+			String[] amenityListArr = amenityList.split("-");
+			String[] facilityListArr = facilityList.split("-");
+			String[] ListArr = new String[20];
+			System.arraycopy(amenityListArr, 0, ListArr, 0, amenityListArr.length);
+			System.arraycopy(facilityListArr, 0, ListArr, amenityListArr.length, facilityListArr.length);
+
+			String queryFirst = " and (facility like '%";
+			String queryMiddle = "%' or facility like'%";
+			String queryLast = "%')";
+			String query = queryFirst;
+
+			outer : for(int i = 0; i < ListArr.length; i++) {
+				
+				if(ListArr[i].equals("0") && ListArr[i+1].equals("0")) {// 둘다 없을때
+					query = "";
+					break outer ;
+				}else if(!(ListArr[0].equals("0")) && !(ListArr[i].equals("0")) && ListArr[i+1] == null) { //fac, ame 다 있는 마지막
+					query += ListArr[i] + queryLast;
+					System.out.println("다있는 마지막 " + query);
+					break outer;
+				}else if(ListArr[i].equals("0") && !(ListArr[i+1].equals("0"))) { //ame이 없을 i = 0 일 때 넘겨주는 코드
+					System.out.println("ame 없는 처음 " + query);
+					continue outer;
+				}else if(ListArr[0].equals("0") && !(ListArr[i].equals("0")) && ListArr[i+1] == null ) { //ame이 없고 facil이 마지막
+					query += ListArr[i] + queryLast;
+					System.out.println("ame없는 마지막 " + query);
+					break outer;
+				}else if(ListArr[i] != null && ListArr[i+1].equals("0") && ListArr[i+2] == null ) { //facilitylist가 없을때
+					query += ListArr[i] + queryLast;
+					System.out.println("facility없는 마지막 " + query);
+					break outer;
+				}else{//ame만 있거나 둘다 많이씩 있을때
+					query += ListArr[i] + queryMiddle;
+					System.out.println("중간 : " + query);
+					
+				}
+			}
+			System.out.println(query);
 
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
@@ -153,9 +191,9 @@ public class SearchController {
 			param.put("roomTypePrivate", typeprivate);
 			param.put("roomTypeShared1", typeshared1);
 			param.put("roomTypeShared2", typeshared2);
+			param.put("Listquery", query);
 			for(int i = 0; i < 5; i++) param.put(i, hostlangmap.get(i));
-			System.out.println(hostlangmap.toString());
-			
+
 
 			List<AirdndSearchVO> search_list = airdndsearchService.searchselect(param);
 			int size = search_list.size();
@@ -301,6 +339,7 @@ public class SearchController {
 			//}
 
 			JSONObject filterCondition = new JSONObject();
+
 			if( amenityListStr.size()!=0) filterCondition.put("amenityList", amenityListStr);
 			if( facilityListStr.size()!=0) filterCondition.put("facilityList", facilityListStr);
 			filterCondition.put("hostLangList", hostLangListStr);
