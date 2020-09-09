@@ -5,9 +5,11 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import common.Common;
 import service.AirdndUserResInfoService;
 import vo.AirdndHomePictureVO;
 import vo.AirdndHomeVO;
@@ -32,17 +33,43 @@ public class UserResInfoController {
 	@Autowired
 	AirdndUserResInfoService airdndUserResInfoService;
 	
+	@Autowired
+	HttpServletRequest request;
+	
 	@RequestMapping(value = "/trips/v1", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String user_res_info_list(Model model, @RequestParam(value="tab", defaultValue="")String tab) {
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+		
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+		
+		//tab에 따른 page 구분
 		try {
 			tab = URLDecoder.decode(tab, "utf-8");
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		System.out.println("탭 : " + tab);
 		
 		//JSON
 		JSONObject res = new JSONObject();			//1
@@ -57,11 +84,9 @@ public class UserResInfoController {
 		JSONObject rulesInfo = null;				//6-2
 		JSONObject guestInfo = null;				//6-3
 		
-		//temp. 세션이나 쿠키에서 받아오렴
-		int user_idx = 1;
-		AirdndUserVO userVO = airdndUserResInfoService.selectUserInfo(user_idx);
+		AirdndUserVO userVO = airdndUserResInfoService.selectUserInfo(signInIdx);
 		
-		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo(user_idx);
+		List<AirdndUserResInfoVO> list = airdndUserResInfoService.selectUserResInfo(signInIdx);
 		List<AirdndUserResInfoVO> list1 = new ArrayList<AirdndUserResInfoVO>();
 		List<AirdndUserResInfoVO> list2 = new ArrayList<AirdndUserResInfoVO>();
 		List<AirdndUserResInfoVO> list3 = new ArrayList<AirdndUserResInfoVO>();
@@ -381,13 +406,34 @@ public class UserResInfoController {
 	
 	
 	
-	@RequestMapping(value = "", produces = "application/json;charset=utf8")
+	@RequestMapping(value = "/trips/resCanceled", produces = "application/json;charset=utf8")
 	@ResponseBody
 	public String user_res_iscanceled() {
-		//temp. 세션이나 쿠키에서 받아오렴
-		//idx 못 받으면 user_idx와 home_idx로 함
-		int idx = 1;
-		int result = airdndUserResInfoService.userResIsCanceled(idx);
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+		
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+		
+		int result = airdndUserResInfoService.userResIsCanceled(signInIdx);
 		
 		JSONObject res = new JSONObject();
 		
