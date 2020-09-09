@@ -22,11 +22,11 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Select bookmark list
 	@Override
-	public List<AirdndBookmarkVO> selectBookmark() {
+	public List<AirdndBookmarkVO> selectBookmark(int user_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
 		//서버 연결할 때 쿼리문 뒤에 "WHERE user_idx= + user_idx <- 추가
-		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark order by update_date_time", new RowMapper<AirdndBookmarkVO>() {
+		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark where user_idx=" + user_idx + " order by update_date_time", new RowMapper<AirdndBookmarkVO>() {
 			@Override
 			public AirdndBookmarkVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndBookmarkVO list = new AirdndBookmarkVO(
@@ -46,10 +46,10 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Select bookmark homes
 	@Override
-	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes() {
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes(int user_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		List<AirdndBookmarkedHomesVO> list = jdbcTemplate.query("select * from airdnd_bookmarked_homes order by bookmark_idx", new RowMapper<AirdndBookmarkedHomesVO>() {
+		List<AirdndBookmarkedHomesVO> list = jdbcTemplate.query("select * from airdnd_bookmarked_homes where user_idx=" + user_idx + " order by bookmark_idx", new RowMapper<AirdndBookmarkedHomesVO>() {
 			@Override
 			public AirdndBookmarkedHomesVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndBookmarkedHomesVO list = new AirdndBookmarkedHomesVO(

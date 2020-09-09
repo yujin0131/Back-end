@@ -5,18 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import common.Common;
 import service.AirdndChatService;
+import vo.AirdndChatMsgsVO;
 import vo.AirdndChatVO;
 import vo.AirdndHostVO;
 import vo.AirdndUserResInfoVO;
@@ -29,139 +34,280 @@ public class ChatController {
 	
 	@Autowired
 	HttpServletRequest request;
-
-	@RequestMapping(value="/guest/inbox", produces="application/json;charset=utf8")
+	
+	@RequestMapping(value= {"/guest/inbox"}, produces="application/json;charset=utf8")
 	@ResponseBody
-	public String chat_list(Model model) {
-		//Final data
-		JSONObject res = new JSONObject();			//1
-
-		JSONArray hostArr = new JSONArray();		//2
-		JSONObject hostlists = new JSONObject();	//3
-
-		JSONArray info = new JSONArray();			//4
-		JSONObject contents = null;					//5-1
-		JSONObject chatHistory = null;				//5-2
+	public String chat_list(Model model, @RequestParam(value="filter", defaultValue="")String filter) {
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInName = "MR";
+		String signInProfileImg = "https://a0.muscache.com/defaults/user_pic-225x225.png?im_w=720";
 		
-		int user_idx = 1; //Temp. 세션에서 받아오기
-		
-		//Host Info
-		List<AirdndHostVO> hostList = airdndChatService.selectHostList(user_idx);
-		System.out.println("hostList size : " + hostList.size());
-		
-		//Chat Info
-		Map<Integer, Object> chatList_host = new HashMap<Integer, Object>();
-		List<AirdndChatVO> list = null;
-		List<AirdndChatVO> list2 = null;
-		
-		for(int i = 0; i < hostList.size(); i++) {
-			System.out.println("흠냐 : " + hostList.get(i).getIdx());
-			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
-			
-			chatList_host.put(i, list);
-		}
-		
-		//User Info
-		AirdndUserVO userVO = airdndChatService.selectUser(user_idx).get(0);
-		
-		//UserResInfo
-		List<AirdndUserResInfoVO> userResInfo = new ArrayList<AirdndUserResInfoVO>();
-		AirdndUserResInfoVO vo = null;
-		
-		//Latest msg
-		List<AirdndChatVO> chatInfo = null;
-		AirdndChatVO chat_vo = null;
-		
-		for(int i = 0; i < hostList.size(); i++) {
-			hostlists = new JSONObject(); 	//3
-			info = new JSONArray();			//4
-			contents = new JSONObject();	//5-1
-			
-			int n = 0;
-			
-			//list and vo setting
-			list = airdndChatService.selectChatList(user_idx, hostList.get(i).getIdx());
-			list2 = (List<AirdndChatVO>)chatList_host.get(i);
-			vo = airdndChatService.selectUserResInfo(user_idx, hostList.get(i).getIdx()).get(0);
-			chat_vo = airdndChatService.selectLatestMsg(user_idx, hostList.get(i).getIdx()).get(0);
-			
-			hostlists.put("id", hostList.get(i).getIdx());
-			hostlists.put("reservationId", vo.getIdx());
-			
-			int count = 0;
-			
-			for(int j = 0; j < list.size(); j++) {
-				System.out.println("list 사이즈 : " + list.size());
-				if(list.get(j).getMsg_hidden_or_not() == 0) {
-					count++;
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInName = signInVO.getFirst_name();
+					signInProfileImg = signInVO.getProfileImg();
+					
+				} else {
+					System.out.println("not login");
 				}
 			}
-			
-			if(count == list.size()) {
-				hostlists.put("state", "all");
-			} else if(count == 0) {
-				hostlists.put("state", "hide");
-			} else {
-				hostlists.put("state", "error. 이게 보이면 미래에게 문의하세요.");
-			}
-			
-			hostlists.put("hostname", hostList.get(i).getHost_name());
-			
-			
-			//contents
-			contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
-			
-			//latest message
-			contents.put("lastMsg", chat_vo.getContent());
-			contents.put("lastMsgDate", chat_vo.getSend_date_time());
-			
-			//userResInfo
-			contents.put("isCanceled", vo.getIs_canceled());
-			contents.put("checkin", vo.getCheckin());
-			contents.put("checkout", vo.getCheckout());
-			
-			//info.add(n, contents);
-			hostlists.put("contents", contents);
-			
-			
-			//chatHistory
-			for(int j = 0; j < list2.size(); j++) {
-				chatHistory = new JSONObject();
-				
-				chatHistory.put("id", list2.get(j).getIdx());
-				chatHistory.put("userId", list2.get(j).getUser_idx());
-				chatHistory.put("name", userVO.getFirst_name());
-				chatHistory.put("timeStamp", list2.get(j).getSend_date_time());
-				chatHistory.put("text", list2.get(j).getContent());
-				
-				info.add(n, chatHistory);
-				hostlists.put("chatHistory", info);
-			}
-
-			hostArr.add(i, hostlists);
-		}//for
+		}//if
 		
-		res.put("message", hostArr);
+		//Final data
+		JSONObject res = new JSONObject();			//1
+		JSONObject resFilter = new JSONObject();	//2
+		JSONObject thirdUser = new JSONObject();	//3
+
+		JSONArray fourthArr = new JSONArray();		//4
+		JSONObject fifthlists = new JSONObject();	//5
+
+		JSONArray info = new JSONArray();			//6
+		JSONObject contents = new JSONObject();		//7-1
+		JSONObject chatHistory = new JSONObject();	//7-2
+		
+		//select all chat list
+		List<AirdndChatVO> listAll = airdndChatService.selectChatListAll(signInIdx);
+		List<AirdndChatVO> listHidden = airdndChatService.selectChatListHidden(signInIdx);
+		List<AirdndChatVO> listUnread = airdndChatService.selectChatListUnread(signInIdx);
+		
+		//Select latest msg in User's chat list - all
+		AirdndChatMsgsVO latestMsgVO = new AirdndChatMsgsVO();
+		
+		List<AirdndHostVO> hostList = new ArrayList<AirdndHostVO>();
+		AirdndUserResInfoVO userResInfoVO = new AirdndUserResInfoVO();
+		List<AirdndChatMsgsVO> chattingListA = new ArrayList<AirdndChatMsgsVO>();
+		List<AirdndChatMsgsVO> chattingListH = new ArrayList<AirdndChatMsgsVO>();
+		List<AirdndChatMsgsVO> chattingListU = new ArrayList<AirdndChatMsgsVO>();
+		
+		if(filter.equalsIgnoreCase("all")) {
+			for(int i = 0; i < listAll.size(); i++) {
+				fifthlists = new JSONObject(); 	//5
+				info = new JSONArray();			//6
+				contents = new JSONObject();	//7-1
+				
+				int n = 0;
+				
+				//Host Info
+				hostList = airdndChatService.selectHostList(signInIdx, listAll.get(0).getAll_hidden_unread());
+				userResInfoVO = airdndChatService.selectUserResInfo(signInIdx, hostList.get(i).getIdx());
+				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listAll.get(0).getAll_hidden_unread());
+				chattingListA = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listAll.get(0).getAll_hidden_unread());
+				
+				fifthlists.put("id", hostList.get(i).getIdx());
+				fifthlists.put("reservationId", userResInfoVO.getIdx());
+				fifthlists.put("state", listAll.get(0).getAll_hidden_unread());
+				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				
+				//contents
+				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
+				contents.put("lastMsg", latestMsgVO.getContent());
+				contents.put("lastMsgDate", latestMsgVO.getSend_date_time());
+				contents.put("isCanceled", userResInfoVO.getIs_canceled());
+				contents.put("checkin", userResInfoVO.getCheckin());
+				contents.put("checkout", userResInfoVO.getCheckout());
+				
+				//info.add(n, contents);
+				fifthlists.put("contents", contents);
+				
+				//chatHistory
+				for(int j = 0; j < chattingListA.size(); j++) {
+					chatHistory = new JSONObject();
+										
+					chatHistory.put("id", chattingListA.get(j).getIdx());
+					chatHistory.put("userId", chattingListA.get(j).getFrom_idx());
+					
+					if(hostList.get(i).getIdx() == chattingListA.get(j).getFrom_idx()) {
+						chatHistory.put("name", hostList.get(i).getHost_name());
+					} else if(signInIdx == chattingListA.get(j).getFrom_idx()) {
+						chatHistory.put("name", signInName);
+					}
+					
+					chatHistory.put("timeStamp", chattingListA.get(j).getSend_date_time());
+					chatHistory.put("text", chattingListA.get(j).getContent());
+					
+					info.add(n, chatHistory);
+					fifthlists.put("chatHistory", info);
+				}
+
+				fourthArr.add(i, fifthlists);
+				
+				thirdUser.put("messages", fourthArr);
+				thirdUser.put("id", signInIdx);
+				thirdUser.put("profileImg", signInProfileImg);
+				
+				resFilter.put("all", thirdUser);
+			}
+		} else if(filter.equalsIgnoreCase("hidden")) {
+			for(int i = 0; i < listHidden.size(); i++) {
+				fifthlists = new JSONObject(); 	//5
+				info = new JSONArray();			//6
+				contents = new JSONObject();	//7-1
+				
+				int n = 0;
+				
+				//Host Info
+				hostList = airdndChatService.selectHostList(signInIdx, listHidden.get(0).getAll_hidden_unread());
+				userResInfoVO = airdndChatService.selectUserResInfo(signInIdx, hostList.get(i).getIdx());
+				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listHidden.get(0).getAll_hidden_unread());
+				chattingListH = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listHidden.get(0).getAll_hidden_unread());
+				
+				fifthlists.put("id", hostList.get(i).getIdx());
+				fifthlists.put("reservationId", userResInfoVO.getIdx());
+				fifthlists.put("state", listHidden.get(0).getAll_hidden_unread());
+				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				
+				//contents
+				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
+				contents.put("lastMsg", latestMsgVO.getContent());
+				contents.put("lastMsgDate", latestMsgVO.getSend_date_time());
+				contents.put("isCanceled", userResInfoVO.getIs_canceled());
+				contents.put("checkin", userResInfoVO.getCheckin());
+				contents.put("checkout", userResInfoVO.getCheckout());
+				
+				//info.add(n, contents);
+				fifthlists.put("contents", contents);
+				
+				//chatHistory
+				for(int j = 0; j < chattingListH.size(); j++) {
+					chatHistory = new JSONObject();
+										
+					chatHistory.put("id", chattingListH.get(j).getIdx());
+					chatHistory.put("userId", chattingListH.get(j).getFrom_idx());
+					
+					if(hostList.get(i).getIdx() == chattingListH.get(j).getFrom_idx()) {
+						chatHistory.put("name", hostList.get(i).getHost_name());
+					} else if(signInIdx == chattingListH.get(j).getFrom_idx()) {
+						chatHistory.put("name", signInName);
+					}
+					
+					chatHistory.put("timeStamp", chattingListH.get(j).getSend_date_time());
+					chatHistory.put("text", chattingListH.get(j).getContent());
+					
+					info.add(n, chatHistory);
+					fifthlists.put("chatHistory", info);
+				}
+
+				fourthArr.add(i, fifthlists);
+				
+				thirdUser.put("messages", fourthArr);
+				thirdUser.put("id", signInIdx);
+				thirdUser.put("profileImg", signInProfileImg);
+				
+				resFilter.put("hidden", thirdUser);
+			}
+		} else if(filter.equalsIgnoreCase("unread")) {
+			for(int i = 0; i < listUnread.size(); i++) {
+				fifthlists = new JSONObject(); 	//5
+				info = new JSONArray();			//6
+				contents = new JSONObject();	//7-1
+				
+				int n = 0;
+				
+				//Host Info
+				hostList = airdndChatService.selectHostList(signInIdx, listUnread.get(0).getAll_hidden_unread());
+				userResInfoVO = airdndChatService.selectUserResInfo(signInIdx, hostList.get(i).getIdx());
+				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listUnread.get(0).getAll_hidden_unread());
+				chattingListU = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listUnread.get(0).getAll_hidden_unread());
+				
+				fifthlists.put("id", hostList.get(i).getIdx());
+				fifthlists.put("reservationId", userResInfoVO.getIdx());
+				fifthlists.put("state", listUnread.get(0).getAll_hidden_unread());
+				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				
+				//contents
+				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
+				contents.put("lastMsg", latestMsgVO.getContent());
+				contents.put("lastMsgDate", latestMsgVO.getSend_date_time());
+				contents.put("isCanceled", userResInfoVO.getIs_canceled());
+				contents.put("checkin", userResInfoVO.getCheckin());
+				contents.put("checkout", userResInfoVO.getCheckout());
+				
+				//info.add(n, contents);
+				fifthlists.put("contents", contents);
+				
+				//chatHistory
+				for(int j = 0; j < chattingListU.size(); j++) {
+					chatHistory = new JSONObject();
+										
+					chatHistory.put("id", chattingListU.get(j).getIdx());
+					chatHistory.put("userId", chattingListU.get(j).getFrom_idx());
+					
+					if(hostList.get(i).getIdx() == chattingListU.get(j).getFrom_idx()) {
+						chatHistory.put("name", hostList.get(i).getHost_name());
+					} else if(signInIdx == chattingListU.get(j).getFrom_idx()) {
+						chatHistory.put("name", signInName);
+					}
+					
+					chatHistory.put("timeStamp", chattingListU.get(j).getSend_date_time());
+					chatHistory.put("text", chattingListU.get(j).getContent());
+					
+					info.add(n, chatHistory);
+					fifthlists.put("chatHistory", info);
+				}
+
+				fourthArr.add(i, fifthlists);
+				
+				thirdUser.put("messages", fourthArr);
+				thirdUser.put("id", signInIdx);
+				thirdUser.put("profileImg", signInProfileImg);
+				
+				resFilter.put("unread", thirdUser);
+			}
+		}
+		
+		res.put("message", resFilter);
 		//model.addAttribute("res", res.toString());
 		
 		return res.toString();
 		//return Common.VIEW_PATH + "chat.jsp";
 	}
 	
+	
 	@RequestMapping("/insert_chat")
 	public String insert_chat(AirdndChatVO vo, Model model) {
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+		
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+		
 		//Temp. 로그인 세션이나 쿠키에서 받아와야 함
-		vo.setUser_idx(2);
+		vo.setUser_idx(signInIdx);
 		//이건 어디서 받아오지.. detail 페이지인가..?
 		vo.setHost_idx(2);
 		
 		//Real
-		vo.setContent(request.getParameter("content"));
-		vo.setImage_url(request.getParameter("image_url"));
+		//vo.setContent(request.getParameter("content"));
 		
-		//Image
-		
-		airdndChatService.insertChat(vo);
+		//airdndChatService.insertChat(vo);
 		model.addAttribute("vo", vo);
 		
 		return "redirect:chat";
