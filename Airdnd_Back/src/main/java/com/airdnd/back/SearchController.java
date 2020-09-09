@@ -1,7 +1,6 @@
 package com.airdnd.back;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.apache.ibatis.reflection.ArrayUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -139,9 +137,7 @@ public class SearchController {
 			String[] ListArr = new String[20];
 			System.arraycopy(amenityListArr, 0, ListArr, 0, amenityListArr.length);
 			System.arraycopy(facilityListArr, 0, ListArr, amenityListArr.length, facilityListArr.length);
-			System.out.println(ListArr[0].toString() + ListArr[1].toString());
-			
-			System.out.println(amenityListArr.length);
+
 			String queryFirst = " and (facility like '%";
 			String queryMiddle = "%' or facility like'%";
 			String queryLast = "%')";
@@ -149,7 +145,6 @@ public class SearchController {
 
 			outer : for(int i = 0; i < ListArr.length; i++) {
 				
-				//둘다 값 안받은거
 				if(ListArr[i].equals("0") && ListArr[i+1].equals("0")) {// 둘다 없을때
 					query = "";
 					break outer ;
@@ -157,7 +152,7 @@ public class SearchController {
 					query += ListArr[i] + queryLast;
 					System.out.println("다있는 마지막 " + query);
 					break outer;
-				}else if(ListArr[i].equals("0") && !(ListArr[i+1].equals("0"))) { //ame이 없을 0번 넘겨주는 코드
+				}else if(ListArr[i].equals("0") && !(ListArr[i+1].equals("0"))) { //ame이 없을 i = 0 일 때 넘겨주는 코드
 					System.out.println("ame 없는 처음 " + query);
 					continue outer;
 				}else if(ListArr[0].equals("0") && !(ListArr[i].equals("0")) && ListArr[i+1] == null ) { //ame이 없고 facil이 마지막
@@ -175,7 +170,6 @@ public class SearchController {
 				}
 			}
 			System.out.println(query);
-
 
 			//search_list : 페이지별 숙소 리스트------------------
 			Map<Object, Object> param = new HashMap();
