@@ -62,7 +62,7 @@ public class SearchController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
 		String sessionKey = "";
@@ -348,14 +348,14 @@ public class SearchController {
 			List<JSONObject> recentHomes = new ArrayList<JSONObject>();//이걸 쿠키로 받아와 검색하는 쿼리문
 			List<Integer> recentHomesIdx = new ArrayList<Integer>();
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
-
+			
 			if(cookies == null) {
 			}else{
 				for (Cookie cookie : cookies) {
 					if(cookie.getName().contains("AirdndRH")) {
-						recentHomesIdx.add(Integer.parseInt(cookie.getName()));
-
+						recentHomesIdx.add(Integer.parseInt(cookie.getValue()));
 						//int recentHomesIdx[] = {596431, 4010129, 4165392};
+						
 						for(int recenthome:recentHomesIdx) {
 							recentHomeOne = airdndsearchService.select_one(recenthome);
 
