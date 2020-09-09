@@ -2,22 +2,27 @@ package dao;
 
 import java.util.List;
 
+import vo.AirdndChatMsgsVO;
 import vo.AirdndChatVO;
 import vo.AirdndHostVO;
 import vo.AirdndUserResInfoVO;
-import vo.AirdndUserVO;
 
 public interface AirdndChatDAOI {
-	//Select chatting list
-	List<AirdndChatVO> selectChatList(int user_idx, int host_idx);
-	//Select the user info
-	List<AirdndUserVO> selectUser(int user_idx);
+	//Select User's chat list - all
+	List<AirdndChatVO> selectChatListAll(int user_idx);
+	//Select User's chat list - hidden
+	List<AirdndChatVO> selectChatListHidden(int user_idx);
+	//Select User's chat list - unread
+	List<AirdndChatVO> selectChatListUnread(int user_idx);
+	//Select User's messages list with filter
+	List<AirdndChatMsgsVO> selectMsgList(int user_idx, int host_idx, String all_hidden_unread);
+	//Select latest msg in User's chat list
+	AirdndChatMsgsVO selectLatestMsg(int user_idx, int host_idx, String all_hidden_unread);
+	
 	//Select the host info list
-	List<AirdndHostVO> selectHostList(int user_idx);
+	List<AirdndHostVO> selectHostList(int user_idx, String all_hidden_unread);
 	//Select the userResInfo
-	List<AirdndUserResInfoVO> selectUserResInfo(int user_idx, int host_idx);
-	//Select the latest message
-	List<AirdndChatVO> selectLatestMsg(int user_idx, int host_idx);
+	AirdndUserResInfoVO selectUserResInfo(int user_idx, int host_idx);
 	//Insert chatting
-	AirdndChatVO insertChat(AirdndChatVO vo);
+	AirdndChatMsgsVO insertChat(AirdndChatMsgsVO vo);
 }
