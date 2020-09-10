@@ -43,7 +43,7 @@ public class ChatController {
 	
 	@RequestMapping(value= {"/guest/inbox"}, produces="application/json;charset=utf8")
 	@ResponseBody
-	public String chat_list(Model model, @RequestParam(value="filter", defaultValue="")String filter) {
+	public String chat_list(Model model) {
 		//Login cookie
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
@@ -71,6 +71,7 @@ public class ChatController {
 		
 		//Final data
 		JSONObject res = new JSONObject();			//1
+		JSONObject resFilter = new JSONObject();	//2
 
 		JSONArray secondArr = new JSONArray();		//4
 		JSONObject thirdlists = new JSONObject();	//5
@@ -93,7 +94,7 @@ public class ChatController {
 		List<AirdndChatMsgsVO> chattingListH = new ArrayList<AirdndChatMsgsVO>();
 		List<AirdndChatMsgsVO> chattingListU = new ArrayList<AirdndChatMsgsVO>();
 		
-		if(filter.equalsIgnoreCase("all")) {
+		
 			for(int i = 0; i < listAll.size(); i++) {
 				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
@@ -110,6 +111,9 @@ public class ChatController {
 				thirdlists.put("id", hostList.get(i).getIdx());
 				thirdlists.put("reservationId", userResInfoVO.getIdx());
 				thirdlists.put("state", listAll.get(0).getAll_hidden_unread());
+				
+				//sif(hostList.get(i).getHost_name()) {
+				
 				thirdlists.put("hostname", hostList.get(i).getHost_name());
 				
 				//contents
@@ -142,12 +146,12 @@ public class ChatController {
 					info.add(n, chatHistory);
 					thirdlists.put("chatHistory", info);
 				}
-
+				
 				secondArr.add(i, thirdlists);
 				
 				res.put("all", secondArr);
 			}
-		} else if(filter.equalsIgnoreCase("hidden")) {
+		
 			for(int i = 0; i < listHidden.size(); i++) {
 				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
@@ -201,7 +205,7 @@ public class ChatController {
 				
 				res.put("hidden", secondArr);
 			}
-		} else if(filter.equalsIgnoreCase("unread")) {
+		
 			for(int i = 0; i < listUnread.size(); i++) {
 				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
@@ -255,8 +259,8 @@ public class ChatController {
 				
 				res.put("unread", secondArr);
 			}
-		}
 		
+		//res.put("message", resFilter);
 		
 		//model.addAttribute("res", res.toString());
 		

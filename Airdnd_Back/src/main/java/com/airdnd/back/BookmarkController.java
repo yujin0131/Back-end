@@ -207,9 +207,11 @@ public class BookmarkController {
 		vo2.setUser_idx(signInIdx);
 		
 		//from Parameter
-		String checkIn = null;
-		String checkOut = null;
 		/*
+		checkIn = null;
+		checkOut = null;
+		System.out.println("하하 잘 나오느냐 : " + checkIn + "/" + checkOut);
+		
 		try {
 			checkIn = URLDecoder.decode(checkIn, "utf-8");
 			checkOut = URLDecoder.decode(checkOut, "utf-8");
@@ -218,6 +220,7 @@ public class BookmarkController {
 			e.printStackTrace();
 		}
 		*/
+		
 		//from Payload
 		try {
 			javaObject = mapper.readValue(payload, Map.class);
@@ -230,7 +233,6 @@ public class BookmarkController {
 		if(javaObject.get("bookmarkListTitle").toString() != null) {
 			bookmark_list_title = javaObject.get("bookmarkListTitle").toString();
 		}
-		/*
 		if(javaObject.get("bookmarkHomeId").toString() != null) {
 			home_idx = Integer.parseInt(javaObject.get("bookmarkHomeId").toString());
 		}
@@ -238,6 +240,7 @@ public class BookmarkController {
 		if(javaObject.get("bookmarkImage").toString() != null) {
 			url = javaObject.get("bookmarkImage").toString();
 		}
+		/*
 		if(checkIn != null) {
 			vo.setCheckin(checkIn);
 		}
@@ -245,6 +248,7 @@ public class BookmarkController {
 			vo.setCheckout(checkOut);
 		}
 		*/
+		
 		//create bookmark without home
 		if(home_idx == 0 && bookmark_list_title != null && url == null) {
 			vo.setBookmark_list_title(bookmark_list_title);
