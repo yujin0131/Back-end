@@ -48,7 +48,7 @@ public class SearchController {
 			@RequestParam(value="bedroomCount", defaultValue="0")int bedroomCount, @RequestParam(value="bathCount", defaultValue="0")int bathCount,
 			@RequestParam(value="convenience", defaultValue="0")boolean convenience, @RequestParam(value="amenityList", defaultValue="0")String amenityList,
 			@RequestParam(value="facilityList", defaultValue="0")String facilityList, @RequestParam(value="hostLangList", defaultValue="0") String hostLangList,
-			@RequestParam(value="page", defaultValue="0")int page) {
+			@RequestParam(value="page", defaultValue="1")int page) {
 
 		try {
 			location = URLDecoder.decode(location, "utf-8");
@@ -143,26 +143,26 @@ public class SearchController {
 			String queryLast = "%')";
 			String query = queryFirst;
 
-			outer : for(int i = 0; i < ListArr.length; i++) {
+			for(int i = 0; i < ListArr.length; i++) {
 				
 				if(ListArr[i].equals("0") && ListArr[i+1].equals("0")) {// 둘다 없을때
 					query = "";
-					break outer ;
+					break;
 				}else if(!(ListArr[0].equals("0")) && !(ListArr[i].equals("0")) && ListArr[i+1] == null) { //fac, ame 다 있는 마지막
 					query += ListArr[i] + queryLast;
 					System.out.println("다있는 마지막 " + query);
-					break outer;
+					break;
 				}else if(ListArr[i].equals("0") && !(ListArr[i+1].equals("0"))) { //ame이 없을 i = 0 일 때 넘겨주는 코드
 					System.out.println("ame 없는 처음 " + query);
-					continue outer;
+					continue;
 				}else if(ListArr[0].equals("0") && !(ListArr[i].equals("0")) && ListArr[i+1] == null ) { //ame이 없고 facil이 마지막
 					query += ListArr[i] + queryLast;
 					System.out.println("ame없는 마지막 " + query);
-					break outer;
+					break;
 				}else if(ListArr[i] != null && ListArr[i+1].equals("0") && ListArr[i+2] == null ) { //facilitylist가 없을때
 					query += ListArr[i] + queryLast;
 					System.out.println("facility없는 마지막 " + query);
-					break outer;
+					break;
 				}else{//ame만 있거나 둘다 많이씩 있을때
 					query += ListArr[i] + queryMiddle;
 					System.out.println("중간 : " + query);
@@ -175,7 +175,7 @@ public class SearchController {
 			Map<Object, Object> param = new HashMap();
 
 			param.put("location", location);
-			param.put("page", page);
+			param.put("page", page-1);
 			param.put("guests", guests);
 			param.put("priceMin", priceMin);
 			param.put("priceMax", priceMax);
@@ -354,7 +354,6 @@ public class SearchController {
 				for (Cookie cookie : cookies) {
 					if(cookie.getName().contains("AirdndRH")) {
 						recentHomesIdx.add(Integer.parseInt(cookie.getValue()));
-						//int recentHomesIdx[] = {596431, 4010129, 4165392};
 						
 						for(int recenthome:recentHomesIdx) {
 							recentHomeOne = airdndsearchService.select_one(recenthome);
