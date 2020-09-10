@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import dao.AirdndHomeDAO;
 import dao.AirdndSearchDAO;
 import vo.AirdndBedroomVO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
@@ -92,6 +93,12 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 	public List<AirdndUserResInfoVO> userresinfoselect(int home_idx) {
 		List<AirdndUserResInfoVO> list = airdnd_home_dao.selectUserResInfo(home_idx);
 		return list;
+	}
+	
+	@Override
+	public AirdndBookmarkedHomesVO bookmarkedhomes(int signInIdx, int home_idx) {
+		AirdndBookmarkedHomesVO vo = airdnd_home_dao.selectBookmarkedHomes(signInIdx, home_idx);
+		return vo;
 	}
 
 }

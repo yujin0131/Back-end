@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 
 import vo.AirdndBedroomVO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
@@ -27,5 +28,6 @@ public interface AirdndHomeServiceI {
 	List<AirdndSafetyRuleVO> safetyruleselect(int home_idx);
 	List<AirdndUseRuleVO> useruleselect(int home_idx);
 	List<AirdndUserResInfoVO> userresinfoselect(int home_idx);
+	AirdndBookmarkedHomesVO bookmarkedhomes(int signInIdx, int home_idx);
 
 }
