@@ -79,11 +79,21 @@ public class HomeController {
 	  AirdndHostVO hostvo = airdndhomeService.hostselect(home_idx);
 	  res.put("id", home_idx);
 	  
-	  String cookie_name = "AirdndRH"+home_idx;
-      Cookie recentCookie = new Cookie(cookie_name, Integer.toString(home_idx));
-      recentCookie.setMaxAge(60*60);
-      recentCookie.setPath("/"); // 경로 설정
-      response.addCookie(recentCookie);
+	  String cookie_name = "AirdndRH" + home_idx;
+
+      for (Cookie cookie : cookies) {
+         if(cookie.getValue().equals("AirdndRH" + home_idx)) {
+            cookie_name = "";
+            break;
+         }
+      }
+
+      if(!cookie_name.equals("")) {
+         Cookie recentCookie = new Cookie(cookie_name, Integer.toString(home_idx));
+         recentCookie.setMaxAge(60*60);
+         recentCookie.setPath("/"); // 경로 설정
+         response.addCookie(recentCookie);
+      }
 	  
 	  JSONObject hostres = new JSONObject();
 	  hostres.put("hostId", hostvo.getIdx());
