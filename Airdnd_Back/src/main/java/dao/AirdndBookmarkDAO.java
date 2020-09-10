@@ -22,11 +22,11 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Select bookmark list
 	@Override
-	public List<AirdndBookmarkVO> selectBookmark() {
+	public List<AirdndBookmarkVO> selectBookmark(int user_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
 		//서버 연결할 때 쿼리문 뒤에 "WHERE user_idx= + user_idx <- 추가
-		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark order by update_date_time", new RowMapper<AirdndBookmarkVO>() {
+		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark where user_idx=" + user_idx + " order by update_date_time", new RowMapper<AirdndBookmarkVO>() {
 			@Override
 			public AirdndBookmarkVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndBookmarkVO list = new AirdndBookmarkVO(
@@ -46,10 +46,10 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	
 	//Select bookmark homes
 	@Override
-	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes() {
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes(int user_idx) {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		List<AirdndBookmarkedHomesVO> list = jdbcTemplate.query("select * from airdnd_bookmarked_homes order by bookmark_idx", new RowMapper<AirdndBookmarkedHomesVO>() {
+		List<AirdndBookmarkedHomesVO> list = jdbcTemplate.query("select * from airdnd_bookmarked_homes where user_idx=" + user_idx + " order by bookmark_idx", new RowMapper<AirdndBookmarkedHomesVO>() {
 			@Override
 			public AirdndBookmarkedHomesVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndBookmarkedHomesVO list = new AirdndBookmarkedHomesVO(
@@ -131,12 +131,24 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	//Create a new bookmark
 	@Override
 	public int insert_bookmark(AirdndBookmarkVO vo) {
-		String sql = "insert into airdnd_bookmark(user_idx, bookmark_list_title, checkin, checkout, update_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
+		String sql = "insert into airdnd_bookmark(user_idx, bookmark_list_title, checkin, checkout) values(?, ?, ?, ?)";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		int res = jdbcTemplate.update(sql, vo.getUser_idx(), vo.getBookmark_list_title(), vo.getCheckin(), vo.getCheckout());
 		
 		return res;
+	}
+	
+
+	//Select a new bookmark info
+	@Override
+	public int selectNewBookmarkInfo() {
+		String sql = "SELECT idx FROM airdnd_bookmark order by update_date_time desc limit 1";
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		int idx = jdbcTemplate.queryForInt(sql);
+
+		return idx;
 	}
 	
 	//Search an idx

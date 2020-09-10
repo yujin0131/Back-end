@@ -1,37 +1,24 @@
 package vo;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class AirdndChatVO {
 	//DB column
-	private int idx, host_idx, user_idx, msg_hidden_or_not;
-	private String content, image_url, send_date_time;
-	
-	//not DB column
-	private String host_name, user_name;
-	private MultipartFile host_profile, user_profile, image;
-	private byte[] image_url_temp;
+	private int idx, host_idx, user_idx;
+	private String host_profile_imgurl, all_hidden_unread, checkin, checkout;
 	
 	public AirdndChatVO() {
 	}
 	
-	public AirdndChatVO(int idx, int host_idx, int user_idx, int msg_hidden_or_not, String content, String image_url, String send_date_time) {
+	public AirdndChatVO(int idx, int host_idx, String host_profile_imgurl, int user_idx, 
+						String all_hidden_unread, String checkin, String checkout) {
 		this.idx = idx;
 		this.host_idx = host_idx;
+		this.host_profile_imgurl = host_profile_imgurl;
 		this.user_idx = user_idx;
-		this.msg_hidden_or_not = msg_hidden_or_not;
-		this.content = content;
-		this.image_url = image_url;
-		this.send_date_time = send_date_time;
-		/*
-		this.host_name = host_name;
-		this.user_name = user_name;
-		this.host_profile = host_profile;
-		this.user_profile = user_profile;
-		this.image = image;
-		*/
+		this.all_hidden_unread = all_hidden_unread;
+		this.checkin = checkin;
+		this.checkout = checkout;
 	}
-	
+
 	public int getIdx() {
 		return idx;
 	}
@@ -50,64 +37,28 @@ public class AirdndChatVO {
 	public void setUser_idx(int user_idx) {
 		this.user_idx = user_idx;
 	}
-	public int getMsg_hidden_or_not() {
-		return msg_hidden_or_not;
+	public String getHost_profile_imgurl() {
+		return host_profile_imgurl;
 	}
-	public void setMsg_hidden_or_not(int msg_hidden_or_not) {
-		this.msg_hidden_or_not = msg_hidden_or_not;
+	public void setHost_profile_imgurl(String host_profile_imgurl) {
+		this.host_profile_imgurl = host_profile_imgurl;
 	}
-	public String getContent() {
-		return content;
+	public String getAll_hidden_unread() {
+		return all_hidden_unread;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public void setAll_hidden_unread(String all_hidden_unread) {
+		this.all_hidden_unread = all_hidden_unread;
 	}
-	public String getImage_url() {
-		return image_url;
+	public String getCheckin() {
+		return checkin;
 	}
-	public void setImage_url(String image_url) {
-		this.image_url = image_url;
+	public void setCheckin(String checkin) {
+		this.checkin = checkin;
 	}
-	public String getSend_date_time() {
-		return send_date_time;
+	public String getCheckout() {
+		return checkout;
 	}
-	public void setSend_date_time(String send_date_time) {
-		this.send_date_time = send_date_time;
-	}
-	public String getHost_name() {
-		return host_name;
-	}
-	public void setHost_name(String host_name) {
-		this.host_name = host_name;
-	}
-	public String getUser_name() {
-		return user_name;
-	}
-	public void setUser_name(String user_name) {
-		this.user_name = user_name;
-	}
-	public MultipartFile getHost_profile() {
-		return host_profile;
-	}
-	public void setHost_profile(MultipartFile host_profile) {
-		this.host_profile = host_profile;
-	}
-	public MultipartFile getUser_profile() {
-		return user_profile;
-	}
-	public void setUser_profile(MultipartFile user_profile) {
-		this.user_profile = user_profile;
-	}
-	public MultipartFile getImage() {
-		return image;
-	}
-	public void setImage(MultipartFile image) {
-		this.image = image;
-	}
-	public byte[] getImage_url_temp() {
-		return image_url_temp;
-	}
-	public void setImage_url_temp(byte[] image_url_temp) {
-		this.image_url_temp = image_url_temp;
+	public void setCheckout(String checkout) {
+		this.checkout = checkout;
 	}
 }
