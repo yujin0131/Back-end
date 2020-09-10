@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import service.AirdndHomeService;
+import service.AirdndHomeServiceI;
 import vo.AirdndBedroomVO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
@@ -53,7 +55,7 @@ public class HomeController {
 	  HttpSession session = request.getSession();
       Cookie[] cookies = request.getCookies();
       String sessionKey = "";
-      int signInIdx;
+      int signInIdx = 0;
       String signInEmail;
       String signInName;
       if(cookies == null) {
@@ -153,7 +155,15 @@ public class HomeController {
 	  res.put("checkin", checkin);
 	  res.put("checkout", checkout);
 	  res.put("price", String.format("%,d", homevo.getPrice()));
-	  res.put("isBookmarked", "true");
+	  
+	  if(signInIdx == 0) res.put("isBookmarked", "false");
+	  else {
+		  AirdndBookmarkedHomesVO bookmarkedhomesvo = airdndhomeService.bookmarkedhomes(signInIdx, home_idx);
+		  if(bookmarkedhomesvo.getIdx() == 0 && bookmarkedhomesvo.getBookmark_idx() == 0) res.put("isBookmarked", "false");
+		  else{
+			  res.put("isBookmarked", "true");
+		  }
+	  }
 	  
 	  List<String> picture = new ArrayList<String>();
 	  List<AirdndHomePictureVO> picturelist = airdndhomeService.pictureselect(home_idx);
@@ -212,7 +222,7 @@ public class HomeController {
 	  for( int i = 0; i< review.size(); i++) {
 		  JSONObject reviewinfo = new JSONObject();		  
 		  reviewinfo.put("userId", review.get(i).getIdx());
-		  reviewinfo.put("userProfileImg", "https://a0.muscache.com/im/pictures/user/02d1c910-7279-445e-a392-6ecba45874bd.jpg?im_w=720");
+		  reviewinfo.put("userProfileImg", "https://a0.muscache.com/defaults/user_pic-225x225.png?im_w=720");
 		  reviewinfo.put("userFirstName", review.get(i).getUser_name());
 		  reviewinfo.put("date", review.get(i).getReview_date());
 		  reviewinfo.put("contents", review.get(i).getReview_content());
@@ -229,9 +239,8 @@ public class HomeController {
 	  review_res.put("location", review.get(0).getRoom_position());
 	  review_res.put("checkin", review.get(0).getRoom_checkin());
 	  review_res.put("value", review.get(0).getRoom_cost_effectiveness());
-	  review_res.put("count", review.size());
+	  review_res.put("count", hostvo.getHost_review_num());
 	  review_res.put("rating", Math.round(avgReview*100)/100.0);
-	  review_res.put("reviewCount", hostvo.getHost_review_num());
 	  review_res.put("comments", review_info);
 	  res.put("reviews", review_res);
 	  
