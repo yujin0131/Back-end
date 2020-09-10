@@ -71,11 +71,9 @@ public class ChatController {
 		
 		//Final data
 		JSONObject res = new JSONObject();			//1
-		JSONObject resFilter = new JSONObject();	//2
-		JSONObject thirdUser = new JSONObject();	//3
 
-		JSONArray fourthArr = new JSONArray();		//4
-		JSONObject fifthlists = new JSONObject();	//5
+		JSONArray secondArr = new JSONArray();		//4
+		JSONObject thirdlists = new JSONObject();	//5
 
 		JSONArray info = new JSONArray();			//6
 		JSONObject contents = new JSONObject();		//7-1
@@ -97,7 +95,7 @@ public class ChatController {
 		
 		if(filter.equalsIgnoreCase("all")) {
 			for(int i = 0; i < listAll.size(); i++) {
-				fifthlists = new JSONObject(); 	//5
+				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
 				contents = new JSONObject();	//7-1
 				
@@ -109,10 +107,10 @@ public class ChatController {
 				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listAll.get(0).getAll_hidden_unread());
 				chattingListA = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listAll.get(0).getAll_hidden_unread());
 				
-				fifthlists.put("id", hostList.get(i).getIdx());
-				fifthlists.put("reservationId", userResInfoVO.getIdx());
-				fifthlists.put("state", listAll.get(0).getAll_hidden_unread());
-				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				thirdlists.put("id", hostList.get(i).getIdx());
+				thirdlists.put("reservationId", userResInfoVO.getIdx());
+				thirdlists.put("state", listAll.get(0).getAll_hidden_unread());
+				thirdlists.put("hostname", hostList.get(i).getHost_name());
 				
 				//contents
 				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -123,7 +121,7 @@ public class ChatController {
 				contents.put("checkout", userResInfoVO.getCheckout());
 				
 				//info.add(n, contents);
-				fifthlists.put("contents", contents);
+				thirdlists.put("contents", contents);
 				
 				//chatHistory
 				for(int j = 0; j < chattingListA.size(); j++) {
@@ -142,20 +140,16 @@ public class ChatController {
 					chatHistory.put("text", chattingListA.get(j).getContent());
 					
 					info.add(n, chatHistory);
-					fifthlists.put("chatHistory", info);
+					thirdlists.put("chatHistory", info);
 				}
 
-				fourthArr.add(i, fifthlists);
+				secondArr.add(i, thirdlists);
 				
-				thirdUser.put("messages", fourthArr);
-				thirdUser.put("id", signInIdx);
-				thirdUser.put("profileImg", signInProfileImg);
-				
-				resFilter.put("all", thirdUser);
+				res.put("all", secondArr);
 			}
 		} else if(filter.equalsIgnoreCase("hidden")) {
 			for(int i = 0; i < listHidden.size(); i++) {
-				fifthlists = new JSONObject(); 	//5
+				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
 				contents = new JSONObject();	//7-1
 				
@@ -167,10 +161,10 @@ public class ChatController {
 				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listHidden.get(0).getAll_hidden_unread());
 				chattingListH = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listHidden.get(0).getAll_hidden_unread());
 				
-				fifthlists.put("id", hostList.get(i).getIdx());
-				fifthlists.put("reservationId", userResInfoVO.getIdx());
-				fifthlists.put("state", listHidden.get(0).getAll_hidden_unread());
-				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				thirdlists.put("id", hostList.get(i).getIdx());
+				thirdlists.put("reservationId", userResInfoVO.getIdx());
+				thirdlists.put("state", listHidden.get(0).getAll_hidden_unread());
+				thirdlists.put("hostname", hostList.get(i).getHost_name());
 				
 				//contents
 				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -181,7 +175,7 @@ public class ChatController {
 				contents.put("checkout", userResInfoVO.getCheckout());
 				
 				//info.add(n, contents);
-				fifthlists.put("contents", contents);
+				thirdlists.put("contents", contents);
 				
 				//chatHistory
 				for(int j = 0; j < chattingListH.size(); j++) {
@@ -200,20 +194,16 @@ public class ChatController {
 					chatHistory.put("text", chattingListH.get(j).getContent());
 					
 					info.add(n, chatHistory);
-					fifthlists.put("chatHistory", info);
+					thirdlists.put("chatHistory", info);
 				}
 
-				fourthArr.add(i, fifthlists);
+				secondArr.add(i, thirdlists);
 				
-				thirdUser.put("messages", fourthArr);
-				thirdUser.put("id", signInIdx);
-				thirdUser.put("profileImg", signInProfileImg);
-				
-				resFilter.put("hidden", thirdUser);
+				res.put("hidden", secondArr);
 			}
 		} else if(filter.equalsIgnoreCase("unread")) {
 			for(int i = 0; i < listUnread.size(); i++) {
-				fifthlists = new JSONObject(); 	//5
+				thirdlists = new JSONObject(); 	//5
 				info = new JSONArray();			//6
 				contents = new JSONObject();	//7-1
 				
@@ -225,10 +215,10 @@ public class ChatController {
 				latestMsgVO = airdndChatService.selectLatestMsg(signInIdx, hostList.get(i).getIdx(), listUnread.get(0).getAll_hidden_unread());
 				chattingListU = airdndChatService.selectMsgList(signInIdx, hostList.get(i).getIdx(), listUnread.get(0).getAll_hidden_unread());
 				
-				fifthlists.put("id", hostList.get(i).getIdx());
-				fifthlists.put("reservationId", userResInfoVO.getIdx());
-				fifthlists.put("state", listUnread.get(0).getAll_hidden_unread());
-				fifthlists.put("hostname", hostList.get(i).getHost_name());
+				thirdlists.put("id", hostList.get(i).getIdx());
+				thirdlists.put("reservationId", userResInfoVO.getIdx());
+				thirdlists.put("state", listUnread.get(0).getAll_hidden_unread());
+				thirdlists.put("hostname", hostList.get(i).getHost_name());
 				
 				//contents
 				contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -239,7 +229,7 @@ public class ChatController {
 				contents.put("checkout", userResInfoVO.getCheckout());
 				
 				//info.add(n, contents);
-				fifthlists.put("contents", contents);
+				thirdlists.put("contents", contents);
 				
 				//chatHistory
 				for(int j = 0; j < chattingListU.size(); j++) {
@@ -258,20 +248,16 @@ public class ChatController {
 					chatHistory.put("text", chattingListU.get(j).getContent());
 					
 					info.add(n, chatHistory);
-					fifthlists.put("chatHistory", info);
+					thirdlists.put("chatHistory", info);
 				}
 
-				fourthArr.add(i, fifthlists);
+				secondArr.add(i, thirdlists);
 				
-				thirdUser.put("messages", fourthArr);
-				thirdUser.put("id", signInIdx);
-				thirdUser.put("profileImg", signInProfileImg);
-				
-				resFilter.put("unread", thirdUser);
+				res.put("unread", secondArr);
 			}
 		}
 		
-		res.put("message", resFilter);
+		
 		//model.addAttribute("res", res.toString());
 		
 		return res.toString();
