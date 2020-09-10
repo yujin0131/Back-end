@@ -131,12 +131,24 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 	//Create a new bookmark
 	@Override
 	public int insert_bookmark(AirdndBookmarkVO vo) {
-		String sql = "insert into airdnd_bookmark(user_idx, bookmark_list_title, checkin, checkout, update_date_time) values(?, ?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR))";
+		String sql = "insert into airdnd_bookmark(user_idx, bookmark_list_title, checkin, checkout) values(?, ?, ?, ?)";
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		int res = jdbcTemplate.update(sql, vo.getUser_idx(), vo.getBookmark_list_title(), vo.getCheckin(), vo.getCheckout());
 		
 		return res;
+	}
+	
+
+	//Select a new bookmark info
+	@Override
+	public int selectNewBookmarkInfo() {
+		String sql = "SELECT idx FROM airdnd_bookmark order by update_date_time desc limit 1";
+		
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		int idx = jdbcTemplate.queryForInt(sql);
+
+		return idx;
 	}
 	
 	//Search an idx

@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import vo.AirdndBedroomVO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
@@ -262,5 +263,39 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 	         }
 	      });
 		return list;
+	}
+	
+	@Override
+	public AirdndBookmarkedHomesVO selectBookmarkedHomes(int signInIdx, int home_idx) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		AirdndBookmarkedHomesVO vo = new AirdndBookmarkedHomesVO();
+		
+		try {
+			
+			vo = jdbcTemplate.queryForObject("select * from airdnd_bookmarked_homes where user_idx='" + signInIdx + "' and home_idx='" + home_idx + "'",
+				new RowMapper<AirdndBookmarkedHomesVO>(){
+					@Override
+					public AirdndBookmarkedHomesVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+						AirdndBookmarkedHomesVO vo = new AirdndBookmarkedHomesVO();
+						vo.setIdx(rs.getInt("idx"));
+						if (rs.wasNull()) vo.setIdx(0);
+						vo.setBookmark_idx(rs.getInt("bookmark_idx"));
+						if (rs.wasNull()) vo.setBookmark_idx(0);
+						vo.setUser_idx(rs.getInt("user_idx"));
+						if (rs.wasNull()) vo.setUser_idx(0);
+						vo.setHome_idx(rs.getInt("home_idx"));
+						if (rs.wasNull()) vo.setHome_idx(0);
+						return vo;
+					}
+			});
+		} catch (Exception e) {
+			vo.setBookmark_idx(0);
+			vo.setHome_idx(0);
+			vo.setIdx(0);
+			vo.setUser_idx(0);
+		}
+		
+		return vo;
 	}
 }
