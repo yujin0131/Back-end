@@ -63,6 +63,14 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 		return res;
 	}
 	
+	//Select a new bookmark info
+	@Override
+	public int selectNewBookmarkInfo() {
+		int idx = airdnd_bookmark_dao.selectNewBookmarkInfo();
+		
+		return idx;
+	}
+	
 	//Search an idx
 	@Override
 	public int selectIdx(String bookmark_list_title) {
