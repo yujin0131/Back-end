@@ -8,9 +8,9 @@ import vo.AirdndHomePictureVO;
 
 public interface AirdndBookmarkServiceI {
 	//Select bookmark list
-	List<AirdndBookmarkVO> selectBookmark();
+	List<AirdndBookmarkVO> selectBookmark(int user_idx);
 	//Select bookmark homes
-	List<AirdndBookmarkedHomesVO> selectBookmarkHomes();
+	List<AirdndBookmarkedHomesVO> selectBookmarkHomes(int user_idx);
 	//Select bookmark homes where bookidx
 	List<AirdndBookmarkedHomesVO> selectBookmarkHomesIdx(int bookmark_idx);
 	//Search bookmark homes' count
@@ -19,6 +19,8 @@ public interface AirdndBookmarkServiceI {
 	List<AirdndHomePictureVO> selectHomeMainPicture(int home_idx);
 	//Create a new bookmark
 	int insert_bookmark(AirdndBookmarkVO vo);
+	//Select a new bookmark info
+	int selectNewBookmarkInfo();
 	//Search an idx
 	int selectIdx(String bookmark_list_title);
 	//Add the home in the bookmark

@@ -17,16 +17,16 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 	
 	//Select bookmark list
 	@Override
-	public List<AirdndBookmarkVO> selectBookmark(){
-		List<AirdndBookmarkVO> list = airdnd_bookmark_dao.selectBookmark();
+	public List<AirdndBookmarkVO> selectBookmark(int user_idx){
+		List<AirdndBookmarkVO> list = airdnd_bookmark_dao.selectBookmark(user_idx);
 
 		return list;
 	}
 	
 	//Select bookmark homes
 	@Override
-	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes() {
-		List<AirdndBookmarkedHomesVO> list = airdnd_bookmark_dao.selectBookmarkHomes();
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomes(int user_idx) {
+		List<AirdndBookmarkedHomesVO> list = airdnd_bookmark_dao.selectBookmarkHomes(user_idx);
 
 		return list;
 	}
@@ -61,6 +61,14 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 		int res = airdnd_bookmark_dao.insert_bookmark(vo);
 		
 		return res;
+	}
+	
+	//Select a new bookmark info
+	@Override
+	public int selectNewBookmarkInfo() {
+		int idx = airdnd_bookmark_dao.selectNewBookmarkInfo();
+		
+		return idx;
 	}
 	
 	//Search an idx
