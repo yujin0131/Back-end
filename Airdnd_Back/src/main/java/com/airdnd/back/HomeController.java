@@ -237,25 +237,31 @@ public class HomeController {
 		  review_info.add(reviewinfo);
 		  
 	  }
-	  double avgReview = (totalReview/(review.size()*6));
-	  review_res.put("cleanliness", review.get(0).getRoom_cleanliness());
-	  review_res.put("accuracy", review.get(0).getRoom_accuracy());
-	  review_res.put("communication", review.get(0).getRoom_communication());
-	  review_res.put("location", review.get(0).getRoom_position());
-	  review_res.put("checkin", review.get(0).getRoom_checkin());
-	  review_res.put("value", review.get(0).getRoom_cost_effectiveness());
+	  if(review.size() == 0 ) {
+		  review_res.put("cleanliness", 0);
+		  review_res.put("accuracy", 0);
+		  review_res.put("communication", 0);
+		  review_res.put("location", 0);
+		  review_res.put("checkin", 0);
+		  review_res.put("value", 0);
+		  review_res.put("rating", 0);
+		  review_res.put("comments", "");
+	  } else {
+		  double avgReview = (totalReview/(review.size()*6));
+		  review_res.put("cleanliness", review.get(0).getRoom_cleanliness());
+		  review_res.put("accuracy", review.get(0).getRoom_accuracy());
+		  review_res.put("communication", review.get(0).getRoom_communication());
+		  review_res.put("location", review.get(0).getRoom_position());
+		  review_res.put("checkin", review.get(0).getRoom_checkin());
+		  review_res.put("value", review.get(0).getRoom_cost_effectiveness());
+		  review_res.put("rating", Math.round(avgReview*100)/100.0);
+		  review_res.put("comments", review_info);
+	  }
 	  review_res.put("count", hostvo.getHost_review_num());
-	  review_res.put("rating", Math.round(avgReview*100)/100.0);
-	  review_res.put("comments", review_info);
 	  res.put("reviews", review_res);
 	  
-<<<<<<< HEAD
 	  int ran = new Random().nextInt(3) + 1;
 	  res.put("minimumStay", ran);
-=======
-	  int random = new Random().nextInt(3) + 1;
-	  res.put("minimumStay", random);
->>>>>>> 7d50fa054a2ac3baa733c33a2f6a5a1fb93795c9
 	  
       return res.toString();
       
