@@ -1,7 +1,5 @@
 package com.airdnd.back;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -347,7 +344,7 @@ public class BookmarkController {
 		return result.toString();
 	}
 	
-	@RequestMapping(value="/wishlist_delete", method=RequestMethod.POST,
+	@RequestMapping(value="/wishlist_delete", method=RequestMethod.DELETE,
 			produces="application/json;charset=utf8", consumes=MediaType.ALL_VALUE)
 	public String delete_bookmarkHome(@RequestBody String payload) {
 		HttpHeaders resHeaders = new HttpHeaders();
