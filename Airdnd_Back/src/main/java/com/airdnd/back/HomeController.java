@@ -340,7 +340,7 @@ public class HomeController {
 		bookvo.setChild(Integer.parseInt(javaObject.get("child").toString()));
 		bookvo.setInfant(Integer.parseInt(javaObject.get("infant").toString()));
 		
-		String toHostMessage = javaObject.get(" toHostMessage").toString();
+		String toHostMessage = javaObject.get("toHostMessage").toString();
 
 		int res = airdndhomeService.book(bookvo);
 
