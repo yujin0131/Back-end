@@ -45,4 +45,10 @@ public class AirdndUserService implements AirdndUserServiecI{
 		return res;
 	}
 	
+	public boolean userishost(int user_idx){
+		
+		boolean res = airdnd_user_dao.select_user_host(user_idx);
+		return res;
+	}
+	
 }
