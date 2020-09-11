@@ -82,7 +82,8 @@ public class HomeController {
 	  String cookie_name = "AirdndRH" + home_idx;
 
       for (Cookie cookie : cookies) {
-         if(cookie.getValue().equals("AirdndRH" + home_idx)) {
+         if(cookie.getValue().equals(home_idx)) {
+        	 System.out.println(Integer.parseInt(cookie.getValue()));
             cookie_name = "";
             break;
          }
