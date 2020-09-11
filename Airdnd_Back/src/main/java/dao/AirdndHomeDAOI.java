@@ -1,8 +1,10 @@
 package dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import vo.AirdndBedroomVO;
+import vo.AirdndBookmarkedHomesVO;
 import vo.AirdndDistanceVO;
 import vo.AirdndFacilityVO;
 import vo.AirdndHomePictureVO;
@@ -27,5 +29,6 @@ public interface AirdndHomeDAOI {
 	List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx);
 	List<AirdndUseRuleVO> selectUseRule(int home_idx);
 	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx);
+	AirdndBookmarkedHomesVO selectBookmarkedHomes(int signInIdx, int home_idx);
 
 }

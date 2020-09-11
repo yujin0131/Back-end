@@ -32,7 +32,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		List<AirdndSearchVO> list = jdbcTemplate.query("select * from airdnd_search_view_final where place='" + param.get("location")
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>="+ param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+		+ " and lat >= '" + param.get("swLat") + "' and lng >= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng <= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
 		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("Listquery") +" limit " + page + ", 20", new RowMapper<AirdndSearchVO>() {
@@ -97,7 +97,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		List<AirdndSearchVO> list = jdbcTemplate.query("select AVG(price) as average_price, COUNT(home_idx) as data_total from airdnd_search_view_final where place = '" + param.get("location") 
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+		+ " and lat >= '" + param.get("swLat") + "' and lng >= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng <= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
 		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("Listquery") +" Group by place", new RowMapper<AirdndSearchVO>() {
@@ -123,7 +123,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		List<AirdndSearchVO> list = jdbcTemplate.query("select price from airdnd_search_view_final where place = '" + param.get("location")
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax")
-		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+		+ " and lat >= '" + param.get("swLat") + "' and lng >= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng <= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
 		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("Listquery"), new RowMapper<AirdndSearchVO>() {
@@ -150,7 +150,7 @@ public class AirdndSearchDAO implements AirdndSearchDAOI{
 		List<AirdndSearchVO> list = jdbcTemplate.query("SELECT facility FROM airdnd_home_convenient_facility where home_idx = ANY(SELECT home_idx FROM airdnd_search_view_final where place='"+param.get("location") 
 		+ "' and filter_max_person>=" + param.get("guests") + " and filter_bed>=" + param.get("bedCount")+ " and filter_bedroom>=" + param.get("bedroomCount")
 		+ " and filter_bathroom>=" + param.get("bathCount") + " and price>=" + param.get("priceMin") + " and price<=" + param.get("priceMax") 
-		+ " and lat >= '" + param.get("swLat") + "' and lng <= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng >= '" + param.get("neLng")
+		+ " and lat >= '" + param.get("swLat") + "' and lng >= '" + param.get("swLng") + "' and lat <= '" +param.get("neLat") + "' and lng <= '" + param.get("neLng")
 		+ "' and (sub_title like '%" + param.get("roomTypeHouse1") + "%' or '%" + param.get("roomTypePrivate") + "%' or '%"  + param.get("roomTypeShared1")
 		+ "%' or '%"  + param.get("roomTypeHouse2") + "%' or '%" + param.get("roomTypeShared2") + "%') and (host_language like '%" + param.get(0) 
 		+ "%' or '%" + param.get(1) + "%' or '%" + param.get(2) + "%' or '%" + param.get(3) + "%' or '%" + param.get(4) + "%')" + param.get("Listquery")+") group by facility", new RowMapper<AirdndSearchVO>() {
