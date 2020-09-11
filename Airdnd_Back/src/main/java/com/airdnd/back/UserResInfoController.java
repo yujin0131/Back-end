@@ -245,6 +245,7 @@ public class UserResInfoController {
 				rules = new JSONArray();		 //5
 				locationInfo = new JSONObject(); //6-1
 				guestInfo = new JSONObject();	 //6-3
+				guestsInfo = new JSONObject();	 //6-4
 				
 				int n = 0;
 				
@@ -283,6 +284,12 @@ public class UserResInfoController {
 					rules.add(m, rulesInfo);
 					resInfo.put("rules", rules);
 				}
+				
+				//adult, child, infant
+				guestsInfo.put("adult", list2.get(i).getAdult());
+				guestsInfo.put("child", list2.get(i).getChild());
+				guestsInfo.put("infant", list2.get(i).getInfant());
+				resInfo.put("guests", guestsInfo);
 				
 				resInfo.put("isCanceled", list2.get(i).getIs_canceled());
 				resInfo.put("title", homeVO.getTitle());
@@ -334,6 +341,7 @@ public class UserResInfoController {
 				rules = new JSONArray();		 //5
 				locationInfo = new JSONObject(); //6-1
 				guestInfo = new JSONObject();	 //6-3
+				guestsInfo = new JSONObject();	 //6-4
 				
 				int n = 0;
 				
@@ -372,6 +380,12 @@ public class UserResInfoController {
 					rules.add(m, rulesInfo);
 					resInfo.put("rules", rules);
 				}
+				
+				//adult, child, infant
+				guestsInfo.put("adult", list3.get(i).getAdult());
+				guestsInfo.put("child", list3.get(i).getChild());
+				guestsInfo.put("infant", list3.get(i).getInfant());
+				resInfo.put("guests", guestsInfo);
 				
 				resInfo.put("isCanceled", list3.get(i).getIs_canceled());
 				resInfo.put("title", homeVO.getTitle());
