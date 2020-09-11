@@ -65,6 +65,25 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 		return list;
 	}
 	
+	public List<AirdndBookmarkedHomesVO> selectBookmarkHomesforUser(int bookmark_idx) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndBookmarkedHomesVO> list = jdbcTemplate.query("select * from airdnd_bookmarked_homes where bookmark_idx=" + bookmark_idx + " order by bookmark_idx", new RowMapper<AirdndBookmarkedHomesVO>() {
+			@Override
+			public AirdndBookmarkedHomesVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndBookmarkedHomesVO list = new AirdndBookmarkedHomesVO(
+					rs.getInt("idx"),
+					rs.getInt("bookmark_idx"),
+					rs.getInt("user_idx"),
+					rs.getInt("home_idx"));
+
+				return list;
+			}
+		});
+		
+		return list;
+	}
+	
 	//Select bookmark homes where bookidx
 	@Override
 	public List<AirdndBookmarkedHomesVO> selectBookmarkHomesIdx(int bookmark_idx) {
