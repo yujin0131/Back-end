@@ -338,7 +338,7 @@ public class HomeController {
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
 		String sessionKey = "";
-		int signInIdx = 1; //temp
+		int signInIdx = 0; //temp
 		String signInEmail = "";
 		String signInName = "";
 
@@ -371,11 +371,14 @@ public class HomeController {
 		System.out.println("javaObject: " + javaObject);
 
 		AirdndUserResInfoVO bookvo = new AirdndUserResInfoVO();
-		bookvo.setUser_idx(Integer.parseInt(javaObject.get("userIdx").toString()));
-		bookvo.setHome_idx(Integer.parseInt(javaObject.get("homeIdx").toString()));
-		bookvo.setCheckin(javaObject.get("checkIn").toString());
-		bookvo.setCheckout(javaObject.get("checkOut").toString());
-		bookvo.setGuest_idx(Integer.parseInt(javaObject.get("guest").toString()));
+		bookvo.setUser_idx(signInIdx);
+		bookvo.setHome_idx(Integer.parseInt(javaObject.get("homeId").toString()));
+		bookvo.setCheckin(javaObject.get("checkin").toString());
+		bookvo.setCheckout(javaObject.get("checkout").toString());
+		int adult = Integer.parseInt(javaObject.get("adult").toString());
+		int child = Integer.parseInt(javaObject.get("child").toString());;
+		int infant = Integer.parseInt(javaObject.get("infant").toString());;
+		bookvo.setGuest_idx(adult + child + infant);
 
 		int res = airdndhomeService.book(bookvo);
 		
