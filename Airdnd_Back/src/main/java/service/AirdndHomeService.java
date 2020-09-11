@@ -96,6 +96,12 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 	}
 	
 	@Override
+	public List<AirdndUserResInfoVO> userresinfoselect(int home_idx, String checkin, String checkout) {
+		List<AirdndUserResInfoVO> list = airdnd_home_dao.selectUserResInfo(home_idx, checkin, checkout);
+		return list;
+	}
+	
+	@Override
 	public AirdndBookmarkedHomesVO bookmarkedhomes(int signInIdx, int home_idx) {
 		AirdndBookmarkedHomesVO vo = airdnd_home_dao.selectBookmarkedHomes(signInIdx, home_idx);
 		return vo;

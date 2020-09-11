@@ -29,6 +29,7 @@ public interface AirdndHomeDAOI {
 	List<AirdndSafetyRuleVO> selectSafetyRule(int home_idx);
 	List<AirdndUseRuleVO> selectUseRule(int home_idx);
 	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx);
+	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx, String checkin, String checkout);
 	AirdndBookmarkedHomesVO selectBookmarkedHomes(int signInIdx, int home_idx);
 
 }
