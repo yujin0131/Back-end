@@ -258,8 +258,7 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 			
 			@Override
 			public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum, rowNum, rowNum, rowNum);
-
+				AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), rs.getString("checkout"), rowNum, rowNum, rowNum, rowNum, rowNum);
 
 				return list;
 			}
