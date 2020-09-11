@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.DoubleStream;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -69,21 +71,7 @@ public class SearchController {
 		int signInIdx;
 		String signInEmail;
 		String signInName;
-		if(cookies == null) {
-			System.out.println("not cookies");
-		}else {
-			for (Cookie cookie : cookies) {
-				if("AirdndSES".equals(cookie.getName())) {
-					sessionKey = cookie.getValue();
-					AirdndUserVO signInVO = (AirdndUserVO) session.getAttribute(sessionKey);
-					signInIdx = signInVO.getUser_idx();
-					signInEmail = signInVO.getEmail();
-					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
-				} else {
-					System.out.println("not login");
-				}
-			}
-		}
+
 
 		JSONObject res = new JSONObject();
 		JSONObject empty = new JSONObject();
@@ -229,12 +217,26 @@ public class SearchController {
 				search_list.get(i).setUrl(picture_arr);
 				double lat = Double.parseDouble(search_list.get(i).getLat());
 				double lng = Double.parseDouble(search_list.get(i).getLng());
-
+				JSONObject latlng_check = new JSONObject();
+				
+				
 				for(int j = 0; j < homes.size(); j++) {
 					JSONObject lo = (JSONObject) homes.get(j).get("location");
 
 					if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
-						lat += 0.01;
+						System.out.println("같아 : " + lat + " / " + lng );
+						int rndlat = new Random().nextInt(5) + 5;
+						int rndlng = new Random().nextInt(5) + 5;
+						String rndfirst = "0.00";
+					
+						String latsum = rndfirst + rndlat;
+						String lngsum = rndfirst + rndlng;
+						double doulat = Double.parseDouble(latsum);
+						double doulng = Double.parseDouble(lngsum);
+
+						lat += doulat;
+						lng += doulng;
+
 					}
 				}
 
@@ -354,6 +356,8 @@ public class SearchController {
 				for (Cookie cookie : cookies) {
 					if(cookie.getName().contains("AirdndRH")) {
 						recentHomesIdx.add(Integer.parseInt(cookie.getValue()));
+					}
+				}
 				for(int recenthome:recentHomesIdx) {
 					recentHomeOne = airdndsearchService.select_one(recenthome);
 
@@ -388,26 +392,26 @@ public class SearchController {
 
 					recentHomes.add(recentHome_info);
 				}
-					//recentHomeList만 뿌려주면 끝
-			}
-				
-
-				res.put("filterCondition", filterCondition);
-				//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
-				List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
-
-				res.put("recentHomes", recentHomes);
-
-				try {
-					res.put("dataTotal", total.get(0).getData_total());
-					res.put("averagePrice", total.get(0).getAverage_price());
-				} catch (Exception e) {
-					res.put("dataTotal", 0);
-					res.put("averagePrice", 0);
-				}
-
+				//recentHomeList만 뿌려주면 끝
 			}
 
-			return res.toString();
+
+			res.put("filterCondition", filterCondition);
+			//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
+			List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
+
+			res.put("recentHomes", recentHomes);
+
+			try {
+				res.put("dataTotal", total.get(0).getData_total());
+				res.put("averagePrice", total.get(0).getAverage_price());
+			} catch (Exception e) {
+				res.put("dataTotal", 0);
+				res.put("averagePrice", 0);
+			}
+
 		}
+
+		return res.toString();
 	}
+}
