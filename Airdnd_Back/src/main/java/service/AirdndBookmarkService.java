@@ -87,20 +87,28 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
 		return res;
 	}
 	
+	//Select a bookmark where idx=
+	@Override
+	public int selectPreviousBookmarkInfo(int idx) {
+		int bookmark_idx = airdnd_bookmark_dao.selectPreviousBookmarkInfo(idx);
+		
+		return bookmark_idx;
+	}
+	
 	//Delete the home in the bookmark
 	@Override
-	public String delete_bookmarkHome(int bookmark_idx) {
-		airdnd_bookmark_dao.delete_bookmarkHome(bookmark_idx);
+	public int delete_bookmarkHome(int home_idx) {
+		int res = airdnd_bookmark_dao.delete_bookmarkHome(home_idx);
 		
-		return null;
+		return res;
 	}
 	
 	//Delete the bookmark
 	@Override
-	public String delete_bookmark(int idx) {
-		airdnd_bookmark_dao.delete_bookmark(idx);
+	public int delete_bookmark(int idx) {
+		int res = airdnd_bookmark_dao.delete_bookmark(idx);
 		
-		return null;
+		return res;
 	}
 	
 	//Update update_date_time

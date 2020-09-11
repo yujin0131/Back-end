@@ -32,6 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import common.Common;
+import exception.NoId;
+import exception.NoIdService;
+import exception.WrongPwdService;
 import service.AirdndUserService;
 import vo.AirdndUserVO;
 
@@ -147,32 +150,41 @@ public class UserController {
 
 		AirdndUserVO login_vo = airdnduserService.signin(check_vo);
 		String resultStr = "";
-		if (login_vo == null) {
-			//로그인 실패
-			resultStr = "Fail";
+		if(login_vo == null) {
+			
 		} else {
-			//로그인 성공
-			HttpSession session = request.getSession();
-			Common com = new Common();
+			if ( !(check_vo.getPwd().equals(login_vo.getPwd())) ) {
+				//로그인 실패
+				resultStr = "Fail";
+				WrongPwdService wps = new WrongPwdService();
+				try {
+					wps.WrongPwdMethod(resultStr);
+				} catch (Exception e) {
+					e.printStackTrace();
+					resultStr = e.toString();
+				}
+			} else {
+				//로그인 성공
+				HttpSession session = request.getSession();
+				Common com = new Common();
 
-			//*로그인시 세션키 다르게 만들어주고 쿠키에 저장*
-			String sessionKey = com.sessonKey();
-			session.setAttribute(sessionKey, login_vo);
-			String cookieValue = sessionKey;
-			Cookie myCookie = new Cookie("AirdndSES", cookieValue);
-			myCookie.setMaxAge(60*60);
-			myCookie.setPath("/"); // 경로 설정
-			response.addCookie(myCookie);
+				//*로그인시 세션키 다르게 만들어주고 쿠키에 저장*
+				String sessionKey = com.sessonKey();
+				session.setAttribute(sessionKey, login_vo);
+				String cookieValue = sessionKey;
+				Cookie myCookie = new Cookie("AirdndSES", cookieValue +";HttpOnly");
+				myCookie.setMaxAge(60*60);
+				myCookie.setPath("/"); // 경로 설정
+				response.addCookie(myCookie);
 
-			AirdndUserVO userInfoVO = (AirdndUserVO) session.getAttribute(sessionKey);
-			String userEmail = userInfoVO.getEmail();
-			String username = userInfoVO.getLast_name() + userInfoVO.getFirst_name();
-			//필요할때 이렇게 뽑아서 넘겨주기
+				AirdndUserVO userInfoVO = (AirdndUserVO) session.getAttribute(sessionKey);
+				String userEmail = userInfoVO.getEmail();
+				String username = userInfoVO.getLast_name() + userInfoVO.getFirst_name();
+				//필요할때 이렇게 뽑아서 넘겨주기
 
-			resultStr = "Success";
-
+				resultStr = "Success";
+			}
 		}
-
 		return resultStr;
 	}
 
