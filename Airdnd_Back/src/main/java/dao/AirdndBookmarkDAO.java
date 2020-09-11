@@ -138,7 +138,6 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 		
 		return res;
 	}
-	
 
 	//Select a new bookmark info
 	@Override
@@ -171,35 +170,49 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 		return res;
 	}
 	
-	//Delete the home in the bookmark
+	//Select a bookmark where idx=
 	@Override
-	public String delete_bookmarkHome(int bookmark_idx) {
-		String sql = "delete from airdnd_bookmarked_homes where idx=" + bookmark_idx;
+	public int selectPreviousBookmarkInfo(int idx) {
+		String sql = "SELECT idx FROM airdnd_bookmark where idx=" + idx;
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		int bookmark_idx = jdbcTemplate.queryForInt(sql);
+
+		return bookmark_idx;
+	}
+	
+	//Delete the home in the bookmark
+	@Override
+	public int delete_bookmarkHome(int home_idx) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		String sql = "select bookmark_idx from airdnd_bookmarked_homes where home_idx=" + home_idx;
+		int bookmark_idx = jdbcTemplate.queryForInt(sql);
+		
+		sql = "delete from airdnd_bookmarked_homes where bookmark_idx=" + bookmark_idx;
 		jdbcTemplate.update(sql);
 		
-		return null;
+		return bookmark_idx;
 	}
 	
 	//Delete the bookmark
 	@Override
-	public String delete_bookmark(int idx) {
+	public int delete_bookmark(int idx) {
 		String sql = "delete from airdnd_bookmark where idx=" + idx;
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.update(sql);
 		
 		sql = "delete from airdnd_bookmarked_homes where bookmark_idx=" + idx;
-		jdbcTemplate.update(sql);
+		int res = jdbcTemplate.update(sql);
 		
-		return null;
+		return res;
 	}
 	
 	//Update update_date_time
 	@Override
 	public int update_updateTime(int idx) {
-		String sql = "update airdnd_bookmark set update_date_time=DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 9 HOUR) where idx=" + idx;
+		String sql = "update airdnd_bookmark set update_date_time=CURRENT_TIMESTAMP where idx=" + idx;
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		int res = jdbcTemplate.update(sql);
