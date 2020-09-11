@@ -3,11 +3,13 @@ package com.airdnd.back;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -30,12 +32,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.mysql.fabric.Response;
 
 import common.Common;
 import exception.NoId;
 import exception.NoIdService;
 import exception.WrongPwdService;
+import service.AirdndBookmarkService;
 import service.AirdndUserService;
+import vo.AirdndBookmarkVO;
+import vo.AirdndBookmarkedHomesVO;
+import vo.AirdndHomePictureVO;
 import vo.AirdndUserVO;
 
 @Controller
@@ -44,6 +51,9 @@ public class UserController {
 	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
 	AirdndUserService airdnduserService;
+	
+	@Autowired
+	AirdndBookmarkService airdndBookmarkService;
 
 	//******회원가입
 	@RequestMapping(value = "/signUp", method=RequestMethod.POST)
@@ -143,26 +153,38 @@ public class UserController {
 			System.out.println("payload 오류");
 		}
 		System.out.println("javaObject: " + javaObject);
-
+		
+		JSONObject res = new JSONObject();
+		JSONObject userJson = new JSONObject();
+		
+		
 		AirdndUserVO check_vo = new AirdndUserVO();
 		check_vo.setEmail(javaObject.get("email").toString());
 		check_vo.setPwd(javaObject.get("pwd").toString());
 
 		AirdndUserVO login_vo = airdnduserService.signin(check_vo);
+		boolean isCheck;
+		try {
+			isCheck = airdnduserService.userishost(login_vo.getUser_idx());
+		} catch (Exception e) {
+			isCheck = false;
+		}
+
+		
 		String resultStr = "";
 		if(login_vo == null) {
-			
+			resultStr = "NoId";
 		} else {
 			if ( !(check_vo.getPwd().equals(login_vo.getPwd())) ) {
 				//로그인 실패
-				resultStr = "Fail";
-				WrongPwdService wps = new WrongPwdService();
+				resultStr = "WrongPwd";
+				/*WrongPwdService wps = new WrongPwdService();
 				try {
 					wps.WrongPwdMethod(resultStr);
 				} catch (Exception e) {
 					e.printStackTrace();
 					resultStr = e.toString();
-				}
+				}*/
 			} else {
 				//로그인 성공
 				HttpSession session = request.getSession();
@@ -172,20 +194,64 @@ public class UserController {
 				String sessionKey = com.sessonKey();
 				session.setAttribute(sessionKey, login_vo);
 				String cookieValue = sessionKey;
-				Cookie myCookie = new Cookie("AirdndSES", cookieValue +";HttpOnly");
+				Cookie myCookie = new Cookie("AirdndSES", cookieValue);
 				myCookie.setMaxAge(60*60);
 				myCookie.setPath("/"); // 경로 설정
 				response.addCookie(myCookie);
 
 				AirdndUserVO userInfoVO = (AirdndUserVO) session.getAttribute(sessionKey);
-				String userEmail = userInfoVO.getEmail();
-				String username = userInfoVO.getLast_name() + userInfoVO.getFirst_name();
-				//필요할때 이렇게 뽑아서 넘겨주기
-
+				userJson.put("id", userInfoVO.getUser_idx());
+				userJson.put("email", userInfoVO.getEmail());
+				userJson.put("pwd", userInfoVO.getPwd());
+				userJson.put("firstName",userInfoVO.getFirst_name());
+				userJson.put("lastName",userInfoVO.getLast_name());
+				userJson.put("phone",userInfoVO.getPhone());
+				userJson.put("birthday",userInfoVO.getBirthday());
+				userJson.put("profileImg",userInfoVO.getProfileImg());
+				userJson.put("description",userInfoVO.getDescription());
+				userJson.put("isHost", isCheck);
+				
 				resultStr = "Success";
+				
+				JSONArray bookmarkLists = new JSONArray();
+				
+				List<AirdndBookmarkVO> user_bookmark_list = airdndBookmarkService.selectBookmark(userInfoVO.getUser_idx());
+				System.out.println(userInfoVO.getUser_idx());
+				for(int i = 0; i < user_bookmark_list.size(); i++) {
+					JSONObject user_bookmark_list_one = new JSONObject();
+					JSONArray bookmarks = new JSONArray();
+					
+					user_bookmark_list_one.put("bookmarkListId", user_bookmark_list.get(i).getIdx());
+					user_bookmark_list_one.put("bookmarkListTitle", user_bookmark_list.get(i).getBookmark_list_title());
+					List<AirdndBookmarkedHomesVO> bookmarkhomes = airdndBookmarkService.selectBookmarkHomesforUser(user_bookmark_list.get(i).getIdx());
+					
+					for(int j = 0; j < bookmarkhomes.size(); j++) {
+						JSONObject bookmarks_one = new JSONObject();
+						JSONArray bookmarkimages = new JSONArray();
+						List<AirdndHomePictureVO> bookmarkhomesPictures = airdndBookmarkService.selectHomeMainPicture(bookmarkhomes.get(j).getHome_idx());
+						for(int k = 0; k < bookmarkhomesPictures.size(); k++) {
+							bookmarkimages.add(bookmarkhomesPictures.get(k).getUrl());
+						}
+						bookmarks_one.put("homeId", bookmarkhomes.get(j).getHome_idx());
+						bookmarks_one.put("images", bookmarkimages);
+						bookmarks.add(bookmarks_one);
+					}
+					
+					user_bookmark_list_one.put("bookmarks", bookmarks);
+					
+					bookmarkLists.add(user_bookmark_list_one);
+				}
+				
+				res.put("bookmarkLists", bookmarkLists);
+				res.put("user", userJson);
+				res.put("bookmarkLists", bookmarkLists);
 			}
+			
 		}
-		return resultStr;
+		res.put("result", resultStr);
+		
+		System.out.println(res.toString());
+		return res.toString();
 	}
 
 	//******로그아웃
