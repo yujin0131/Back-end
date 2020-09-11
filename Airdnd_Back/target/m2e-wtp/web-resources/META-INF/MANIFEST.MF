@@ -1,28 +1,5 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 Built-By: JAN
 Build-Jdk: 1.8.0_261
-=======
-Built-By: H
-Build-Jdk: 1.8.0_251
->>>>>>> 7414944803b227e32580ad7f668b593b5ac38f69
-=======
-Built-By: wooseong
-=======
-Built-By: jenny
->>>>>>> 3a85278ff58787035fbdff666563f8a00f4cd8aa
-=======
-Built-By: JAN
->>>>>>> c0fb8709ad4dfa97771ea277722a6fb74c1734fb
-Build-Jdk: 1.8.0_261
->>>>>>> 5618998d206a4fa8fec4958f1d1008402ca5f927
-=======
-Built-By: H
-Build-Jdk: 1.8.0_251
->>>>>>> 837fec59858aa7415ae774ba5faa64650d6367eb
 Created-By: Maven Integration for Eclipse
 
