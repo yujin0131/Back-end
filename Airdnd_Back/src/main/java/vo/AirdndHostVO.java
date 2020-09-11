@@ -10,6 +10,10 @@ public class AirdndHostVO {
 	public AirdndHostVO() {
 	}
 	
+	public AirdndHostVO(int idx) {
+		this.idx = idx;
+	}
+	
 	public AirdndHostVO(int idx, int home_idx, boolean check_superhost, boolean check_certification, int host_review_num,
 			String host_name, String host_sign_in_date, String host_status_message, String interaction_with_guests,
 			String host_language, String response_rate, String response_time, String host_profileImg) {

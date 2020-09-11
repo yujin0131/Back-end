@@ -62,7 +62,7 @@ public class SearchController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
 		String sessionKey = "";
@@ -144,7 +144,7 @@ public class SearchController {
 			String query = queryFirst;
 
 			outer : for(int i = 0; i < ListArr.length; i++) {
-				
+
 				if(ListArr[i].equals("0") && ListArr[i+1].equals("0")) {// 둘다 없을때
 					query = "";
 					break outer ;
@@ -166,7 +166,7 @@ public class SearchController {
 				}else{//ame만 있거나 둘다 많이씩 있을때
 					query += ListArr[i] + queryMiddle;
 					System.out.println("중간 : " + query);
-					
+
 				}
 			}
 			System.out.println(query);
@@ -348,70 +348,70 @@ public class SearchController {
 			List<JSONObject> recentHomes = new ArrayList<JSONObject>();//이걸 쿠키로 받아와 검색하는 쿼리문
 			List<Integer> recentHomesIdx = new ArrayList<Integer>();
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
-			
+
 			if(cookies == null) {
-			}else{
+			} else {
 				for (Cookie cookie : cookies) {
 					if(cookie.getName().contains("AirdndRH")) {
 						recentHomesIdx.add(Integer.parseInt(cookie.getValue()));
 						//int recentHomesIdx[] = {596431, 4010129, 4165392};
-						
-						for(int recenthome:recentHomesIdx) {
-							recentHomeOne = airdndsearchService.select_one(recenthome);
-
-							List<AirdndHomePictureVO> recentPicture = airdndsearchService.pictureselect(recenthome);
-
-							List<String> recent_picture_arr = new ArrayList<String>();
-
-							for(int j = 0; j < recentPicture.size(); j++) {
-								recent_picture_arr.add(recentPicture.get(j).getUrl());
-							}
-
-							JSONObject recentHome_info = new JSONObject();
-							JSONObject latlng = new JSONObject();
-
-							String lat = recentHomeOne.get(0).getLat();
-							String lng = recentHomeOne.get(0).getLng();
-							latlng.put("lat", lat);
-							latlng.put("lng", lng);
-
-							recentHomeOne.get(0).setUrl(recent_picture_arr);
-							recentHome_info.put("homeId", recentHomeOne.get(0).getHome_idx());
-							recentHome_info.put("isSuperhost", recentHomeOne.get(0).getIsSuperHost());
-							recentHome_info.put("isBookmarked", "아직안받아옴");
-							recentHome_info.put("imageArray", recentHomeOne.get(0).getUrl());
-							recentHome_info.put("imageCount", recentHomeOne.get(0).getUrl().size());
-							recentHome_info.put("subTitle", recentHomeOne.get(0).getSub_title());
-							recentHome_info.put("title", recentHomeOne.get(0).getTitle());
-							recentHome_info.put("rating", recentHomeOne.get(0).getRating());
-							recentHome_info.put("reviewCount", recentHomeOne.get(0).getReview_num());
-							recentHome_info.put("price", recentHomeOne.get(0).getPrice());
-							recentHome_info.put("location", latlng);
-
-							recentHomes.add(recentHome_info);
-
-						}
-						//recentHomeList만 뿌려주면 끝
 					}
 				}
+
+				for(int recenthome:recentHomesIdx) {
+					recentHomeOne = airdndsearchService.select_one(recenthome);
+
+					List<AirdndHomePictureVO> recentPicture = airdndsearchService.pictureselect(recenthome);
+
+					List<String> recent_picture_arr = new ArrayList<String>();
+
+					for(int j = 0; j < recentPicture.size(); j++) {
+						recent_picture_arr.add(recentPicture.get(j).getUrl());
+					}
+
+					JSONObject recentHome_info = new JSONObject();
+					JSONObject latlng = new JSONObject();
+
+					String lat = recentHomeOne.get(0).getLat();
+					String lng = recentHomeOne.get(0).getLng();
+					latlng.put("lat", lat);
+					latlng.put("lng", lng);
+
+					recentHomeOne.get(0).setUrl(recent_picture_arr);
+					recentHome_info.put("homeId", recentHomeOne.get(0).getHome_idx());
+					recentHome_info.put("isSuperhost", recentHomeOne.get(0).getIsSuperHost());
+					recentHome_info.put("isBookmarked", "아직안받아옴");
+					recentHome_info.put("imageArray", recentHomeOne.get(0).getUrl());
+					recentHome_info.put("imageCount", recentHomeOne.get(0).getUrl().size());
+					recentHome_info.put("subTitle", recentHomeOne.get(0).getSub_title());
+					recentHome_info.put("title", recentHomeOne.get(0).getTitle());
+					recentHome_info.put("rating", recentHomeOne.get(0).getRating());
+					recentHome_info.put("reviewCount", recentHomeOne.get(0).getReview_num());
+					recentHome_info.put("price", recentHomeOne.get(0).getPrice());
+					recentHome_info.put("location", latlng);
+
+					recentHomes.add(recentHome_info);
+				}
+					//recentHomeList만 뿌려주면 끝
+			}
+				
+
+				res.put("filterCondition", filterCondition);
+				//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
+				List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
+
+				res.put("recentHomes", recentHomes);
+
+				try {
+					res.put("dataTotal", total.get(0).getData_total());
+					res.put("averagePrice", total.get(0).getAverage_price());
+				} catch (Exception e) {
+					res.put("dataTotal", 0);
+					res.put("averagePrice", 0);
+				}
+
 			}
 
-			res.put("filterCondition", filterCondition);
-			//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
-			List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
-
-			res.put("recentHomes", recentHomes);
-
-			try {
-				res.put("dataTotal", total.get(0).getData_total());
-				res.put("averagePrice", total.get(0).getAverage_price());
-			} catch (Exception e) {
-				res.put("dataTotal", 0);
-				res.put("averagePrice", 0);
-			}
-
+			return res.toString();
 		}
-
-		return res.toString();
 	}
-}
