@@ -287,46 +287,7 @@ public class HomeController {
 		  res.put("attractions_info", attractions_info);*/
 	}//home
 
-	@RequestMapping(value="/home_pos", produces="application/json;charset=utf8")
-	@ResponseBody
-	public String home_pos(Model model, @RequestParam(value="home_idx", required=false)int home_idx, @RequestParam(value="checkin", required=false)String checkin, 
-			@RequestParam(value="checkout", required=false)String checkout) {
-
-		//Login cookie
-		HttpSession session = request.getSession();
-		Cookie[] cookies = request.getCookies();
-		String sessionKey = "";
-		int signInIdx = 1; //temp
-		String signInEmail = "";
-		String signInName = "";
-
-		if(cookies == null) {
-			System.out.println("not cookies");
-		}else {
-			for(Cookie cookie : cookies) {
-				if("AirdndSES".equals(cookie.getName())) {
-					sessionKey = cookie.getValue();
-					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
-					signInIdx = signInVO.getUser_idx();
-					signInEmail = signInVO.getEmail();
-					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
-				} else {
-					System.out.println("not login");
-				}
-			}
-		}//if
-
-		JSONObject res = new JSONObject();
-		List<AirdndUserResInfoVO> list = airdndhomeService.userresinfoselect(home_idx, checkin, checkout);
-		try {
-			if(list.size() == 0	) res.put("result", "ok");
-			else res.put("result", "no");
-		} catch (Exception e) {
-		}
-
-		return res.toString();
-	}
-
+	//예약
 	@RequestMapping(value = "/book", method=RequestMethod.POST,
 			produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody
@@ -381,7 +342,7 @@ public class HomeController {
 		bookvo.setGuest_idx(adult + child + infant);
 
 		int res = airdndhomeService.book(bookvo);
-		
+
 		if( res == 1 ) {
 			System.out.println("부킹잘됨");
 			result_msg = "Success";
@@ -389,11 +350,52 @@ public class HomeController {
 			System.out.println("부킹실패");
 			result_msg = "Fail";
 		}
-		
+
 		result.put("result", result_msg);
-		
+
 		return result.toString();
-		
+
 	}//book
+
+	//예약가능여부
+	/*@RequestMapping(value="/home_pos", produces="application/json;charset=utf8")
+	@ResponseBody
+	public String home_pos(Model model, @RequestParam(value="home_idx", required=false)int home_idx, @RequestParam(value="checkin", required=false)String checkin, 
+			@RequestParam(value="checkout", required=false)String checkout) {
+
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+
+		JSONObject res = new JSONObject();
+		List<AirdndUserResInfoVO> list = airdndhomeService.userresinfoselect(home_idx, checkin, checkout);
+		try {
+			if(list.size() == 0	) res.put("result", "ok");
+			else res.put("result", "no");
+		} catch (Exception e) {
+		}
+
+		return res.toString();
+	}*/
 
 }
