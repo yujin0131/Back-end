@@ -106,5 +106,11 @@ public class AirdndHomeService implements AirdndHomeServiceI{
 		AirdndBookmarkedHomesVO vo = airdnd_home_dao.selectBookmarkedHomes(signInIdx, home_idx);
 		return vo;
 	}
+	
+	@Override
+	public int book(AirdndUserResInfoVO vo) {
+		int res = airdnd_home_dao.book(vo);
+		return res;
+	}
 
 }

@@ -315,4 +315,18 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 
 		return vo;
 	}
+	
+	@Override
+	public int book(AirdndUserResInfoVO vo) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		int userIdx = vo.getUser_idx();
+		int homeIdx = vo.getHome_idx();
+		String checkin = vo.getCheckin();
+		String checkout = vo.getCheckout();
+		int guestIdx = vo.getGuest_idx();
+		int res = jdbcTemplate.update("insert into airdnd_user_res_info (user_idx, home_idx, checkin, checkout, guest_idx, is_canceled) "
+				+ "VALUES(?,?,?,?,?,0)", userIdx, homeIdx, checkin, checkout, guestIdx);
+		return res;
+	}
+	
 }

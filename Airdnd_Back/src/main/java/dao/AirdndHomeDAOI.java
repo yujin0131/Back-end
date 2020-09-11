@@ -31,5 +31,6 @@ public interface AirdndHomeDAOI {
 	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx);
 	List<AirdndUserResInfoVO> selectUserResInfo(int home_idx, String checkin, String checkout);
 	AirdndBookmarkedHomesVO selectBookmarkedHomes(int signInIdx, int home_idx);
+	int book(AirdndUserResInfoVO vo);
 
 }

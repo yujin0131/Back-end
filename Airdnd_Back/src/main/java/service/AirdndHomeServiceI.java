@@ -30,5 +30,6 @@ public interface AirdndHomeServiceI {
 	List<AirdndUserResInfoVO> userresinfoselect(int home_idx);
 	List<AirdndUserResInfoVO> userresinfoselect(int home_idx, String checkin, String checkout);
 	AirdndBookmarkedHomesVO bookmarkedhomes(int signInIdx, int home_idx);
+	int book(AirdndUserResInfoVO vo);
 
 }
