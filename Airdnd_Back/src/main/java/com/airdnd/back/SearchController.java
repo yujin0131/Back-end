@@ -225,8 +225,8 @@ public class SearchController {
 
 					if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
 						System.out.println("같아 : " + lat + " / " + lng );
-						int rndlat = new Random().nextInt(5) + 5;
-						int rndlng = new Random().nextInt(5) + 5;
+						int rndlat = new Random().nextInt(5) + 2;
+						int rndlng = new Random().nextInt(5) + 3;
 						String rndfirst = "0.00";
 					
 						String latsum = rndfirst + rndlat;
@@ -234,7 +234,7 @@ public class SearchController {
 						double doulat = Double.parseDouble(latsum);
 						double doulng = Double.parseDouble(lngsum);
 
-						lat -= doulat;
+						lat += doulat;
 						lng += doulng;
 
 					}
