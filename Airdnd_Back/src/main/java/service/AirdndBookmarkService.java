@@ -52,70 +52,70 @@ public class AirdndBookmarkService implements AirdndBookmarkServiceI {
    public List<AirdndHomePictureVO> selectHomeMainPicture(int home_idx) {
       List<AirdndHomePictureVO> list = airdnd_bookmark_dao.selectHomeMainPicture(home_idx);
 
-      return list;
-   }
-   
-   //Create a new bookmark
-   @Override
-   public int insert_bookmark(AirdndBookmarkVO vo) {
-      int res = airdnd_bookmark_dao.insert_bookmark(vo);
-      
-      return res;
-   }
-   
-   //Select a new bookmark info
-   @Override
-   public int selectNewBookmarkInfo() {
-      int idx = airdnd_bookmark_dao.selectNewBookmarkInfo();
-      
-      return idx;
-   }
-   
-   //Search an idx
-   @Override
-   public int selectIdx(String bookmark_list_title) {
-      int idx = airdnd_bookmark_dao.selectIdx(bookmark_list_title);
-      
-      return idx;
-   }
-   
-   //Add the home in the bookmark
-   @Override
-   public int insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
-      int res = airdnd_bookmark_dao.insert_bookmarkHome(vo);
-      
-      return res;
-   }
-   
-   //Select a bookmark where idx=
-   @Override
-   public int selectPreviousBookmarkInfo(int idx) {
-      int bookmark_idx = airdnd_bookmark_dao.selectPreviousBookmarkInfo(idx);
-      
-      return bookmark_idx;
-   }
-   
-   //Delete the home in the bookmark
-   @Override
-   public String delete_bookmarkHome(int bookmark_idx) {
-      airdnd_bookmark_dao.delete_bookmarkHome(bookmark_idx);
-      
-      return null;
-   }
-   
-   //Delete the bookmark
-   @Override
-   public String delete_bookmark(int idx) {
-      airdnd_bookmark_dao.delete_bookmark(idx);
-      
-      return null;
-   }
-   
-   //Update update_date_time
-   @Override
-   public int update_updateTime(int idx) {
-      int res = airdnd_bookmark_dao.update_updateTime(idx);
-      
-      return res;
-   }
+		return list;
+	}
+	
+	//Create a new bookmark
+	@Override
+	public int insert_bookmark(AirdndBookmarkVO vo) {
+		int res = airdnd_bookmark_dao.insert_bookmark(vo);
+		
+		return res;
+	}
+	
+	//Select a new bookmark info
+	@Override
+	public int selectNewBookmarkInfo() {
+		int idx = airdnd_bookmark_dao.selectNewBookmarkInfo();
+		
+		return idx;
+	}
+	
+	//Search an idx
+	@Override
+	public int selectIdx(String bookmark_list_title) {
+		int idx = airdnd_bookmark_dao.selectIdx(bookmark_list_title);
+		
+		return idx;
+	}
+	
+	//Add the home in the bookmark
+	@Override
+	public int insert_bookmarkHome(AirdndBookmarkedHomesVO vo) {
+		int res = airdnd_bookmark_dao.insert_bookmarkHome(vo);
+		
+		return res;
+	}
+	
+	//Select a bookmark where idx=
+	@Override
+	public int selectPreviousBookmarkInfo(int idx) {
+		int bookmark_idx = airdnd_bookmark_dao.selectPreviousBookmarkInfo(idx);
+		
+		return bookmark_idx;
+	}
+	
+	//Delete the home in the bookmark
+	@Override
+	public int delete_bookmarkHome(int home_idx) {
+		int res = airdnd_bookmark_dao.delete_bookmarkHome(home_idx);
+		
+		return res;
+	}
+	
+	//Delete the bookmark
+	@Override
+	public int delete_bookmark(int idx) {
+		int res = airdnd_bookmark_dao.delete_bookmark(idx);
+		
+		return res;
+	}
+	
+	//Update update_date_time
+	@Override
+	public int update_updateTime(int idx) {
+		int res = airdnd_bookmark_dao.update_updateTime(idx);
+		
+		return res;
+	}
 }
