@@ -7,7 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -136,8 +140,31 @@ public class HomeController {
 		List<AirdndUserResInfoVO> reservedDatelist = airdndhomeService.userresinfoselect(home_idx);
 		for( int i = 0; i< reservedDatelist.size(); i++) {
 			String str = reservedDatelist.get(i).getCheckin();
+			String str2 = reservedDatelist.get(i).getCheckout();
 			str = str.replace("-", ".");
-			reservedDate.add(str);
+			str2 = str2.replace("-", ".");
+			final String DATE_PATTERN = "yyyy.MM.dd";
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+			Date startDate = null;
+			Date endDate = null;
+			try {
+				startDate = sdf.parse(str);
+				endDate = sdf.parse(str2);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			List<String> dates = new ArrayList<String>();
+			Date currentDate = startDate;
+			while (currentDate.compareTo(endDate) <= 0) {
+				dates.add(sdf.format(currentDate));
+				Calendar c = Calendar.getInstance();
+				c.setTime(currentDate);
+				c.add(Calendar.DAY_OF_MONTH, 1);
+				currentDate = c.getTime();
+			}
+			for(int j = 0; j < dates.size()-1; j++) {
+				reservedDate.add(dates.get(j));
+			}
 		}
 		res.put("reservedDates", reservedDate);
 
@@ -340,7 +367,7 @@ public class HomeController {
 		bookvo.setChild(Integer.parseInt(javaObject.get("child").toString()));
 		bookvo.setInfant(Integer.parseInt(javaObject.get("infant").toString()));
 		
-		String toHostMessage = javaObject.get(" toHostMessage").toString();
+		String toHostMessage = javaObject.get("toHostMessage").toString();
 
 		int res = airdndhomeService.book(bookvo);
 
