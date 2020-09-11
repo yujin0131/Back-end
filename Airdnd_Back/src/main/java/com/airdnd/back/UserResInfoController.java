@@ -83,6 +83,7 @@ public class UserResInfoController {
 		JSONObject locationInfo = null;				//6-1
 		JSONObject rulesInfo = null;				//6-2
 		JSONObject guestInfo = null;				//6-3
+		JSONObject guestsInfo = null;				//6-4
 		
 		AirdndUserVO userVO = airdndUserResInfoService.selectUserInfo(signInIdx);
 		
@@ -137,6 +138,7 @@ public class UserResInfoController {
 				rules = new JSONArray();		 //5
 				locationInfo = new JSONObject(); //6-1
 				guestInfo = new JSONObject();	 //6-3
+				guestsInfo = new JSONObject();	 //6-4
 				
 				int n = 0;
 				
@@ -165,7 +167,6 @@ public class UserResInfoController {
 				//rules
 				List<AirdndUseRuleVO> useRuleList = airdndUserResInfoService.selectUseRuleInfo(list1.get(i).getHome_idx());
 				
-				
 				for(int j = 0; j < useRuleList.size(); j++) {
 					int m = 0;
 					
@@ -175,6 +176,12 @@ public class UserResInfoController {
 					rules.add(m, rulesInfo);
 					resInfo.put("rules", rules);
 				}
+				
+				//adult, child, infant
+				guestsInfo.put("adult", list1.get(i).getAdult());
+				guestsInfo.put("child", list1.get(i).getChild());
+				guestsInfo.put("infant", list1.get(i).getInfant());
+				resInfo.put("guests", guestsInfo);
 				
 				resInfo.put("isCanceled", list1.get(i).getIs_canceled());
 				resInfo.put("title", homeVO.getTitle());
