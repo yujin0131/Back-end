@@ -415,7 +415,10 @@ public class BookmarkController {
 	/*
 	//Delete Bookmark - bye bye
 	@RequestMapping("/wishlist_delete")
-	public String delete_bookmark(AirdndBookmarkVO vo, Model model) {
+	public String delete_bookmark(@RequestBody String payload) {
+		HttpHeaders resHeaders = new HttpHeaders();
+		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+		
 		//Login cookie
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
@@ -440,14 +443,36 @@ public class BookmarkController {
 			}
 		}//if
 		
-		int idx = Integer.parseInt(request.getParameter("idx"));
+		//initialization
+		JSONObject result = new JSONObject();
+		Map<String, Object> javaObject = null;
+		int idx = 0;
+		
+		//from Payload
+		try {
+			javaObject = mapper.readValue(payload, Map.class);
+			System.out.println("payload가 잘 돼용!");
+		} catch (Exception e) {
+			System.out.println("payload 오류");
+		}
+		System.out.println("javaObject: " + javaObject);
+		
+		int idx = Integer.parseInt(javaObject.get("bookmarkHomeId").toString());
 		vo.setIdx(idx);
 
-		airdndBookmarkService.delete_bookmark(vo.getIdx());
+		int res = airdndBookmarkService.delete_bookmark(vo.getIdx());
 
-		model.addAttribute("vo", vo);
+		if(res == 1) {
+			result.put("result", "success");
+		} else {
+			result.put("result", "fail");
+		}
+		System.out.println("결과 : " + result.toString());
 
-		return "redirect:bookmark";
+		//model.addAttribute("vo", vo);
+
+		//return "redirect:bookmark";
+		return result.toString();
 	}
 	*/
 }
