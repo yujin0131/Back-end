@@ -116,9 +116,9 @@ public class ChatController {
 			fourthlists.put("reservationId", userResInfoVO.getIdx());
 			fourthlists.put("state", listAll.get(0).getAll_hidden_unread());
 			
-			//sif(hostList.get(i).getHost_name()) {
-			
-			fourthlists.put("hostname", hostList.get(i).getHost_name());
+			//hostname - "님"
+			String realName = hostList.get(i).getHost_name().replace("님", "");
+			fourthlists.put("hostname", realName);
 			
 			//contents
 			contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -139,7 +139,8 @@ public class ChatController {
 				chatHistory.put("userId", chattingListA.get(j).getFrom_idx());
 				
 				if(hostList.get(i).getIdx() == chattingListA.get(j).getFrom_idx()) {
-					chatHistory.put("name", hostList.get(i).getHost_name());
+					String name = hostList.get(i).getHost_name().replace("님", "");
+					chatHistory.put("name", name);
 				} else if(signInIdx == chattingListA.get(j).getFrom_idx()) {
 					chatHistory.put("name", signInName);
 				}
@@ -172,7 +173,9 @@ public class ChatController {
 			fourthlists.put("id", hostList.get(i).getIdx());
 			fourthlists.put("reservationId", userResInfoVO.getIdx());
 			fourthlists.put("state", listHidden.get(0).getAll_hidden_unread());
-			fourthlists.put("hostname", hostList.get(i).getHost_name());
+			
+			String realName = hostList.get(i).getHost_name().replace("님", "");
+			fourthlists.put("hostname", realName);
 			
 			//contents
 			contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -193,7 +196,8 @@ public class ChatController {
 				chatHistory.put("userId", chattingListH.get(j).getFrom_idx());
 				
 				if(hostList.get(i).getIdx() == chattingListH.get(j).getFrom_idx()) {
-					chatHistory.put("name", hostList.get(i).getHost_name());
+					String name = hostList.get(i).getHost_name().replace("님", "");
+					chatHistory.put("name", name);
 				} else if(signInIdx == chattingListH.get(j).getFrom_idx()) {
 					chatHistory.put("name", signInName);
 				}
@@ -226,7 +230,9 @@ public class ChatController {
 			fourthlists.put("id", hostList.get(i).getIdx());
 			fourthlists.put("reservationId", userResInfoVO.getIdx());
 			fourthlists.put("state", listUnread.get(0).getAll_hidden_unread());
-			fourthlists.put("hostname", hostList.get(i).getHost_name());
+			
+			String realName = hostList.get(i).getHost_name().replace("님", "");
+			fourthlists.put("hostname", realName);
 			
 			//contents
 			contents.put("hostProfileImg", hostList.get(i).getHost_profileImg());
@@ -247,7 +253,8 @@ public class ChatController {
 				chatHistory.put("userId", chattingListU.get(j).getFrom_idx());
 				
 				if(hostList.get(i).getIdx() == chattingListU.get(j).getFrom_idx()) {
-					chatHistory.put("name", hostList.get(i).getHost_name());
+					String name = hostList.get(i).getHost_name().replace("님", "");
+					chatHistory.put("name", name);
 				} else if(signInIdx == chattingListU.get(j).getFrom_idx()) {
 					chatHistory.put("name", signInName);
 				}
