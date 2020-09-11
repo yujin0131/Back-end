@@ -7,7 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,12 +23,20 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import common.Common;
+import exception.WrongPwdService;
 import service.AirdndHomeService;
 import service.AirdndHomeServiceI;
 import vo.AirdndBedroomVO;
@@ -47,10 +59,13 @@ public class HomeController {
 	@Autowired
 	AirdndHomeService airdndhomeService;
 
+	@Autowired
+	HttpServletRequest request;
+
 	@RequestMapping(value="/home",
 			method=RequestMethod.GET, produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
 	@ResponseBody
-	public String check(HttpServletRequest request, HttpServletResponse response, int home_idx) {
+	public String check( HttpServletResponse response, int home_idx) {
 
 		HttpSession session = request.getSession();
 		Cookie[] cookies = request.getCookies();
@@ -88,7 +103,9 @@ public class HomeController {
 
 		JSONObject hostres = new JSONObject();
 		hostres.put("hostId", hostvo.getIdx());
-		hostres.put("hostFirstName", hostvo.getHost_name());
+		String name = hostvo.getHost_name();
+		name.substring(1, name.length() - 2);
+		hostres.put("hostFirstName", name);
 		hostres.put("profileImg", hostvo.getHost_profileImg());
 		hostres.put("signupDate", hostvo.getHost_sign_in_date());
 		hostres.put("reviewCount", hostvo.getHost_review_num());
@@ -124,8 +141,31 @@ public class HomeController {
 		List<AirdndUserResInfoVO> reservedDatelist = airdndhomeService.userresinfoselect(home_idx);
 		for( int i = 0; i< reservedDatelist.size(); i++) {
 			String str = reservedDatelist.get(i).getCheckin();
+			String str2 = reservedDatelist.get(i).getCheckout();
 			str = str.replace("-", ".");
-			reservedDate.add(str);
+			str2 = str2.replace("-", ".");
+			final String DATE_PATTERN = "yyyy.MM.dd";
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+			Date startDate = null;
+			Date endDate = null;
+			try {
+				startDate = sdf.parse(str);
+				endDate = sdf.parse(str2);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			List<String> dates = new ArrayList<String>();
+			Date currentDate = startDate;
+			while (currentDate.compareTo(endDate) <= 0) {
+				dates.add(sdf.format(currentDate));
+				Calendar c = Calendar.getInstance();
+				c.setTime(currentDate);
+				c.add(Calendar.DAY_OF_MONTH, 1);
+				currentDate = c.getTime();
+			}
+			for(int j = 0; j < dates.size()-1; j++) {
+				reservedDate.add(dates.get(j));
+			}
 		}
 		res.put("reservedDates", reservedDate);
 
@@ -189,10 +229,7 @@ public class HomeController {
 			notice_info.add(noticeinfo);
 		}
 		res.put("explains", notice_info);
-
-		String desc = homevo.getHost_notice();
-		desc = desc.replace(". ", ".<br>");
-		res.put("description", desc);
+		res.put("description", homevo.getHost_notice());
 
 		List<JSONObject> bedroom_info = new ArrayList<JSONObject>();
 		List<AirdndBedroomVO> bedroom = airdndhomeService.bedroomeselect(home_idx);
@@ -238,33 +275,156 @@ public class HomeController {
 			review_info.add(reviewinfo);
 
 		}
-		double avgReview = (totalReview/(review.size()*6));
-		review_res.put("cleanliness", review.get(0).getRoom_cleanliness());
-		review_res.put("accuracy", review.get(0).getRoom_accuracy());
-		review_res.put("communication", review.get(0).getRoom_communication());
-		review_res.put("location", review.get(0).getRoom_position());
-		review_res.put("checkin", review.get(0).getRoom_checkin());
-		review_res.put("value", review.get(0).getRoom_cost_effectiveness());
+		if(review.size() == 0 ) {
+			review_res.put("cleanliness", 0);
+			review_res.put("accuracy", 0);
+			review_res.put("communication", 0);
+			review_res.put("location", 0);
+			review_res.put("checkin", 0);
+			review_res.put("value", 0);
+			review_res.put("rating", 0);
+			review_res.put("comments", "");
+		} else {
+			double avgReview = (totalReview/(review.size()*6));
+			review_res.put("cleanliness", review.get(0).getRoom_cleanliness());
+			review_res.put("accuracy", review.get(0).getRoom_accuracy());
+			review_res.put("communication", review.get(0).getRoom_communication());
+			review_res.put("location", review.get(0).getRoom_position());
+			review_res.put("checkin", review.get(0).getRoom_checkin());
+			review_res.put("value", review.get(0).getRoom_cost_effectiveness());
+			review_res.put("rating", Math.round(avgReview*100)/100.0);
+			review_res.put("comments", review_info);
+		}
 		review_res.put("count", hostvo.getHost_review_num());
-		review_res.put("rating", Math.round(avgReview*100)/100.0);
-		review_res.put("comments", review_info);
 		res.put("reviews", review_res);
 
-		int random = new Random().nextInt(3) + 1;
-		res.put("minimumStay", random);
+		int ran = new Random().nextInt(3) + 1;
+		res.put("minimumStay", ran);
 
 		return res.toString();
 
 		/*List<JSONObject> attractions_info = new ArrayList<JSONObject>();
-	  List<AirdndDistanceVO> distancelist = airdndhomeService.distanceselect(home_idx);
-	  for( int i = 0; i< distancelist.size(); i++) {
-		  JSONObject distance_info = new JSONObject();
-		  distance_info.put("attractions_name", distancelist.get(i).getAttractions_name());
-		  distance_info.put("attractions_distance", distancelist.get(i).getAttractions_distance());
+		  List<AirdndDistanceVO> distancelist = airdndhomeService.distanceselect(home_idx);
+		  for( int i = 0; i< distancelist.size(); i++) {
+			  JSONObject distance_info = new JSONObject();
+			  distance_info.put("attractions_name", distancelist.get(i).getAttractions_name());
+			  distance_info.put("attractions_distance", distancelist.get(i).getAttractions_distance());
 
-		  attractions_info.add(distance_info);
-	  }
-	  res.put("attractions_info", attractions_info);*/
-	}
+			  attractions_info.add(distance_info);
+		  }
+		  res.put("attractions_info", attractions_info);*/
+	}//home
+
+	//예약
+	@RequestMapping(value = "/book", method=RequestMethod.POST,
+			produces = "application/json;charset=utf8", consumes = MediaType.ALL_VALUE)
+	@ResponseBody
+	public String sign_in(HttpServletRequest request, HttpServletResponse response, @RequestBody String payload) {
+		HttpHeaders resHeaders = new HttpHeaders();
+		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 0; //temp
+		String signInEmail = "";
+		String signInName = "";
+
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+
+		ObjectMapper mapper = new ObjectMapper();
+		JSONObject result = new JSONObject();
+		String result_msg = "";
+
+		Map<String, Object> javaObject = null;
+		try {
+			javaObject = mapper.readValue(payload, Map.class);
+		} catch (Exception e) {
+			System.out.println("payload 오류");
+		}
+		System.out.println("javaObject: " + javaObject);
+
+		AirdndUserResInfoVO bookvo = new AirdndUserResInfoVO();
+		bookvo.setUser_idx(signInIdx);
+		bookvo.setHome_idx(Integer.parseInt(javaObject.get("homeId").toString()));
+		bookvo.setCheckin(javaObject.get("checkin").toString());
+		bookvo.setCheckout(javaObject.get("checkout").toString());
+		bookvo.setAdult(Integer.parseInt(javaObject.get("adult").toString()));
+		bookvo.setChild(Integer.parseInt(javaObject.get("child").toString()));
+		bookvo.setInfant(Integer.parseInt(javaObject.get("infant").toString()));
+		
+		String toHostMessage = javaObject.get("toHostMessage").toString();
+
+		int res = airdndhomeService.book(bookvo);
+
+		if( res == 1 ) {
+			System.out.println("부킹잘됨");
+			result_msg = "Success";
+		} else {
+			System.out.println("부킹실패");
+			result_msg = "Fail";
+		}
+
+		result.put("result", result_msg);
+
+		return result.toString();
+
+	}//book
+
+	//예약가능여부
+	/*@RequestMapping(value="/home_pos", produces="application/json;charset=utf8")
+	@ResponseBody
+	public String home_pos(Model model, @RequestParam(value="home_idx", required=false)int home_idx, @RequestParam(value="checkin", required=false)String checkin, 
+			@RequestParam(value="checkout", required=false)String checkout) {
+
+		//Login cookie
+		HttpSession session = request.getSession();
+		Cookie[] cookies = request.getCookies();
+		String sessionKey = "";
+		int signInIdx = 1; //temp
+		String signInEmail = "";
+		String signInName = "";
+
+		if(cookies == null) {
+			System.out.println("not cookies");
+		}else {
+			for(Cookie cookie : cookies) {
+				if("AirdndSES".equals(cookie.getName())) {
+					sessionKey = cookie.getValue();
+					AirdndUserVO signInVO = (AirdndUserVO)session.getAttribute(sessionKey);
+					signInIdx = signInVO.getUser_idx();
+					signInEmail = signInVO.getEmail();
+					signInName = signInVO.getLast_name() + signInVO.getFirst_name();
+				} else {
+					System.out.println("not login");
+				}
+			}
+		}//if
+
+		JSONObject res = new JSONObject();
+		List<AirdndUserResInfoVO> list = airdndhomeService.userresinfoselect(home_idx, checkin, checkout);
+		try {
+			if(list.size() == 0	) res.put("result", "ok");
+			else res.put("result", "no");
+		} catch (Exception e) {
+		}
+
+		return res.toString();
+	}*/
 
 }
