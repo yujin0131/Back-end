@@ -1,7 +1,7 @@
 package vo;
 
 public class AirdndUserResInfoVO {
-	private int idx, user_idx, home_idx, guest_idx, is_canceled;
+	private int idx, user_idx, home_idx, guest_idx, is_canceled, adult, child, infant;
 	private String checkin, checkout;
 	
 	//not DB column
@@ -10,17 +10,17 @@ public class AirdndUserResInfoVO {
 	public AirdndUserResInfoVO() {
 	}
 	
-	public AirdndUserResInfoVO(int idx, int user_idx, int home_idx, String checkin, String checkout, int guest_idx, int is_canceled) {
+	public AirdndUserResInfoVO(int idx, int user_idx, int home_idx, String checkin, String checkout, int guest_idx, int is_canceled, int adult, int child, int infant) {
 		this.idx = idx;
 		this.user_idx = user_idx;
 		this.home_idx = home_idx;
-		//this.price = price;
 		this.guest_idx = guest_idx;
 		this.is_canceled = is_canceled;
 		this.checkin = checkin;
 		this.checkout = checkout;
-		//this.reservation_number = reservation_number;
-		//this.paid_date_time = paid_date_time;
+		this.adult = adult;
+		this.child = child;
+		this.infant = infant;
 	}
 
 	public int getIdx() {
@@ -70,5 +70,23 @@ public class AirdndUserResInfoVO {
 	}
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public int getAdult() {
+		return adult;
+	}
+	public void setAdult(int adult) {
+		this.adult = adult;
+	}
+	public int getChild() {
+		return child;
+	}
+	public void setChild(int child) {
+		this.child = child;
+	}
+	public int getInfant() {
+		return infant;
+	}
+	public void setInfant(int infant) {
+		this.infant = infant;
 	}
 }

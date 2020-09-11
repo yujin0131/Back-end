@@ -41,7 +41,10 @@ public class AirdndUserResInfoDAO implements AirdndUserResInfoDAOI {
 					rs.getString("checkin"),
 					rs.getString("checkout"),
 					rs.getInt("guest_idx"),
-					rs.getInt("is_canceled"));
+					rs.getInt("is_canceled"),
+					rs.getInt("adult"),
+					rs.getInt("child"),
+					rs.getInt("infant"));
 
 				return list;
 			}

@@ -216,13 +216,16 @@ public class AirdndChatDAO implements AirdndChatDAOI {
 			@Override
 			public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndUserResInfoVO vo = new AirdndUserResInfoVO(
-					rs.getInt("idx"),
-					rs.getInt("user_idx"),
-					rs.getInt("home_idx"),
-					rs.getString("checkin"),
-					rs.getString("checkout"),
-					rs.getInt("guest_idx"),
-					rs.getInt("is_canceled"));
+						rs.getInt("idx"),
+						rs.getInt("user_idx"),
+						rs.getInt("home_idx"),
+						rs.getString("checkin"),
+						rs.getString("checkout"),
+						rs.getInt("guest_idx"),
+						rs.getInt("is_canceled"),
+						rs.getInt("adult"),
+						rs.getInt("child"),
+						rs.getInt("infant"));
 				
 				return vo;
 			}
