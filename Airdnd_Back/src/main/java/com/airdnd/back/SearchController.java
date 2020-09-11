@@ -234,7 +234,7 @@ public class SearchController {
 						double doulat = Double.parseDouble(latsum);
 						double doulng = Double.parseDouble(lngsum);
 
-						lat += doulat;
+						lat -= doulat;
 						lng += doulng;
 
 					}
