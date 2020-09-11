@@ -234,7 +234,7 @@ public class SearchController {
 					JSONObject lo = (JSONObject) homes.get(j).get("location");
 
 					if(lat == (Double)(lo.get("lat")) && lng == (Double)lo.get("lng")) {
-						lat += 0.01;
+						lat += 0.002;
 					}
 				}
 
