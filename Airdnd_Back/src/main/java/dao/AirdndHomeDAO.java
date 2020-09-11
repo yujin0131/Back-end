@@ -257,7 +257,7 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 		List<AirdndUserResInfoVO> list = jdbcTemplate.query("select * from airdnd_user_res_info where home_idx=" + home_idx, new RowMapper<AirdndUserResInfoVO>() {
 	         @Override
 	         public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-	        	 AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum);
+	        	 AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum, rowNum, rowNum, rowNum);
 
 	        	 return list;
 	         }
