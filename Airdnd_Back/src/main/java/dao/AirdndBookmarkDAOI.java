@@ -23,12 +23,14 @@ public interface AirdndBookmarkDAOI {
 	int selectNewBookmarkInfo();
 	//Search an idx
 	int selectIdx(String bookmark_list_title);
+	//Select a bookmark where idx=
+	int selectPreviousBookmarkInfo(int idx);
 	//Add the home in the bookmark
 	int insert_bookmarkHome(AirdndBookmarkedHomesVO vo);
 	//Delete the home in the bookmark
-	String delete_bookmarkHome(int bookmark_idx);
+	int delete_bookmarkHome(int home_idx);
 	//Delete the bookmark
-	String delete_bookmark(int idx);
+	int delete_bookmark(int idx);
 	//Update update_date_time
 	int update_updateTime(int idx);
 }
