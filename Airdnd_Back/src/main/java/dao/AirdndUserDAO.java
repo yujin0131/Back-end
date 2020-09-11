@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import exception.NoIdService;
+import vo.AirdndHostVO;
+import vo.AirdndUserHostVO;
 import vo.AirdndUserVO;
 
 @Repository("userDAO")
@@ -84,7 +86,6 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 		return res;
 	}
 	
-	
 	//로그인 정보 가져오기
 	@Override
 	public AirdndUserVO select_one(AirdndUserVO vo) {
@@ -125,12 +126,37 @@ public class AirdndUserDAO implements AirdndUserDAOI{
 		}		
 		//이메일 존재 여부 체크
 		try{
-			checkEmail.NoIdMethod(user_idx);
+			//checkEmail.NoIdMethod(user_idx);
 			loginvo = loginlist.get(0);
 			return loginvo;
         }catch(Exception ex){
             ex.printStackTrace();
         }
 		return null;
+	}
+
+	public boolean select_user_host(int user_idx) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		String sql = "select * from airdnd_host where user_idx='" + user_idx + "'";
+		
+		List<AirdndUserHostVO> loginlist = jdbcTemplate.query(sql, new RowMapper<AirdndUserHostVO>() {
+			@Override
+			public AirdndUserHostVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndUserHostVO vo = new AirdndUserHostVO(
+						rs.getInt("idx"),
+						rs.getInt("user_idx"),
+						rs.getInt("host_idx")
+						);
+				return vo;
+			}
+		});
+		
+		boolean isCheck;
+		if(loginlist.size() != 0) {
+			isCheck = true;
+		} else {
+			isCheck = false;
+		}
+		return isCheck;
 	}
 }

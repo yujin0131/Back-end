@@ -3,6 +3,7 @@ package com.airdnd.back;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.mysql.fabric.Response;
 
 import common.Common;
 import exception.NoId;
@@ -143,26 +145,38 @@ public class UserController {
 			System.out.println("payload 오류");
 		}
 		System.out.println("javaObject: " + javaObject);
-
+		
+		JSONObject res = new JSONObject();
+		JSONObject userJson = new JSONObject();
+		JSONArray bookmarkLists = new JSONArray();
+		
 		AirdndUserVO check_vo = new AirdndUserVO();
 		check_vo.setEmail(javaObject.get("email").toString());
 		check_vo.setPwd(javaObject.get("pwd").toString());
 
 		AirdndUserVO login_vo = airdnduserService.signin(check_vo);
+		boolean isCheck;
+		try {
+			isCheck = airdnduserService.userishost(login_vo.getUser_idx());
+		} catch (Exception e) {
+			isCheck = false;
+		}
+
+		
 		String resultStr = "";
 		if(login_vo == null) {
-			
+			resultStr = "NoId";
 		} else {
 			if ( !(check_vo.getPwd().equals(login_vo.getPwd())) ) {
 				//로그인 실패
-				resultStr = "Fail";
-				WrongPwdService wps = new WrongPwdService();
+				resultStr = "WrongPwd";
+				/*WrongPwdService wps = new WrongPwdService();
 				try {
 					wps.WrongPwdMethod(resultStr);
 				} catch (Exception e) {
 					e.printStackTrace();
 					resultStr = e.toString();
-				}
+				}*/
 			} else {
 				//로그인 성공
 				HttpSession session = request.getSession();
@@ -173,20 +187,32 @@ public class UserController {
 				session.setAttribute(sessionKey, login_vo);
 				String cookieValue = sessionKey;
 				Cookie myCookie = new Cookie("AirdndSES", cookieValue);
-				myCookie.setSecure(true);
 				myCookie.setMaxAge(60*60);
 				myCookie.setPath("/"); // 경로 설정
 				response.addCookie(myCookie);
 
 				AirdndUserVO userInfoVO = (AirdndUserVO) session.getAttribute(sessionKey);
-				String userEmail = userInfoVO.getEmail();
-				String username = userInfoVO.getLast_name() + userInfoVO.getFirst_name();
-				//필요할때 이렇게 뽑아서 넘겨주기
-
+				userJson.put("id", userInfoVO.getUser_idx());
+				userJson.put("email", userInfoVO.getEmail());
+				userJson.put("pwd", userInfoVO.getPwd());
+				userJson.put("firstName",userInfoVO.getFirst_name());
+				userJson.put("lastName",userInfoVO.getLast_name());
+				userJson.put("phone",userInfoVO.getPhone());
+				userJson.put("birthday",userInfoVO.getBirthday());
+				userJson.put("profileImg",userInfoVO.getProfileImg());
+				userJson.put("description",userInfoVO.getDescription());
+				userJson.put("isHost", isCheck);
+				
 				resultStr = "Success";
+				
+				res.put("user", userJson);
+				res.put("bookmarkLists", bookmarkLists);
 			}
+			
 		}
-		return resultStr;
+		res.put("result", resultStr);
+		System.out.println(res.toString());
+		return res.toString();
 	}
 
 	//******로그아웃

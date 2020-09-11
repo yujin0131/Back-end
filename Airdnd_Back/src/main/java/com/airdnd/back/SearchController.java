@@ -350,13 +350,10 @@ public class SearchController {
 			List<AirdndSearchVO> recentHomeOne = new ArrayList<AirdndSearchVO>();
 
 			if(cookies == null) {
-			}else{
+			} else {
 				for (Cookie cookie : cookies) {
 					if(cookie.getName().contains("AirdndRH")) {
 						recentHomesIdx.add(Integer.parseInt(cookie.getValue()));
-					}
-				}
-
 				for(int recenthome:recentHomesIdx) {
 					recentHomeOne = airdndsearchService.select_one(recenthome);
 
@@ -390,29 +387,27 @@ public class SearchController {
 					recentHome_info.put("location", latlng);
 
 					recentHomes.add(recentHome_info);
-
 				}
-				//recentHomeList만 뿌려주면 끝
+					//recentHomeList만 뿌려주면 끝
+			}
+				
+
+				res.put("filterCondition", filterCondition);
+				//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
+				List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
+
+				res.put("recentHomes", recentHomes);
+
+				try {
+					res.put("dataTotal", total.get(0).getData_total());
+					res.put("averagePrice", total.get(0).getAverage_price());
+				} catch (Exception e) {
+					res.put("dataTotal", 0);
+					res.put("averagePrice", 0);
+				}
+
 			}
 
-
-
-			res.put("filterCondition", filterCondition);
-			//전체 숙소 데이터 개수, 1박 평균 가격 -----------------
-			List<AirdndSearchVO> total = airdndsearchService.searchtotalselect(param);
-
-			res.put("recentHomes", recentHomes);
-
-			try {
-				res.put("dataTotal", total.get(0).getData_total());
-				res.put("averagePrice", total.get(0).getAverage_price());
-			} catch (Exception e) {
-				res.put("dataTotal", 0);
-				res.put("averagePrice", 0);
-			}
-
+			return res.toString();
 		}
-
-		return res.toString();
 	}
-}
