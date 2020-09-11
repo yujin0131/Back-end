@@ -336,10 +336,9 @@ public class HomeController {
 		bookvo.setHome_idx(Integer.parseInt(javaObject.get("homeId").toString()));
 		bookvo.setCheckin(javaObject.get("checkin").toString());
 		bookvo.setCheckout(javaObject.get("checkout").toString());
-		int adult = Integer.parseInt(javaObject.get("adult").toString());
-		int child = Integer.parseInt(javaObject.get("child").toString());;
-		int infant = Integer.parseInt(javaObject.get("infant").toString());;
-		bookvo.setGuest_idx(adult + child + infant);
+		bookvo.setAdult(Integer.parseInt(javaObject.get("adult").toString()));
+		bookvo.setChild(Integer.parseInt(javaObject.get("child").toString()));
+		bookvo.setInfant(Integer.parseInt(javaObject.get("infant").toString()));
 
 		int res = airdndhomeService.book(bookvo);
 

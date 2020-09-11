@@ -257,7 +257,7 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 		List<AirdndUserResInfoVO> list = jdbcTemplate.query("select * from airdnd_user_res_info where home_idx=" + home_idx, new RowMapper<AirdndUserResInfoVO>() {
 			@Override
 			public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum);
+				AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum, rowNum, rowNum, rowNum);
 
 				return list;
 			}
@@ -273,7 +273,7 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 			list = jdbcTemplate.query("SELECT * FROM airdnd_user_res_info where home_idx=" + home_idx + " and (checkin>='" + checkin + "' AND checkin<='" + checkout + "' or checkout>='" + checkin + "' and checkout <='" + checkout + "');", new RowMapper<AirdndUserResInfoVO>() {
 				@Override
 				public AirdndUserResInfoVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-					AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum);
+					AirdndUserResInfoVO list = new AirdndUserResInfoVO(rowNum, rowNum, rowNum, rs.getString("checkin"), null, rowNum, rowNum, rowNum, rowNum, rowNum);
 					return list;
 				}
 			});
@@ -323,9 +323,11 @@ public class AirdndHomeDAO implements AirdndHomeDAOI {
 		int homeIdx = vo.getHome_idx();
 		String checkin = vo.getCheckin();
 		String checkout = vo.getCheckout();
-		int guestIdx = vo.getGuest_idx();
-		int res = jdbcTemplate.update("insert into airdnd_user_res_info (user_idx, home_idx, checkin, checkout, guest_idx, is_canceled) "
-				+ "VALUES(?,?,?,?,?,0)", userIdx, homeIdx, checkin, checkout, guestIdx);
+		int adult = vo.getAdult();
+		int child = vo.getChild();
+		int infant = vo.getInfant();
+		int res = jdbcTemplate.update("insert into airdnd_user_res_info (user_idx, home_idx, checkin, checkout, guest_idx, is_canceled, adult, child, infant) "
+				+ "VALUES(?,?,?,?,0,0,?,?,?)", userIdx, homeIdx, checkin, checkout, adult, child, infant);
 		return res;
 	}
 	
