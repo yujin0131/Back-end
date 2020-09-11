@@ -172,7 +172,8 @@ public class UserController {
 				String sessionKey = com.sessonKey();
 				session.setAttribute(sessionKey, login_vo);
 				String cookieValue = sessionKey;
-				Cookie myCookie = new Cookie("AirdndSES", cookieValue +";HttpOnly");
+				Cookie myCookie = new Cookie("AirdndSES", cookieValue);
+				myCookie.setSecure(true);
 				myCookie.setMaxAge(60*60);
 				myCookie.setPath("/"); // 경로 설정
 				response.addCookie(myCookie);
