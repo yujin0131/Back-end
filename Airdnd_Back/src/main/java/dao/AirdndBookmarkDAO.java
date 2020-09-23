@@ -208,7 +208,7 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 		String sql = "select bookmark_idx from airdnd_bookmarked_homes where home_idx=" + home_idx;
 		int bookmark_idx = jdbcTemplate.queryForInt(sql);
 		
-		sql = "delete from airdnd_bookmarked_homes where bookmark_idx=" + bookmark_idx;
+		sql = "delete from airdnd_bookmarked_homes where home_idx=" + home_idx;
 		jdbcTemplate.update(sql);
 		
 		return bookmark_idx;
