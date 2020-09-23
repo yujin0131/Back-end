@@ -146,7 +146,7 @@ public class UserResInfoController {
 				
 				resInfo.put("reservationId", list1.get(i).getIdx());
 				resInfo.put("homeId", list1.get(i).getHome_idx());
-				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("hostname", hostVO.getHost_name().replace("님", ""));
 				resInfo.put("homeImage", list1.get(i).getUrl());
 				resInfo.put("hostId", hostVO.getIdx());
 				resInfo.put("checkin", list1.get(i).getCheckin());
@@ -253,7 +253,7 @@ public class UserResInfoController {
 				
 				resInfo.put("reservationId", list2.get(i).getIdx());
 				resInfo.put("homeId", list2.get(i).getHome_idx());
-				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("hostname", hostVO.getHost_name().replace("님", ""));
 				resInfo.put("homeImage", list2.get(i).getUrl());
 				resInfo.put("hostId", hostVO.getIdx());
 				resInfo.put("checkin", list2.get(i).getCheckin());
@@ -349,7 +349,7 @@ public class UserResInfoController {
 				
 				resInfo.put("reservationId", list3.get(i).getIdx());
 				resInfo.put("homeId", list3.get(i).getHome_idx());
-				resInfo.put("hostname", hostVO.getHost_name());
+				resInfo.put("hostname", hostVO.getHost_name().replace("님", ""));
 				resInfo.put("homeImage", list3.get(i).getUrl());
 				resInfo.put("hostId", hostVO.getIdx());
 				resInfo.put("checkin", list3.get(i).getCheckin());

@@ -132,7 +132,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListA.size(); j++) {
+			for(int j = chattingListA.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListA.get(j).getIdx());
@@ -151,7 +151,6 @@ public class ChatController {
 				info.add(n, chatHistory);
 				fourthlists.put("chatHistory", info);
 			}
-			
 			secondArr1.add(i, fourthlists);
 			
 			res.put("all", secondArr1);
@@ -189,7 +188,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListH.size(); j++) {
+			for(int j = chattingListH.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListH.get(j).getIdx());
@@ -246,7 +245,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListU.size(); j++) {
+			for(int j = chattingListU.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListU.get(j).getIdx());
