@@ -100,9 +100,9 @@ public class ChatController {
 		
 		
 		for(int i = 0; i < listAll.size(); i++) {
-			fourthlists = new JSONObject(); 	//5
-			info = new JSONArray();			//6
-			contents = new JSONObject();	//7-1
+			fourthlists = new JSONObject(); //4
+			info = new JSONArray();			//5
+			contents = new JSONObject();	//6-1
 			
 			int n = 0;
 			
@@ -132,7 +132,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListA.size(); j++) {
+			for(int j = chattingListA.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListA.get(j).getIdx());
@@ -151,14 +151,13 @@ public class ChatController {
 				info.add(n, chatHistory);
 				fourthlists.put("chatHistory", info);
 			}
-			
 			secondArr1.add(i, fourthlists);
 			
 			res.put("all", secondArr1);
 		}
 	
 		for(int i = 0; i < listHidden.size(); i++) {
-			fourthlists = new JSONObject(); 	//4
+			fourthlists = new JSONObject(); //4
 			info = new JSONArray();			//5
 			contents = new JSONObject();	//6-1
 			
@@ -189,7 +188,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListH.size(); j++) {
+			for(int j = chattingListH.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListH.get(j).getIdx());
@@ -215,9 +214,9 @@ public class ChatController {
 		}
 	
 		for(int i = 0; i < listUnread.size(); i++) {
-			fourthlists = new JSONObject(); 	//5
-			info = new JSONArray();			//6
-			contents = new JSONObject();	//7-1
+			fourthlists = new JSONObject(); //4
+			info = new JSONArray();			//5
+			contents = new JSONObject();	//6-1
 			
 			int n = 0;
 			
@@ -246,7 +245,7 @@ public class ChatController {
 			fourthlists.put("contents", contents);
 			
 			//chatHistory
-			for(int j = 0; j < chattingListU.size(); j++) {
+			for(int j = chattingListU.size() - 1; j >= 0; j--) {
 				chatHistory = new JSONObject();
 									
 				chatHistory.put("id", chattingListU.get(j).getIdx());

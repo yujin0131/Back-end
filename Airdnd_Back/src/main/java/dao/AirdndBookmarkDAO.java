@@ -26,7 +26,7 @@ public class AirdndBookmarkDAO implements AirdndBookmarkDAOI {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
 		//서버 연결할 때 쿼리문 뒤에 "WHERE user_idx= + user_idx <- 추가
-		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark where user_idx=" + user_idx + " order by update_date_time", new RowMapper<AirdndBookmarkVO>() {
+		List<AirdndBookmarkVO> list = jdbcTemplate.query("select * from airdnd_bookmark where user_idx=" + user_idx + " order by update_date_time desc", new RowMapper<AirdndBookmarkVO>() {
 			@Override
 			public AirdndBookmarkVO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				AirdndBookmarkVO list = new AirdndBookmarkVO(
