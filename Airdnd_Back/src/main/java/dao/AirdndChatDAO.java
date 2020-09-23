@@ -18,101 +18,101 @@ import vo.AirdndUserResInfoVO;
 
 @Repository("airdndChatDAO")
 public class AirdndChatDAO implements AirdndChatDAOI {
-   @Autowired
-   DataSource dataSource;
-   
-   //Select User's chat list - all
-   @Override
-   public List<AirdndChatVO> selectChatListAll(int user_idx){
-      String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='all' order by idx desc";
-      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-      
-      List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
-         @Override
-         public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            AirdndChatVO list = new AirdndChatVO(
-               rs.getInt("idx"),
-               rs.getInt("host_idx"),
-               rs.getString("host_profile_imgurl"),
-               rs.getInt("user_idx"),
-               rs.getString("all_hidden_unread"),
-               rs.getString("checkin"),
-               rs.getString("checkout"));
+	@Autowired
+	DataSource dataSource;
+	
+	//Select User's chat list - all
+	@Override
+	public List<AirdndChatVO> selectChatListAll(int user_idx){
+		String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='all' order by idx";
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
+			@Override
+			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndChatVO list = new AirdndChatVO(
+					rs.getInt("idx"),
+					rs.getInt("host_idx"),
+					rs.getString("host_profile_imgurl"),
+					rs.getInt("user_idx"),
+					rs.getString("all_hidden_unread"),
+					rs.getString("checkin"),
+					rs.getString("checkout"));
 
-            return list;
-         }
-      });
-      
-      return list;
-   }
-   
-   //Select User's chat list - hidden
-   @Override
-   public List<AirdndChatVO> selectChatListHidden(int user_idx){
-      String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='hidden' order by idx desc";
-      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-      
-      List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
-         @Override
-         public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            AirdndChatVO list = new AirdndChatVO(
-               rs.getInt("idx"),
-               rs.getInt("host_idx"),
-               rs.getString("host_profile_imgurl"),
-               rs.getInt("user_idx"),
-               rs.getString("all_hidden_unread"),
-               rs.getString("checkin"),
-               rs.getString("checkout"));
+				return list;
+			}
+		});
+		
+		return list;
+	}
+	
+	//Select User's chat list - hidden
+	@Override
+	public List<AirdndChatVO> selectChatListHidden(int user_idx){
+		String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='hidden' order by idx";
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
+			@Override
+			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndChatVO list = new AirdndChatVO(
+					rs.getInt("idx"),
+					rs.getInt("host_idx"),
+					rs.getString("host_profile_imgurl"),
+					rs.getInt("user_idx"),
+					rs.getString("all_hidden_unread"),
+					rs.getString("checkin"),
+					rs.getString("checkout"));
 
-            return list;
-         }
-      });
-      
-      return list;
-   }
-   
-   //Select User's chat list - unread
-   @Override
-   public List<AirdndChatVO> selectChatListUnread(int user_idx){
-      String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='unread' order by idx desc";
-      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-      
-      List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
-         @Override
-         public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            AirdndChatVO list = new AirdndChatVO(
-               rs.getInt("idx"),
-               rs.getInt("host_idx"),
-               rs.getString("host_profile_imgurl"),
-               rs.getInt("user_idx"),
-               rs.getString("all_hidden_unread"),
-               rs.getString("checkin"),
-               rs.getString("checkout"));
+				return list;
+			}
+		});
+		
+		return list;
+	}
+	
+	//Select User's chat list - unread
+	@Override
+	public List<AirdndChatVO> selectChatListUnread(int user_idx){
+		String sql = "select * from airdnd_chatting where user_idx=" + user_idx + " and all_hidden_unread='unread' order by idx";
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndChatVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatVO>() {
+			@Override
+			public AirdndChatVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndChatVO list = new AirdndChatVO(
+					rs.getInt("idx"),
+					rs.getInt("host_idx"),
+					rs.getString("host_profile_imgurl"),
+					rs.getInt("user_idx"),
+					rs.getString("all_hidden_unread"),
+					rs.getString("checkin"),
+					rs.getString("checkout"));
 
-            return list;
-         }
-      });
-      
-      return list;
-   }
-   
-   //Select User's messages list with filter
-   @Override
-   public List<AirdndChatMsgsVO> selectMsgList(int user_idx, int host_idx, String all_hidden_unread){
-      String sql = "SELECT * FROM airdnd_chatting_msgs where message_idx in (SELECT idx from airdnd_chatting where user_idx=" + user_idx + " AND host_idx=" + host_idx + " AND all_hidden_unread='" + all_hidden_unread + "')";
-      JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-      
-      List<AirdndChatMsgsVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatMsgsVO>() {
-         @Override
-         public AirdndChatMsgsVO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            AirdndChatMsgsVO list = new AirdndChatMsgsVO(
-               rs.getInt("idx"),
-               rs.getInt("message_idx"),
-               rs.getInt("from_idx"),
-               rs.getInt("to_idx"),
-               rs.getString("content"),
-               rs.getString("send_date_time"),
-               rs.getString("from_profile_imgurl"));
+				return list;
+			}
+		});
+		
+		return list;
+	}
+	
+	//Select User's messages list with filter
+	@Override
+	public List<AirdndChatMsgsVO> selectMsgList(int user_idx, int host_idx, String all_hidden_unread){
+		String sql = "SELECT * FROM airdnd_chatting_msgs where message_idx in (SELECT idx from airdnd_chatting where user_idx=" + user_idx + " AND host_idx=" + host_idx + " AND all_hidden_unread='" + all_hidden_unread + "') order by send_date_time asc";
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		
+		List<AirdndChatMsgsVO> list = jdbcTemplate.query(sql, new RowMapper<AirdndChatMsgsVO>() {
+			@Override
+			public AirdndChatMsgsVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AirdndChatMsgsVO list = new AirdndChatMsgsVO(
+					rs.getInt("idx"),
+					rs.getInt("message_idx"),
+					rs.getInt("from_idx"),
+					rs.getInt("to_idx"),
+					rs.getString("content"),
+					rs.getString("send_date_time"),
+					rs.getString("from_profile_imgurl"));
 
             return list;
          }
