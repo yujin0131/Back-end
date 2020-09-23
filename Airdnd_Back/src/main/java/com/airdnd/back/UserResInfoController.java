@@ -111,7 +111,6 @@ public class UserResInfoController {
 		int checkoutDate = 0;
 		
 		
-		
 		if(tab.equalsIgnoreCase("upcoming")) {
 			//1. Upcoming reservation list
 			for(int i = 0; i < list.size(); i++) {

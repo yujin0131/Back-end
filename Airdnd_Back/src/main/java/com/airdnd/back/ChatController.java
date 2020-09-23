@@ -100,9 +100,9 @@ public class ChatController {
 		
 		
 		for(int i = 0; i < listAll.size(); i++) {
-			fourthlists = new JSONObject(); 	//5
-			info = new JSONArray();			//6
-			contents = new JSONObject();	//7-1
+			fourthlists = new JSONObject(); //4
+			info = new JSONArray();			//5
+			contents = new JSONObject();	//6-1
 			
 			int n = 0;
 			
@@ -157,7 +157,7 @@ public class ChatController {
 		}
 	
 		for(int i = 0; i < listHidden.size(); i++) {
-			fourthlists = new JSONObject(); 	//4
+			fourthlists = new JSONObject(); //4
 			info = new JSONArray();			//5
 			contents = new JSONObject();	//6-1
 			
@@ -214,9 +214,9 @@ public class ChatController {
 		}
 	
 		for(int i = 0; i < listUnread.size(); i++) {
-			fourthlists = new JSONObject(); 	//5
-			info = new JSONArray();			//6
-			contents = new JSONObject();	//7-1
+			fourthlists = new JSONObject(); //4
+			info = new JSONArray();			//5
+			contents = new JSONObject();	//6-1
 			
 			int n = 0;
 			
