@@ -349,6 +349,7 @@ public class BookmarkController {
 	
 	@RequestMapping(value="/wishlist_delete/{bookmarkHomeId}", method=RequestMethod.DELETE,
 			produces="application/json;charset=utf8", consumes=MediaType.ALL_VALUE)
+	@ResponseBody
 	public String delete_bookmarkHome(@PathVariable String bookmarkHomeId) {
 		HttpHeaders resHeaders = new HttpHeaders();
 		resHeaders.add("Content-Type", "application/json;charset=UTF-8");
@@ -406,7 +407,7 @@ public class BookmarkController {
 		//model.addAttribute("vo", vo);
 		//model.addAttribute("vo2", vo2);
 
-		//return "redirect:bookmark";
+		//return "redirect:wishlists";
 		return result.toString();
 	}
 	
